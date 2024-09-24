@@ -51,7 +51,7 @@ export default class BinaryTreeAnimation extends Component {
         const gradient = defs.append("radialGradient")
             .attr("id", gradientId)
             .attr("cx", "50%")
-            .attr("cy", "50%")
+            .attr("cy", "50%") 
             .attr("r", "50%")
             .attr("fx", "20%")
             .attr("fy", "30%");

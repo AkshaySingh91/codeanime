@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import "./Footer.css"
-import linkdinImage from './Assets/images/linkdinImage.png'
+import linkedinImage from './Assets/images/linkedinImage.png'
 import gmailImage from './Assets/images/gmailImage.png'
 
 export class Footer extends Component {
@@ -30,13 +30,13 @@ export class Footer extends Component {
                                     <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Minima quisquam maxime dicta rerum nihil minus assumenda distinctio iusto inventore expedita, quo obcaecati quam commodi adipisci.</p>
                                 </div>
                                 <div className="col item social">
-                                    <a href="#"><img id='' src={linkdinImage} alt="" /></a>
-                                    <a href="#"><img id='gmial-icon' src={gmailImage} alt="" /></a>
+                                    <a href="#"><img id='' src={linkedinImage} alt="" /></a>
+                                    <a href="#"><img id='gmial-icon' src={gmailImage} alt="" /></a> 
                                     <a href="#"><i className="icon ion-social-snapchat"></i></a>
                                     <a href="#"><i className="icon ion-social-instagram"></i></a>
                                 </div>
                             </div>
-                            <p className="copyright">CodeAnime © 2018</p>
+                            <p className="copyright">CodeAnime © 2024</p>
                         </div>
                     </footer>
                 </div>

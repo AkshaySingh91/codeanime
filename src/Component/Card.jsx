@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
-export class Card extends Component {
+export default class Card extends Component {
     render() {
         console.log('object')
         const {name, imageUrl, path, description} = this.props
@@ -18,5 +18,3 @@ export class Card extends Component {
         )
     }
 }
-
-export default Card
