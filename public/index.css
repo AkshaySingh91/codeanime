@@ -1,0 +1,11 @@
+*{
+    padding: 0%;
+    margin: 0%;
+}
+
+canvas{
+    border: 1px solid black;
+    background-color: rgb(183, 241, 241);
+    width: 100%;
+    height: 80vh;
+}
