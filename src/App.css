@@ -19,7 +19,7 @@ body {
   height: 100vh;
   position: relative;
   /* background: #000; */
-  background-image: url('C:\Users\Admin\Documents\Programming Language\Web Development\codeanime\src\Component\Assets\images\bgImage.jpg');
+  background-image: url('./Component/Assets/images/bgImage.jpg');
   display: flex;
   justify-content: space-between;
   overflow: hidden;

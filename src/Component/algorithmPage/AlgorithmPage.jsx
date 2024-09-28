@@ -121,8 +121,6 @@ class BinaryTreeAnimation extends Component {
             .attr('stroke-width', 2)
             .attr('fill', `url(#${gradientId})`);
 
-        const circles = svg.selectAll('circle');
-        // nodes.call()
         let g = d3.select("g.node");
         let bbox = g.node().getBBox();
 
@@ -149,20 +147,14 @@ class BinaryTreeAnimation extends Component {
             .on("drag", dragging)
             .on("end", dragEnd);
 
-        nodes.call(drag);
-        let x, y;
+        nodes.call(drag); 
         function dragStart(event, d) {
             d3.select(this)
             const point = d3.pointer(event, svg)
             startX = point[0];
             startY = point[1];
             initialX = d.x;
-            initialY = d.y;
-            const transform = d3.select(this).attr('transform');
-            const translate = transform.match(/translate\(([^)]+)\)/);
-            if (translate) {
-                [x, y] = translate[1].split(',').map(Number);
-            }
+            initialY = d.y; 
         }
 
         function dragging(event, d) {

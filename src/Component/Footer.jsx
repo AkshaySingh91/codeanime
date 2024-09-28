@@ -3,7 +3,7 @@ import "./Footer.css"
 import linkedinImage from './Assets/images/linkedinImage.png'
 import gmailImage from './Assets/images/gmailImage.png'
 
-export class Footer extends Component {
+export default class Footer extends Component {
     render() {
         return (
             <>
@@ -31,7 +31,7 @@ export class Footer extends Component {
                                 </div>
                                 <div className="col item social">
                                     <a href="#"><img id='' src={linkedinImage} alt="" /></a>
-                                    <a href="#"><img id='gmial-icon' src={gmailImage} alt="" /></a> 
+                                    <a href="#"><img id='gmial-icon' src={gmailImage} alt="" /></a>
                                     <a href="#"><i className="icon ion-social-snapchat"></i></a>
                                     <a href="#"><i className="icon ion-social-instagram"></i></a>
                                 </div>
@@ -44,5 +44,3 @@ export class Footer extends Component {
         )
     }
 }
-
-export default Footer

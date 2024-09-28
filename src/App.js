@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import './App.css';
 import { AlgorithmPage } from './Component/algorithmPage/AlgorithmPage'
 import Card from './Component/Card';
@@ -7,9 +7,6 @@ import { algorithmCard } from './Datastore/algoritmInfo';
 import BinarySearchTree from './Component/BinarySearchTree/BinarySearchTree';
 
 export default class App extends Component {
-  constructor() {
-    super();
-  }
   render() {
     return (<>
 
@@ -60,3 +57,5 @@ export class HomePage extends Component {
   }
 }
 
+
+  
