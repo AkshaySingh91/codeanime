@@ -1,20 +1,82 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
+
 export default class Card extends Component {
+    constructor() {
+        super();
+        this.cardRef = React.createRef();
+        // this.spotRef = React.createRef(); 
+    }
+    componentDidMount() {
+        const cardElement = this.cardRef.current;
+        if (cardElement) {
+            cardElement.addEventListener('mousemove', this.handleMouseMove);
+            cardElement.addEventListener('mouseleave', this.handleMouseLeave);
+        }
+    }
+
+    componentWillUnmount() {
+        const cardElement = this.cardRef.current;
+        if (cardElement) {
+            cardElement.removeEventListener('mousemove', this.handleMouseMove);
+            cardElement.removeEventListener('mouseleave', this.handleMouseLeave);
+        }
+    }
+    handleMouseMove = (e) => {
+        const cardElement = this.cardRef.current;
+        const cardWidth = cardElement.offsetWidth;
+        const cardHeight = cardElement.offsetHeight;
+        const rect = cardElement.getBoundingClientRect();
+        const centerX = rect.left + cardWidth / 2;
+        const centerY = rect.top + cardHeight / 2;
+        const mouseX = e.clientX - centerX;
+        const mouseY = e.clientY - centerY;
+
+        // const blurSpot = this.spotRef.current;
+        // if (blurSpot) {
+        //     blurSpot.style.transform = `translate(${mouseX - rect.x + cardWidth / 2}px, ${mouseY - rect.y - cardWidth / 2}px)`;
+        //     blurSpot.style.opacity = 1
+        // }
+
+        cardElement.style.border = 'none'
+        if (mouseX < 0) {
+            cardElement.style.borderLeft = '1px solid orange'
+        } else {
+            cardElement.style.borderRight = '1px solid orange'
+        }
+        if (mouseY < 0) {
+            cardElement.style.borderTop = '1px solid orange'
+        } else {
+            cardElement.style.borderBottom = '1px solid orange'
+        }
+
+        const rotateY = mouseX * 0.15;
+        cardElement.style.transform = `rotateY(${rotateY}deg)`;
+    };
+    handleMouseLeave = (e) => {
+        const cardElement = this.cardRef.current, blurSpot = this.spotRef;
+        cardElement.style.transform = 'rotateY(0deg)';
+        cardElement.style.border = 'none';
+        if (blurSpot !== undefined) {
+            // blurSpot.style.opacity = 0;
+        }
+    }
     render() {
-        console.log('object')
-        const {name, imageUrl, path, description} = this.props
+
+        const { name, path, previewSvg } = this.props
         return (
             <>
-                <div className="card mx-3 my-4" style={{width: "18rem"}}>
-                    <img src={imageUrl} className="card-img-top" alt="..."/>
-                        <div className="card-body">
-                            <h5 className="card-title">{name}</h5>
-                            <p className="card-text">{description}</p>
-                            <Link to = {`/${path}`} className="btn btn-primary">Go somewhere</Link>
-                        </div>
+                <div ref={this.cardRef} className="algorithm-card">
+                    <Link to={path}>
+                        {/* it will change depending on which algorithm card it is */}
+                        {previewSvg && previewSvg()}
+                    </Link>
+                    {/* <div ref={this.spotRef} className="blur-spot"></div> */}
+                    <div className="algorithm-title">
+                        {name}
+                    </div>
                 </div>
             </>
         )
     }
-}
+}; 

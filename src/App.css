@@ -15,18 +15,20 @@ body {
 
 .hero-section {
   width: 100%;
-  height: calc(100vh - var(--navbarHeight));
+  /* height: calc(100vh - var(--navbarHeight)); */
+  height: 100vh;
   position: relative;
-  background-image: url('https://cdn.vectorstock.com/i/1000x1000/59/06/circles-algorithm-black-background-vector-24225906.webp');
+  /* background: #000; */
+  background-image: url('C:\Users\Admin\Documents\Programming Language\Web Development\codeanime\src\Component\Assets\images\bgImage.jpg');
   display: flex;
   justify-content: space-between;
- 
+  overflow: hidden;
 }
 
 .hero-content {
   max-width: 50%;
   color: white;
-  position: absolute;
+  /* position: absolute; */
   padding: 4rem 2rem 0 4rem;
   z-index: 2;
 }
@@ -42,7 +44,7 @@ body {
   font-weight: bold;
   font-size: 60px;
   color: #ffffff;
-  text-shadow:1px 2px 2px rgb(202, 199, 199); 
+  text-shadow: 1px 2px 2px rgb(202, 199, 199);
 }
 
 .hero-content p {
@@ -54,9 +56,73 @@ body {
   /* text-shadow:1px 2px 2px rgb(202, 199, 199); */
 }
 
+
+.svgContainer {
+  width: 60%;
+  height: 100%;
+  margin-left: auto;
+}
+
+.svgContainer svg {
+  width: 100%;
+  height: 100%;
+  display: inline-flex;
+  justify-content: flex-end;
+  background-repeat: repeat-x;
+  z-index: 3;
+}
+
+
+.slick-arrow ::before {
+  font-size: 2rem;
+}
+
 .buttons {
   width: 2.5rem;
   height: 2.5rem;
+}
+
+.slide {
+  position: relative;
+  width: 6rem;
+  height: 8rem;
+  /* background-color: rgba(255, 255, 255, 0.2); */
+  border-radius: 10px;
+  /* overflow: hidden; */
+  cursor: pointer;
+  /* background-color: #fff; */
+}
+
+.slide a {
+  border-radius: inherit;
+}
+
+.slide p {
+  overflow: hidden;
+  position: absolute;
+  bottom: 0%;
+  left: 0;
+  width: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  font-size: 0.65rem;
+  text-align: center;
+  border-bottom-left-radius: inherit;
+  border-bottom-right-radius: inherit;
+  margin-bottom: 0;
+  padding-bottom: 5px;
+}
+
+.hero-slider {
+  position: absolute;
+  top: 60%;
+  right: 0%;
+  width: 40%;
+}
+
+.slider {
+  display: flex;
+  gap: 1rem;
 }
 
 .play-btn {
@@ -74,55 +140,161 @@ body {
   color: rgb(189, 187, 187);
 }
 
-.svgContainer { 
-  width: 60%;
-  margin-left: auto;
-  height: 100%;
-}
 
-.svgContainer svg { 
+#backgroungSvg {
   width: 100%;
   height: 100%;
-  display: inline-flex;
-  justify-content: flex-end;
-  background-repeat: repeat-x;
 }
 
-
-.hero-slider {
-  width: 40%;
+g :hover {
+  cursor: pointer;
 }
 
-.slider {
-  display: flex;
-  gap: 20px;
+/* home page */
+.algorithmList {
+  background-color: black;
+  padding: 20px;
 }
 
-.slide {
+.algorithm-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 15px;
+}
+
+.algorithm-card a {
+  border-radius: inherit;
+}
+
+.algorithm-card {
+  width: 11rem;
+  height: 13rem;
   position: relative;
-  width: 120px;
-  height: 160px;
-  background-color: rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(5px);
-  border-radius: 10px;
+  border-radius: 8px;
   overflow: hidden;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+
+  transition: transform 0.2s;
+  padding: 0.15rem;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+  background: linear-gradient(135deg, #006400, #008000);
+  transform-style: preserve-3d;
+  perspective: 1000px;
 }
 
-.slide img {
+
+.algorithm-card::before {
+  content: '';
+  width: 150%;
+  height: 150%;
+  background-color: #ff0000;
+  position: absolute;
+  top: -25%;
+  left: -25%;
+  background-image:
+    conic-gradient(black 20%, rgba(138, 43, 226, 0.8) 40%, rgba(75, 0, 130, 0.6), rgba(139, 0, 255, 0.5), rgba(231, 100, 43, 0.6), rgba(138, 43, 226, 0.8), black);
+  border-radius: inherit;
+  z-index: -1;
+  animation: spin infinite linear 5s;
+}
+
+.algorithm-card::before {
+  filter: blur(0.4rem);
+  opacity: 0.8;
+}
+
+.blur-spot {
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  background: radial-gradient(circle, rgb(255, 115, 0), transparent 70%);
+  filter: blur(40px);
+  /* Apply blur effect */
+  border-radius: 50%;
+  pointer-events: none;
+  /* Ensure no interference with mouse events */
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  /* Hidden by default */
+  transition: opacity 0.3s ease, transform 0.1s ease;
+  z-index: 0;
+  /* Make sure it's visible above content */
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  25% {
+    transform: rotate(50deg);
+  }
+
+  50% {
+    transform: rotate(360deg);
+    /* Complete a full clockwise rotation */
+  }
+
+  75% {
+    transform: rotate(160deg);
+    /* Complete a full clockwise rotation */
+  }
+
+  100% {
+    transform: rotate(0deg);
+    /* Revert back counter-clockwise */
+  }
+}
+
+
+.algorithm-card {
+  background: rgba(255, 255, 255, 0.1);
+  /* Transparent background */
+  border-radius: 15px;
+  backdrop-filter: blur(10px);
+  /* Blur to create frosted glass effect */
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  /* Soft shadow for depth */
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  
+}
+
+.algorithm-image {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  border-radius: inherit;
+  background: radial-gradient(circle, rgba(20, 20, 20, 1) 0%, rgba(30, 30, 30, 1) 100%);
+  
 }
 
-.slide p {
+.slick-dots {
+  display: none !important;
+}
+
+.algorithm-title {
+  padding: 10px;
+  text-align: center;
+  font-weight: bold;
+  font-size: 1.1em;
   position: absolute;
   bottom: 0;
   left: 0;
-  right: 0;
-  padding: 10px;
-  background: rgba(0, 0, 0, 0.5);
-  color: white;
-  font-size: 12px;
-  text-align: center;
-  border-radius: 0 0 10px 10px;
+  background-color: #a4a2a2;
+  opacity: 0.7;
+  color: rgb(0, 0, 0);
+  width: calc(100% - 0.1rem);
+  border-bottom-left-radius: inherit;
+  border-bottom-right-radius: inherit;
+}
+
+.slider-preview {
+  background: rgba(31, 40, 252, 0.15);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  backdrop-filter: blur(7.5px);
+  -webkit-backdrop-filter: blur(7.5px);
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
 }
