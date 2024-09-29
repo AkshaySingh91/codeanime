@@ -2,7 +2,7 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: 'Arial', sans-serif;
+  font-family: monospace;
 }
 
 :root {
@@ -154,6 +154,7 @@ g :hover {
 .algorithmList {
   background-color: black;
   padding: 20px;
+  opacity: 0.85;
 }
 
 .algorithm-grid {

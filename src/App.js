@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import './App.css';
 import { AlgorithmPage } from './Component/algorithmPage/AlgorithmPage'
 import Card from './Component/Card';
 import { algorithmCard } from './Datastore/algoritmInfo';
-import BinarySearchTree from './Component/BinarySearchTree/BinarySearchTree';
+import AlgorithmVisualization from './Component/visualizationPage';
+import './App.css';
 
 export default class App extends Component {
   render() {
@@ -12,9 +12,10 @@ export default class App extends Component {
 
       <Router>
         <Routes>
-          <Route exact path='/' element={
-            <HomePage algorithmCard={algorithmCard} />
-          }></Route>
+          <Route exact path='/'
+            element={
+              <HomePage algorithmCard={algorithmCard} />
+            }></Route>
           <Route exact path='/BinaryTree'
             element={
               <AlgorithmPage path={'BinaryTree'} algorithmCard={algorithmCard} />
@@ -24,7 +25,7 @@ export default class App extends Component {
               <AlgorithmPage algorithmCard={algorithmCard} />
             }></Route>
           <Route exact path='/BinaryTree/algorithm'
-            element={<BinarySearchTree />}
+            element={<AlgorithmVisualization />}
           ></Route>
         </Routes>
       </Router>
@@ -58,4 +59,3 @@ export class HomePage extends Component {
 }
 
 
-  

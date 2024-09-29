@@ -1,0 +1,266 @@
+.algorithm-visualization-page {
+    display: flex;
+    height: 100%;
+}
+
+:root {
+    --sidebar-width: 10rem
+}
+
+.sidebar {
+    width: 10rem;
+    overflow-x: hidden;
+    overflow-y: auto;
+    background-color: #353232;
+    color: white;
+    display: flex;
+    flex-flow: column;
+    box-sizing: border-box;
+    border-right: 2px solid grey;
+}
+
+.data-structure-list {
+    margin-top: 1.5rem;
+}
+
+.algorithm-category {
+    width: 100%;
+    text-align: left;
+}
+
+.collapsible {
+    font-size: 1rem;
+    cursor: pointer;
+    padding: 0.3rem 0.6rem;
+    width: 100%;
+    border: none;
+    text-align: left;
+    outline: none;
+    background-color: transparent;
+    color: #b4b4b4;
+    font-size: 0.9rem;
+    display: flex;
+    justify-content: space-between;
+}
+
+.active,
+.collapsible:hover {
+    background-color: #555;
+}
+
+/* arrow for btn */
+.arrow {
+    border: solid rgb(201, 201, 201);
+    border-width: 0 2px 2px 0;
+    display: inline-block;
+    padding: 3px;
+    margin: auto 0;
+}
+
+.right {
+    transform: rotate(-45deg);
+    -webkit-transform: rotate(-45deg);
+}
+
+.content {
+    overflow: hidden;
+    background-color: #201f1f;
+}
+
+.algorithm-list {
+    margin: 0;
+    padding-left: 1rem;
+}
+
+.algorithm-list li {
+    list-style: none;
+    font-size: 0.9rem;
+    padding: 0.3rem 0.3rem 0.6rem 0;
+    text-wrap: nowrap;
+    overflow: hiden;
+    animation: movingTape 5s linear infinite
+}
+
+.algorithm-list li a:hover {
+    color: #ffffff;
+}
+
+@keyframes movingTape {
+    from {
+        transform: translateX(20%);
+    }
+
+    to {
+        transform: translateX(-10%);
+    }
+}
+
+.algorithm-list li a {
+    text-decoration: none;
+    color: #b4b4b4;
+}
+
+
+
+.svg-area {
+    height: 300px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+    background-color: #010101;
+}
+
+/* controller css */
+.controller-bar {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 0.4rem 1rem;
+}
+
+.speedController {
+    display: flex;
+    gap: 0.2rem;
+    align-items: center;
+    padding: 0.3rem;
+}
+
+.speedController label[for="speed"],
+span {
+    color: rgb(195, 195, 195);
+    font-size: 1rem;
+}
+
+.speedController span {
+    width: 1rem;
+}
+
+.speedController input[type="range"]::-webkit-slider-runnable-track {
+    -webkit-appearance: none;
+    border: none;
+    background-color: grey;
+    cursor: pointer;
+    width: 4rem;
+    height: 0.5rem;
+    border-radius: 4px;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    margin-top: -3px;
+    height: 2rem;
+    width: 1rem;
+}
+
+/* player css */
+.player {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-right: 1rem;
+    color: rgb(195, 195, 195);
+}
+
+.player span {
+    font-size: 1rem;
+}
+
+
+.play {
+    height: 0;
+    width: 0;
+    margin-left: calc(2 * 0.14 * 2rem);
+    background: none;
+    border: none;
+    border-top: 0.4rem solid transparent;
+    border-bottom: 0.4rem solid transparent;
+    border-left: calc(0.4rem * 2 * 0.86) solid #edd;
+    cursor: pointer;
+}
+
+.pause {
+    cursor: pointer;
+    position: relative;
+    background: none;
+    border: none;
+    height: calc(0.4rem * 2);
+    width: calc(0.4rem * 2 * 0.86);
+
+    /* nested css */
+    &:before,
+    &:after {
+        content: "";
+        position: absolute;
+        top: 0;
+        height: 100%;
+        width: 33%;
+        background: #edd;
+    }
+
+    &:before {
+        left: 0;
+    }
+
+    &:after {
+        right: 0;
+    }
+}
+
+
+
+.main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background-color: #252522;
+}
+
+.visualization-container {
+    flex: 1;
+}
+
+
+/* code  */
+.text-container {
+    display: flex;
+    padding: 0%;
+    width: calc(100vw- var(--sidebar-width));
+    max-height: 13rem;
+}
+
+.console {
+    position: relative;
+    overflow-y: auto;
+    width: 50%;
+    outline: 1px solid grey;
+    color: rgb(195, 195, 195);
+    text-align: justify;
+}
+
+.step-line {
+    margin: 1rem 0.5rem;
+}
+
+.console .header,
+.code-container .header {
+    background-color: #575555;
+    position: sticky;
+    top: 0;
+    left: 0;
+    padding: 0.2rem;
+}
+
+.code-container {
+    position: relative;
+    outline: 1px solid grey;
+    overflow-y: auto;
+    width: 50%;
+    color: #c3c3c3;
+}
+
+.code-container code {
+    display: block;
+    margin: 1rem 0.5rem;
+}

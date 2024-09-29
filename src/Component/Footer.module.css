@@ -1,0 +1,106 @@
+.footer-dark {
+  padding: 20px 0; /* Reduced padding */
+  color: #f0f9ff;
+  background-color: #282d32;
+}
+
+.footer-dark h3 {
+  margin-top: 0;
+  margin-bottom: 8px; /* Reduced bottom margin */
+  font-weight: bold; 
+}
+
+.footer-dark ul {
+  padding: 0;
+  list-style: none;
+  line-height: 1.4;  
+  font-size: 0.3rem  !important; 
+  margin-bottom: 0;
+}
+
+.footer-dark ul a {
+  color: inherit;
+  text-decoration: none;
+  opacity: 0.6;
+  font-size: 0.9rem  !important; 
+}
+
+.footer-dark ul a:hover {
+  opacity: 0.8;
+}
+
+.footer-dark .item.text p {
+  opacity: 0.6;
+  margin-bottom: 0; 
+}
+
+.footer-dark .item.text {
+  margin-bottom: 24px; /* Reduced margin */
+}
+
+/* Flexbox Layout */
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+  gap: 1rem;
+}
+
+.row {
+  display: flex;
+  justify-content: space-evenly;
+  width: 100%; 
+  padding-top: 1rem;
+}
+
+@media (max-width: 767px) {
+  .row {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .footer-dark .item:not(.social) {
+    text-align: center;
+    margin-bottom: 10px; /* Reduced margin */
+  }
+}
+
+.footer-dark .item.social {
+  display: flex;
+  justify-content: center;
+  gap: 1rem; /* Reduced gap */
+}
+
+@media (max-width: 767px) {
+  .footer-dark .item.social {
+    margin-top: 10px; /* Reduced margin */
+  }
+}
+
+.footer-dark .item.social>a {
+  opacity: 0.75;
+}
+
+.footer-dark .item.social>a:hover {
+  opacity: 0.9;
+}
+
+/* Social Icon Styles */
+.social img {
+  width: 3rem; /* Reduced size */
+  height: 3rem;
+}
+
+.social #linkedin-iconl, .social #linkedin-icon , .social #gmail-icon {
+  width: 2.5rem; /* Reduced size */
+  height: 2.5rem;
+}
+
+/* Copyright */
+.footer-dark .copyright {
+  text-align: center;
+  opacity: 0.5; 
+  margin-top: 10px; /* Reduced margin */
+  margin-bottom: 0;
+}

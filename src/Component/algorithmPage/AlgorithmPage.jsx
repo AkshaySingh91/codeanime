@@ -5,31 +5,31 @@ import SliderComponenet from './Slider';
 import { Link } from 'react-router-dom';
 
 class AlgorithmPage extends Component {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.backgroundSvg = React.createRef();
-    }
-
-    render() {
-        const { algorithmCard, path } = this.props;
-        let description, name;
-
-        algorithmCard.forEach(algoInfo => {
-            if (algoInfo.path === path) {
-                description = algoInfo.description;
-                name = algoInfo.name;
+        this.algorithmCard = this.props.algorithmCard
+        this.path = this.props.path;
+        this.description = this.name = null;
+         
+        this.algorithmCard.forEach(algoInfo => {
+            if (algoInfo.path === this.path) {
+                this.description = algoInfo.description;
+                this.name = algoInfo.name;
             }
 
         });
-        console.log(path)
+    }
+
+    render() {
         return (
             <>
                 <section className="hero-section">
                     <div className="hero-content">
-                        <h1>{name}</h1>
-                        <p>{description}</p>
+                        <h1>{this.name}</h1>
+                        <p>{this.description}</p>
                         <div className="buttons">
-                            <Link to={`${path}/algorithm`} className="play-btn">
+                            <Link to={`/${this.path}/algorithm`} className="play-btn">
                                 <i className='fa fa-play' />
                             </Link>
                         </div>
@@ -41,7 +41,7 @@ class AlgorithmPage extends Component {
                     </div>
 
                     <div className="hero-slider">
-                        <SliderComponenet algorithmCard={algorithmCard} />
+                        <SliderComponenet algorithmCard={this.algorithmCard} />
                     </div>
                 </section>
             </>
@@ -147,14 +147,14 @@ class BinaryTreeAnimation extends Component {
             .on("drag", dragging)
             .on("end", dragEnd);
 
-        nodes.call(drag); 
+        nodes.call(drag);
         function dragStart(event, d) {
             d3.select(this)
             const point = d3.pointer(event, svg)
             startX = point[0];
             startY = point[1];
             initialX = d.x;
-            initialY = d.y; 
+            initialY = d.y;
         }
 
         function dragging(event, d) {

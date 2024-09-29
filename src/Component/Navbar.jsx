@@ -1,20 +1,18 @@
 import React, { Component } from 'react'
 import './Navbar.css'
 
-export class Navbar extends Component {
+export default class Navbar extends Component {
     render() {
         return (
             <>
-                < nav className="navbar navbar-expand-lg navbar-light bg-light" >
-                    <div className="container-fluid">
-                        <a className="navbar-brand" href="#">CodeAnime</a>
-                        <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                            <span className="navbar-toggler-icon"></span>
-                        </button>
-                        <div className="collapse navbar-collapse" id="navbarSupportedContent">
-                            <form className="d-flex">
-                                <input className="form-control me-2" type="search" placeholder="Search" aria-label="Search" />
-                                <button className="btn btn-outline-success" type="submit">Search</button>
+                < nav className="navbar" >
+                    <div className="container">
+                        <a href={`/`} className="navbar-brand" >CodeAnime</a>
+                        <div className="" id="">
+                            <form className="search-box">
+                                <input className="search-input" type="search" aria-label="Search" />
+                                <button className="search-btn" type="submit"><i class="fa">&#xf002;</i>
+                                </button>
                             </form>
                         </div>
                     </div>
@@ -23,7 +21,4 @@ export class Navbar extends Component {
         )
     }
 }
-
-export default Navbar
-
 
