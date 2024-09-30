@@ -57,8 +57,7 @@ export default class SliderComponenet extends Component {
 
 export class SliderCards extends Component {
     render() {
-        const { path, previewSvg, name } = this.props;
-        console.log(path)
+        const { path, previewSvg, name } = this.props; 
         return (
             <div className="slide">
                 <Link to={`/${path}`}>

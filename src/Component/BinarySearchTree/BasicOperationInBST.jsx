@@ -1,7 +1,16 @@
 import { Component } from 'react';
-import { BinaryTreeNode, drawBinaryTree, VisualizationType } from 'binary-tree-visualizer';
+import { BinaryTreeNode, drawBinaryTree, VisualizationType, setTheme } from 'binary-tree-visualizer';
 
-// default {bgColor: '#fff2e0', borderColor: '#f56042'}
+// default {bgColor: 'white', borderColor: 'black'}
+setTheme({
+    radius: 17,
+    fontSize: 13,
+    textFont: "Arial",
+    colorArray: [{ bgColor: 'white', borderColor: 'black' }],
+    strokeColor: 'white',
+
+})
+
 function removeDuplicate(arr) {
     const result = [];
     let idx = 0;
@@ -12,10 +21,11 @@ function removeDuplicate(arr) {
             tmp[arr[i]] = 1;
             result[idx] = arr[i];
             idx++;
-        } 
+        }
     }
     return result;
 }
+
 
 class SearchInBST extends Component {
     constructor() {
@@ -35,21 +45,21 @@ class SearchInBST extends Component {
                 return;
             }
             if (searchValue === root.value) {
-                await highlightNode(root, false, '#FABC3F', '#f56042', 2000)
+                await highlightNode(root, false, '#FABC3F', 'black', 2000)
                 updateInfo(`${searchValue} has found.`)
-                await highlightNode(root, true, '#fff2e0', '#f56042', 2000)
+                await highlightNode(root, true, 'white', 'black', 2000)
                 return true;
             }
             else if (root.value > searchValue) {
-                await highlightNode(root, false, '#fff2e0', '#821131', 2000)
+                await highlightNode(root, false, 'white', '#821131', 2000)
                 updateInfo(`${root.value} is Greater than ${searchValue}, so searching on Left.`)
-                await highlightNode(root, true, '#fff2e0', '#f56042', 2000)
+                await highlightNode(root, true, 'white', 'black', 2000)
                 return await startSearching(root.left, searchValue)
             }
             else {
-                await highlightNode(root, false, '#fff2e0', '#821131', 2000)
+                await highlightNode(root, false, 'white', '#821131', 2000)
                 updateInfo(`${root.value} is Smaller than ${searchValue}, so searching on Right.`)
-                await highlightNode(root, true, '#fff2e0', '#f56042', 2000)
+                await highlightNode(root, true, 'white', 'black', 2000)
                 return await startSearching(root.right, searchValue)
             }
         }
@@ -113,20 +123,20 @@ class DeleteNodeFromBST extends Component {
                 return;
             }
             if (deleteValue === root.value) {
-                await highlightNode(root, false, '#FABC3F', '#f56042', 2000)
-                await highlightNode(root, true, '#fff2e0', '#f56042', 2000)
+                await highlightNode(root, false, '#FABC3F', 'black', 2000)
+                await highlightNode(root, true, 'white', 'black', 2000)
                 updateInfo(`${deleteValue} has found.`)
                 return await this.DeleteNode(root)
             }
             else if (root.value > deleteValue) {
-                await highlightNode(root, false, '#fff2e0', '#821131', 2000)
-                await highlightNode(root, true, '#fff2e0', '#f56042', 2000)
+                await highlightNode(root, false, 'white', '#821131', 2000)
+                await highlightNode(root, true, 'white', 'black', 2000)
                 updateInfo(`${root.value} is Greater than ${deleteValue}, so searching on Left.`)
                 root.left = await startDeleting(root.left, deleteValue)
             }
             else {
-                await highlightNode(root, false, '#fff2e0', '#821131', 2000)
-                await highlightNode(root, true, '#fff2e0', '#f56042', 2000)
+                await highlightNode(root, false, 'white', '#821131', 2000)
+                await highlightNode(root, true, 'white', 'black', 2000)
                 updateInfo(`${root.value} is Smaller than ${deleteValue}, so searching on Right.`)
                 root.right = await startDeleting(root.right, deleteValue)
             }
@@ -173,9 +183,9 @@ class InsertInBst extends Component {
         let array = userInput.split(',').map((elem) => { return Number.parseInt(elem.trim()) })
 
         array = array.filter((n) => { return !nodes.includes(n) })
-        array = removeDuplicate(array) 
+        array = removeDuplicate(array)
         console.log(array)
-        
+
         let updatedNodes = [...nodes, ...array]
         let r = root
         for (const i of array) {
@@ -202,13 +212,13 @@ class InsertInBst extends Component {
         }
         if (root && key < root.value) {
             if (root && !root.left) {
-                // default {bgColor: '#fff2e0', borderColor: '#f56042'}
-                await highlightNode(root, true, '#FABC3F', '#f56042', 100)
-                await highlightNode(root, true, '#fff2e0', '#f56042', 100)
+                // default {bgColor: 'white', borderColor: 'black'}
+                await highlightNode(root, true, '#FABC3F', 'black', 100)
+                await highlightNode(root, true, 'white', 'black', 100)
                 updateInfo(`${key} will insert on left of ${root.value}.`)
             } else {
-                await highlightNode(root, false, '#fff2e0', '#821131', 100);
-                await highlightNode(root, true, '#fff2e0', '#f56042', 100);
+                await highlightNode(root, false, 'white', '#821131', 100);
+                await highlightNode(root, true, 'white', 'black', 100);
                 updateInfo(`vertex ${root.value} is greater than ${key}, going on left side`)
             }
             const left = await this.insertNodeInBst(root.left, key)
@@ -216,12 +226,12 @@ class InsertInBst extends Component {
         }
         else if (root && key > root.value) {
             if (root && !root.right) {
-                await highlightNode(root, true, '#FABC3F', '#f56042', 100)
-                await highlightNode(root, true, '#fff2e0', '#f56042', 100)
+                await highlightNode(root, true, '#FABC3F', 'black', 100)
+                await highlightNode(root, true, 'white', 'black', 100)
                 updateInfo(`${key} will insert on right of ${root.value}.`)
             } else {
-                await highlightNode(root, false, '#fff2e0', '#821131', 100);
-                await highlightNode(root, true, '#fff2e0', '#f56042', 100);
+                await highlightNode(root, false, 'white', '#821131', 100);
+                await highlightNode(root, true, 'white', 'black', 100);
                 updateInfo(`vertex ${root.value} is smaller than ${key}, going on right side`)
             }
             const right = await this.insertNodeInBst(root.right, key)
@@ -258,8 +268,8 @@ class TraverseInBST extends Component {
             if (!node) {
                 return
             }
-            await highlightNode(node, false, '#fff2e0', '#821131', 2000)
-            await highlightNode(node, true, '#fff2e0', '#f56042', 1000)
+            await highlightNode(node, false, 'white', '#821131', 2000)
+            await highlightNode(node, true, 'white', 'black', 1000)
             let msg = node.left ? `Left node of vertex ${node.value} is ${node.left.value}, So Recursive to Left child.` : `Left node of vertex ${node.value} is empty, So return Empty.`
             updateInfo(msg)
             await startPostorderTraversal(node.left)
@@ -272,8 +282,8 @@ class TraverseInBST extends Component {
             msg = `visited vertex ${node.value} ${sequence}`
             updateInfo(msg)
             console.log(node.value)
-            await highlightNode(node, true, '#FABC3F', '#f56042', 1000)
-            await highlightNode(node, true, '#fff2e0', '#f56042', 2000)
+            await highlightNode(node, true, '#FABC3F', 'black', 1000)
+            await highlightNode(node, true, 'white', 'black', 2000)
         }
         await startPostorderTraversal(root)
     }
@@ -286,14 +296,14 @@ class TraverseInBST extends Component {
             if (!node) {
                 return
             }
-            await highlightNode(node, false, '#fff2e0', '#821131', 2000)
-            await highlightNode(node, true, '#FABC3F', '#f56042', 1000)
+            await highlightNode(node, false, 'white', '#821131', 2000)
+            await highlightNode(node, true, '#FABC3F', 'black', 1000)
             sequence += ` ${node.value} `
             let msg = `visited vertex ${node.value} ${sequence}`
             updateInfo(msg)
             console.log(node.value)
 
-            await highlightNode(node, true, '#fff2e0', '#f56042', 1000)
+            await highlightNode(node, true, 'white', 'black', 1000)
             msg = node.left ? `Left node of vertex ${node.value} is ${node.left.value}, So Recursive to Left child.` : `Left node of vertex ${node.value} is empty, So return Empty.`
             updateInfo(msg)
             await startPreorderTraversal(node.left)
@@ -314,8 +324,8 @@ class TraverseInBST extends Component {
                 return
             }
             // left
-            await highlightNode(node, false, '#fff2e0', '#821131', 2000)
-            await highlightNode(node, true, '#fff2e0', '#f56042', 1000)
+            await highlightNode(node, false, 'white', '#821131', 2000)
+            await highlightNode(node, true, 'white', 'black', 1000)
             let msg = node.left ? `Left node of vertex ${node.value} is ${node.left.value}, So Recursive to Left child.` : `Left node of vertex ${node.value} is empty, So return Empty.`
             updateInfo(msg)
             await startInorderTraversal(node.left)
@@ -325,7 +335,7 @@ class TraverseInBST extends Component {
             updateInfo(msg)
             // right
             await highlightNode(node, true, '#FABC3F', '#821131', 2000)
-            await highlightNode(node, true, '#fff2e0', '#f56042', 1000)
+            await highlightNode(node, true, 'white', 'black', 1000)
             msg = node.right ? `Right node of vertex ${node.value} is ${node.right.value}, So Recursive to Right child.` : `Right node of vertex ${node.value} is empty, So return Empty.`
             updateInfo(msg)
             await startInorderTraversal(node.right)

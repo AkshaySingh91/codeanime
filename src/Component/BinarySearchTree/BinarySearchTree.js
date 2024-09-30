@@ -12,7 +12,7 @@ export class BinarySearchTree extends Component {
             nodes: [12, 23, 1, 23, 53, 68, 14, 10, 0, 13, 50],
             root: null,
             prevRoot: null,
-            info: 'hello'
+            info: 'hello',
         }
         this.canvasRef = React.createRef()
     }
@@ -40,9 +40,10 @@ export class BinarySearchTree extends Component {
         }
         this.setState({ root: r })
     }
-    componentDidUpdate = (prevProps, prevState) => {
+    componentDidUpdate() {
         const canvas = this.canvasRef.current;
-        if (canvas) {
+        if (canvas !== undefined) {
+            console.log(canvas.current)
             drawBinaryTree(this.state.root, canvas, {
                 type: VisualizationType.HIGHLIGHT
             });
@@ -50,11 +51,14 @@ export class BinarySearchTree extends Component {
             console.error("Canvas is not loaded")
         }
         setTheme({
-            radius : 20,
-            fontSize : 15, 
-            textFont: "Arial"
+            radius: 17,
+            fontSize: 13,
+            textFont: "Arial",
+            colorArray: [{ bgColor: 'white', borderColor: 'black' }],
+            strokeColor: 'white',
         })
-    } 
+    }
+
     highlightNode = (root, flag, bgColor = '#FABC3F', borderColor = '#E85C0D', time = 1000) => {
         return new Promise((resolve) => {
             setTimeout(() => {
@@ -91,7 +95,7 @@ export class BinarySearchTree extends Component {
     }
     render() {
         return (<>
-            <canvas ref={this.canvasRef} style={{ width: '100%', height: '100%' }}></canvas>
+            <canvas ref={this.canvasRef} ></canvas>
             <TreeContext.Provider value={{ info: this.state.info }}>
                 <Features
                     root={this.state.root}
@@ -111,7 +115,7 @@ export class BinarySearchTree extends Component {
 
 class Features extends Component {
     render() {
-        const {root, updateRoot, updateInfo, highlightNode, updateNodes, nodes } = this.props
+        const { root, updateRoot, updateInfo, highlightNode, updateNodes, nodes } = this.props
         return (<>
             <InsertInBst root={root} updateInfo={updateInfo} updateRoot={updateRoot} highlightNode={highlightNode} nodes={nodes} updateNodes={updateNodes} canvas={this.props.canvas} />
 
@@ -186,7 +190,7 @@ class GenerateTrees extends Component {
     }
 }
 
-class Text extends Component { 
+class Text extends Component {
     render() {
         return (<>
             <TreeContext.Consumer>

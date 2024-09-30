@@ -3,6 +3,7 @@ import css from "./Footer.module.css"
 import linkedinImage from './Assets/images/linkedinImage.png'
 import gmailImage from './Assets/images/gmailImage.png'
 import githubImage from './Assets/images/githubImage.png'
+
 export default class Footer extends Component {
     render() {
         return (
