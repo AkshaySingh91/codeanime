@@ -1,0 +1,21 @@
+.visualization {
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.column .content {
+    display: flex;
+    flex-flow: column;
+    gap: 0.5rem;
+}
+.column{
+    text-align: center;
+    margin: .5rem;
+}
+.column h2{
+    font-size: 1rem;
+    color: rgb(162, 162, 162);
+}
+.content span{
+    display: block;
+}

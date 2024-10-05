@@ -1,0 +1,132 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  font-family: Arial, sans-serif;
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #9cf263;
+  height: 100vh;
+}
+
+.container {
+  width: 95vw;
+  height: 95vh;
+  background-color: #acdbda;
+  padding: 20px;
+  border: 5px solid #209f20;
+  border-radius: 8px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  width: 80vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+}
+
+
+#hr {
+  border: 1px dotted #3e9e3e;
+  width: 100%;
+}
+
+.controllers {
+  margin-top: 10px;
+  display: flex;
+  justify-content: space-between;
+  gap: 5px;
+  flex-wrap: wrap;
+  border-bottom: 2px solid green;
+}
+
+button, input[type="text"], input[type="range"] {
+  padding: .2em;
+  border-radius: 5px;
+  font-size: 0.8rem;
+}
+
+button:hover {
+  background-color: #45a049;
+}
+
+.visualization {
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+  margin-top: 20px;
+  gap: 10px;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 30%;
+}
+#expression{
+  width: 25vw;
+  background-color: #fff;
+  height: 15vh;
+}
+#stack{
+  width: 15vw;
+  height: 40vh;
+  background-color: #fff;
+  border: 2px solid blue;
+
+
+}
+
+/* .content {
+  background-color: #fff;
+  width: 100%;
+  height: 100px;
+  margin-bottom: 2px;
+  display: flex;
+  align-items: center;
+  font-size: 1.2em;
+} */
+
+#operation div {
+  width: 60px;
+  height: 60px;
+  background-color: #d1d1d1;
+  border: 1px solid #333;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 5px;
+}
+
+#stack .content {
+  background-color: #f1a1a1;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+
+}
+
+.stack-enter {
+  padding: 5px;
+  border: 2px solid #000;
+  margin-bottom: 1px;
+  background-color: #a8e3bc;
+  width: 100%;
+  text-align: center;
+}
+
+
+#operand1 , #operator,#operand2{
+  display: none;
+}

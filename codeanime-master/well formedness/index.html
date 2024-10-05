@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parenthesis Validity Visualizer</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+        <h1>Parenthesis Validity Visualizer</h1>
+        <input type="text" id="expressionInput" placeholder="Enter expression">
+        <button onclick="startVisualization()">Run</button>
+        <button onclick="undo()">Undo</button>
+        <button onclick="redo()">Redo</button>
+        <button onclick="refreshPage()">Refresh</button>
+
+        <label for="speedControl">Slow Speed:</label>
+        <input type="range" id="speedControl" min="1" max="10" value="5">
+    </div>
+
+        <div class="visualization">
+            <div class="column" id="symbolScanned">
+                <h2>Symbol Scanned</h2>
+                <div class="content"></div>
+            </div>
+            <div class="column" id="stack">
+                <h2>Stack</h2>
+                <div class="content"></div>
+            </div>
+            <div class="column" id="validity">
+                <h2>Validity</h2>
+                <div class="content"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

@@ -63,13 +63,14 @@ export default class Card extends Component {
     }
     render() {
 
-        const { name, path, previewSvg } = this.props
+        const { name, path, previewSvg , imagePath} = this.props
         return (
             <>
                 <div ref={this.cardRef} className="algorithm-card">
                     <Link to={path}>
                         {/* it will change depending on which algorithm card it is */}
                         {previewSvg && previewSvg()}
+                        {/* {!previewSvg && <img src={}></img>} */}
                     </Link>
                     {/* <div ref={this.spotRef} className="blur-spot"></div> */}
                     <div className="algorithm-title">

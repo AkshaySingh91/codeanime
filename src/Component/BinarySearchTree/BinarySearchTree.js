@@ -13,8 +13,10 @@ export class BinarySearchTree extends Component {
             root: null,
             prevRoot: null,
             info: 'hello',
+            activeTab: 'Code'
         }
-        this.canvasRef = React.createRef()
+        this.canvasRef = React.createRef();
+        this.consoleRef = React.createRef();
     }
     componentDidMount = () => {
         let r = null
@@ -43,7 +45,6 @@ export class BinarySearchTree extends Component {
     componentDidUpdate() {
         const canvas = this.canvasRef.current;
         if (canvas !== undefined) {
-            console.log(canvas.current)
             drawBinaryTree(this.state.root, canvas, {
                 type: VisualizationType.HIGHLIGHT
             });
@@ -83,6 +84,11 @@ export class BinarySearchTree extends Component {
 
     updateInfo = (value) => {
         this.setState({ info: value }, () => {
+            if (this.consoleRef.current) {
+                const span = document.createElement('span');
+                span.innerHTML = value;
+                this.consoleRef.current.append(span);
+            }
         })
     }
     updateRoot = (value) => {
@@ -93,44 +99,94 @@ export class BinarySearchTree extends Component {
         this.setState({ nodes: value }, () => {
         })
     }
+    handleTabClick = (e) => {
+        if (e.target.tagName === 'BUTTON') {
+            this.setState({ activeTab: e.target.value })
+        }
+    }
     render() {
+        const { activeTab } = this.state
+        const { speed, isPlaying } = this.props;
         return (<>
-            <canvas ref={this.canvasRef} ></canvas>
             <TreeContext.Provider value={{ info: this.state.info }}>
-                <Features
-                    root={this.state.root}
-                    updateRoot={this.updateRoot}
-                    highlightNode={this.highlightNode}
-                    updateInfo={this.updateInfo}
-                    updateNodes={this.updateNodes}
-                    nodes={this.state.nodes}
-                    canvas={this.canvasRef}
-                ></Features>
-            </TreeContext.Provider>
+                <div className="row">
+                    <div className="mid-content">
+                        <div className="visualization-container">
+                            <div className="svg-area">
+                                <canvas ref={this.canvasRef} ></canvas>
+                            </div>
+                        </div>
+                        {/* step Display */}
+                        <div className="text-container">
+                            <div className="console">
+                                <span className='header'>Console</span>
+                                <div ref={this.consoleRef} className="step-line">
+                                    <Text />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="right-panel">
+                        <div className="tab-container" onClick={this.handleTabClick}>
+                            <div className={`code-tab  tab ${activeTab === 'Code' ? 'active' : ''}`}>
+                                <button value={'Code'}>code</button>
+                            </div>
+                            <div className={`Insert-tab tab ${activeTab === 'Insert' ? 'active' : ''}`}>
+                                <button value={'Insert'} >Insert</button>
+                            </div>
+                            <div className={`Search-tab tab ${activeTab === 'Search' ? 'active' : ''}`}>
+                                <button value={'Search'} >Search</button>
+                            </div>
+                            <div className={`Delete-tab tab ${activeTab === 'Delete' ? 'active' : ''}`}>
+                                <button value={'Delete'} >Delete</button>
+                            </div>
+                            <div className={`Traverse-tab tab ${activeTab === 'Traverse' ? 'active' : ''}`}>
+                                <button value={'Traverse'} >Traverse</button>
+                            </div>
+                            <div className={`GenerateTree-tab tab ${activeTab === 'GenerateTree' ? 'active' : ''}`}>
+                                <button value={'GenerateTree'} >GenerateTree</button>
+                            </div>
+                        </div>
+                        <div className="selected-tab-content">
+                            {activeTab === 'Code' &&
+                                <div className="code-container active">
+                                    <code>BST code</code>
+                                </div>
+                            }
+                            {activeTab === 'Insert' &&
+                                <div className="insert">
+                                    <InsertInBst root={this.state.root} updateInfo={this.updateInfo} updateRoot={this.updateRoot} highlightNode={this.highlightNode} nodes={this.state.nodes} updateNodes={this.updateNodes} canvas={this.canvasRef} consoleRef={this.consoleRef} speed={speed} isPlaying={isPlaying} />
+                                </div>
+                            }
+                            {activeTab === 'Traverse' &&
+                                <div className="traverse">
+                                    <TraverseInBST root={this.state.root} highlightNode={this.highlightNode} updateInfo={this.updateInfo} consoleRef={this.consoleRef} speed={speed} isPlaying={isPlaying} />
+                                </div>
+                            }
+                            {activeTab === 'Search' &&
+                                <div className="search">
+                                    <SearchInBST root={this.state.root} highlightNode={this.highlightNode} updateInfo={this.updateInfo} consoleRef={this.consoleRef} speed={speed} isPlaying={isPlaying} />
+                                </div>
+                            }
+                            {activeTab === 'Delete' &&
+                                <div className="delete">
+                                    <DeleteNodeFromBST updateRoot={this.updateRoot} root={this.state.root} highlightNode={this.highlightNode} updateInfo={this.updateInfo} canvas={this.canvasRef} consoleRef={this.consoleRef} speed={speed} isPlaying={isPlaying} />
+                                </div>
+                            }
+                            {activeTab === 'GenerateTree' &&
+                                <div className="generateTree">
+                                    <GenerateTrees updateRoot={this.updateRoot} updateNodes={this.updateNodes} consoleRef={this.consoleRef} />
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div >
+            </TreeContext.Provider >
         </>)
     }
 }
 
 
-
-class Features extends Component {
-    render() {
-        const { root, updateRoot, updateInfo, highlightNode, updateNodes, nodes } = this.props
-        return (<>
-            <InsertInBst root={root} updateInfo={updateInfo} updateRoot={updateRoot} highlightNode={highlightNode} nodes={nodes} updateNodes={updateNodes} canvas={this.props.canvas} />
-
-            <TraverseInBST root={this.props.root} highlightNode={this.props.highlightNode} updateInfo={updateInfo} />
-
-            <SearchInBST root={this.props.root} highlightNode={this.props.highlightNode} updateInfo={updateInfo} />
-
-            <DeleteNodeFromBST updateRoot={updateRoot} root={this.props.root} highlightNode={this.props.highlightNode} updateInfo={this.props.updateInfo} canvas={this.props.canvas} />
-
-            <Text />
-
-            <GenerateTrees updateRoot={updateRoot} updateNodes={updateNodes} />
-        </>)
-    }
-}
 
 class GenerateTrees extends Component {
     constructor() {
@@ -196,7 +252,7 @@ class Text extends Component {
             <TreeContext.Consumer>
                 {
                     ({ info }) => (
-                        <p>{info}</p>
+                        <span>{info}</span>
                     )
                 }
             </TreeContext.Consumer>

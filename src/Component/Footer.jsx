@@ -15,7 +15,7 @@ export default class Footer extends Component {
                                 <div className={`${css['item']}`}>
                                     <h3>Services</h3>
                                     <ul>
-                                        <li><a href="#">E-learning</a></li>
+                                        <li><a href="https://cal-draw.vercel.app/" target="_blank">E-learning</a></li>
                                         <li><a href="#">Best-tutorial On youtube</a></li>
                                     </ul>
                                 </div>

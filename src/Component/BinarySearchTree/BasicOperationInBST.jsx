@@ -37,29 +37,39 @@ class SearchInBST extends Component {
     searchingInBST = async (e) => {
         e.preventDefault()
         const { searchValue } = this.state
-        const { root, highlightNode, updateInfo } = this.props
+        const { root, highlightNode, updateInfo, consoleRef, speed, isPlaying } = this.props
+        if (consoleRef.current) {
+            consoleRef.current.innerHTML = '';
+        }
+        let delay = 1000 / (speed);
         updateInfo(`Root is ${root.value}`)
-
+        const togglePause = (isPlaying) => {
+            console.log(isPlaying)
+            return new Promise((resolve) => {
+                if (isPlaying === 'play') resolve();
+            })
+        }
         const startSearching = async (root, searchValue) => {
+            await togglePause(isPlaying);
             if (!root) {
                 return;
             }
             if (searchValue === root.value) {
-                await highlightNode(root, false, '#FABC3F', 'black', 2000)
+                await highlightNode(root, false, '#FABC3F', 'black', delay)
                 updateInfo(`${searchValue} has found.`)
-                await highlightNode(root, true, 'white', 'black', 2000)
+                await highlightNode(root, true, 'white', 'black', delay)
                 return true;
             }
             else if (root.value > searchValue) {
-                await highlightNode(root, false, 'white', '#821131', 2000)
+                await highlightNode(root, false, 'white', '#821131', delay)
                 updateInfo(`${root.value} is Greater than ${searchValue}, so searching on Left.`)
-                await highlightNode(root, true, 'white', 'black', 2000)
+                await highlightNode(root, true, 'white', 'black', delay)
                 return await startSearching(root.left, searchValue)
             }
             else {
-                await highlightNode(root, false, 'white', '#821131', 2000)
+                await highlightNode(root, false, 'white', '#821131', delay)
                 updateInfo(`${root.value} is Smaller than ${searchValue}, so searching on Right.`)
-                await highlightNode(root, true, 'white', 'black', 2000)
+                await highlightNode(root, true, 'white', 'black', delay)
                 return await startSearching(root.right, searchValue)
             }
         }
@@ -69,16 +79,18 @@ class SearchInBST extends Component {
     }
     render() {
         return (<>
-            <form className='my-2' onSubmit={this.searchingInBST}>
-                <label htmlFor="searchInBST">Search In BSt</label>
-                <div className="input-group w-25" >
-                    <input name='searchValue' type="number" className="form-control w-25" id="searchInBST" aria-describedby="emailHelp" placeholder="Enter Vertex"
-                        onChange={(e) => {
-                            this.setState({ searchValue: Number.parseInt(e.target.value) })
-                        }} />
-                    <button type="submit" className="btn btn-primary">Go</button>
-                </div>
-            </form>
+            <div className="searchInBST">
+                <form className='my-2' onSubmit={this.searchingInBST}>
+                    <label htmlFor="searchInBST">Search In BSt</label>
+                    <div className="input-group w-25" >
+                        <input name='searchValue' type="number" className="form-control w-25" id="searchInBST" aria-describedby="emailHelp" placeholder="Enter Vertex"
+                            onChange={(e) => {
+                                this.setState({ searchValue: Number.parseInt(e.target.value) })
+                            }} />
+                        <button type="submit" className="btn btn-primary">Go</button>
+                    </div>
+                </form>
+            </div>
         </>)
     }
 
@@ -115,28 +127,31 @@ class DeleteNodeFromBST extends Component {
     DeleteingInBST = async (e) => {
         e.preventDefault()
         const { deleteValue } = this.state
-        const { root, highlightNode, updateInfo, updateRoot } = this.props
+        const { root, highlightNode, updateInfo, updateRoot, consoleRef, speed } = this.props
+        if (consoleRef.current) {
+            consoleRef.current.innerHTML = '';
+        }
         updateInfo(`Root is ${root.value}`)
-
+        let delay = 1000 / (speed);
         const startDeleting = async (root, deleteValue) => {
             if (!root) {
                 return;
             }
             if (deleteValue === root.value) {
-                await highlightNode(root, false, '#FABC3F', 'black', 2000)
-                await highlightNode(root, true, 'white', 'black', 2000)
+                await highlightNode(root, false, '#FABC3F', 'black', delay)
+                await highlightNode(root, true, 'white', 'black', delay)
                 updateInfo(`${deleteValue} has found.`)
                 return await this.DeleteNode(root)
             }
             else if (root.value > deleteValue) {
-                await highlightNode(root, false, 'white', '#821131', 2000)
-                await highlightNode(root, true, 'white', 'black', 2000)
+                await highlightNode(root, false, 'white', '#821131', delay)
+                await highlightNode(root, true, 'white', 'black', delay)
                 updateInfo(`${root.value} is Greater than ${deleteValue}, so searching on Left.`)
                 root.left = await startDeleting(root.left, deleteValue)
             }
             else {
-                await highlightNode(root, false, 'white', '#821131', 2000)
-                await highlightNode(root, true, 'white', 'black', 2000)
+                await highlightNode(root, false, 'white', '#821131', delay)
+                await highlightNode(root, true, 'white', 'black', delay)
                 updateInfo(`${root.value} is Smaller than ${deleteValue}, so searching on Right.`)
                 root.right = await startDeleting(root.right, deleteValue)
             }
@@ -178,16 +193,17 @@ class InsertInBst extends Component {
 
     insertInBst = async (e) => {
         e.preventDefault()
-        let { nodes, root, updateNodes, updateRoot, canvas } = this.props
+        let { nodes, root, updateNodes, updateRoot, canvas, consoleRef } = this.props
+        if (consoleRef.current) {
+            consoleRef.current.innerHTML = '';
+        }
         const { userInput } = this.state
         let array = userInput.split(',').map((elem) => { return Number.parseInt(elem.trim()) })
 
         array = array.filter((n) => { return !nodes.includes(n) })
-        array = removeDuplicate(array)
-        console.log(array)
-
-        let updatedNodes = [...nodes, ...array]
-        let r = root
+        array = removeDuplicate(array);
+        let updatedNodes = [...nodes, ...array];
+        let r = root;
         for (const i of array) {
             r = await this.insertNodeInBst(r, i)
             if (canvas.current) {
@@ -203,7 +219,8 @@ class InsertInBst extends Component {
     }
 
     insertNodeInBst = async (root, key) => {
-        const { updateInfo, highlightNode } = this.props
+        const { updateInfo, highlightNode, speed = 1000 } = this.props
+        let delay = 1000 / (speed);
         if (!root) {
             return new BinaryTreeNode(key);
         }
@@ -213,12 +230,12 @@ class InsertInBst extends Component {
         if (root && key < root.value) {
             if (root && !root.left) {
                 // default {bgColor: 'white', borderColor: 'black'}
-                await highlightNode(root, true, '#FABC3F', 'black', 100)
-                await highlightNode(root, true, 'white', 'black', 100)
+                await highlightNode(root, true, '#FABC3F', 'red', delay)
+                await highlightNode(root, true, 'white', 'black', delay)
                 updateInfo(`${key} will insert on left of ${root.value}.`)
             } else {
-                await highlightNode(root, false, 'white', '#821131', 100);
-                await highlightNode(root, true, 'white', 'black', 100);
+                await highlightNode(root, false, 'white', 'red', delay);
+                await highlightNode(root, true, 'white', 'black', delay);
                 updateInfo(`vertex ${root.value} is greater than ${key}, going on left side`)
             }
             const left = await this.insertNodeInBst(root.left, key)
@@ -226,12 +243,12 @@ class InsertInBst extends Component {
         }
         else if (root && key > root.value) {
             if (root && !root.right) {
-                await highlightNode(root, true, '#FABC3F', 'black', 100)
-                await highlightNode(root, true, 'white', 'black', 100)
+                await highlightNode(root, true, '#FABC3F', 'red', delay)
+                await highlightNode(root, true, 'white', 'black', delay)
                 updateInfo(`${key} will insert on right of ${root.value}.`)
             } else {
-                await highlightNode(root, false, 'white', '#821131', 100);
-                await highlightNode(root, true, 'white', 'black', 100);
+                await highlightNode(root, false, 'white', 'red', delay);
+                await highlightNode(root, true, 'white', 'black', delay);
                 updateInfo(`vertex ${root.value} is smaller than ${key}, going on right side`)
             }
             const right = await this.insertNodeInBst(root.right, key)
@@ -260,16 +277,20 @@ class InsertInBst extends Component {
 
 class TraverseInBST extends Component {
     postorderTraversal = async (root) => {
-        const { updateInfo, highlightNode } = this.props
+        const { updateInfo, highlightNode, consoleRef, speed } = this.props
+        if (consoleRef.current) {
+            consoleRef.current.innerHTML = '';
+        }
+
         updateInfo(`root is ${root.value}`)
         let sequence = 'Preorder Sequence:  ';
-
+        let delay = 1000 / (speed);
         const startPostorderTraversal = async (node) => {
             if (!node) {
                 return
             }
-            await highlightNode(node, false, 'white', '#821131', 2000)
-            await highlightNode(node, true, 'white', 'black', 1000)
+            await highlightNode(node, false, 'white', 'red', delay * 2)
+            await highlightNode(node, true, 'white', 'black', delay)
             let msg = node.left ? `Left node of vertex ${node.value} is ${node.left.value}, So Recursive to Left child.` : `Left node of vertex ${node.value} is empty, So return Empty.`
             updateInfo(msg)
             await startPostorderTraversal(node.left)
@@ -282,28 +303,31 @@ class TraverseInBST extends Component {
             msg = `visited vertex ${node.value} ${sequence}`
             updateInfo(msg)
             console.log(node.value)
-            await highlightNode(node, true, '#FABC3F', 'black', 1000)
-            await highlightNode(node, true, 'white', 'black', 2000)
+            await highlightNode(node, true, '#FABC3F', 'red', delay)
+            await highlightNode(node, true, 'white', 'black', delay * 2)
         }
         await startPostorderTraversal(root)
     }
     preorderTraversal = async (root) => {
-        const { updateInfo, highlightNode } = this.props
+        const { updateInfo, highlightNode, consoleRef, speed } = this.props
+        if (consoleRef.current) {
+            consoleRef.current.innerHTML = '';
+        }
         updateInfo(`root is ${root.value}`)
         let sequence = 'Preorder Sequence:';
-
+        let delay = 1000 / (speed);
         const startPreorderTraversal = async (node) => {
             if (!node) {
                 return
             }
-            await highlightNode(node, false, 'white', '#821131', 2000)
-            await highlightNode(node, true, '#FABC3F', 'black', 1000)
+            await highlightNode(node, false, 'white', 'red', delay * 2)
+            await highlightNode(node, true, '#FABC3F', 'black', delay)
             sequence += ` ${node.value} `
             let msg = `visited vertex ${node.value} ${sequence}`
             updateInfo(msg)
             console.log(node.value)
 
-            await highlightNode(node, true, 'white', 'black', 1000)
+            await highlightNode(node, true, 'white', 'black', delay)
             msg = node.left ? `Left node of vertex ${node.value} is ${node.left.value}, So Recursive to Left child.` : `Left node of vertex ${node.value} is empty, So return Empty.`
             updateInfo(msg)
             await startPreorderTraversal(node.left)
@@ -315,17 +339,20 @@ class TraverseInBST extends Component {
         await startPreorderTraversal(root)
     }
     inorderTraversal = async (root) => {
-        const { updateInfo, highlightNode } = this.props
+        const { updateInfo, highlightNode, consoleRef, speed } = this.props
+        if (consoleRef.current) {
+            consoleRef.current.innerHTML = '';
+        }
         updateInfo(`root is ${root.value}`)
         let sequence = 'Inorder Sequence:';
-
+        let delay = 1000 / (speed);
         const startInorderTraversal = async (node) => {
             if (!node) {
                 return
             }
             // left
-            await highlightNode(node, false, 'white', '#821131', 2000)
-            await highlightNode(node, true, 'white', 'black', 1000)
+            await highlightNode(node, false, 'white', 'red', delay * 2)
+            await highlightNode(node, true, 'white', 'black', delay)
             let msg = node.left ? `Left node of vertex ${node.value} is ${node.left.value}, So Recursive to Left child.` : `Left node of vertex ${node.value} is empty, So return Empty.`
             updateInfo(msg)
             await startInorderTraversal(node.left)
@@ -334,8 +361,8 @@ class TraverseInBST extends Component {
             msg = `visited vertex ${node.value} ${sequence}`
             updateInfo(msg)
             // right
-            await highlightNode(node, true, '#FABC3F', '#821131', 2000)
-            await highlightNode(node, true, 'white', 'black', 1000)
+            await highlightNode(node, true, '#FABC3F', 'red', delay * 2)
+            await highlightNode(node, true, 'white', 'black', delay)
             msg = node.right ? `Right node of vertex ${node.value} is ${node.right.value}, So Recursive to Right child.` : `Right node of vertex ${node.value} is empty, So return Empty.`
             updateInfo(msg)
             await startInorderTraversal(node.right)

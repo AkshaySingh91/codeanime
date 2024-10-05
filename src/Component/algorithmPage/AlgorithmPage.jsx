@@ -17,7 +17,6 @@ class AlgorithmPage extends Component {
                 this.description = algoInfo.description;
                 this.name = algoInfo.name;
             }
-
         });
     }
 

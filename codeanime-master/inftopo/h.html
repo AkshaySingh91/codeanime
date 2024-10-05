@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infix to Postfix Visualizer</title>
+    <link rel="stylesheet" href="css.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h3>Infix to Postfix Expression Visualizer
+            </h3>
+            <hr>
+            <div class="options">
+                <input type="text" id="infixExpression" placeholder="Enter infix expression">
+                <button onclick="startVisualization()">Run</button>
+                <button onclick="refreshPage()">Refresh</button>
+                <button onclick="undo()">Undo</button>
+                <button onclick="pause()">Pause</button>
+                <label for="speedControl">Speed:</label>
+                <input type="range" id="speedControl" min="1" max="10" value="5">
+        
+            </div>
+        </div>
+        
+
+
+        <div class="visualization">
+            <div class="column" id="symbolScanned">
+                <h2>Symbol Scanned</h2>
+                <div class="content"></div>
+            </div>
+            <div class="column" id="stack">
+                <h2>Stack</h2>
+                <div class="content"></div>
+            </div>
+            <div class="column" id="expression">
+                <h2>Expression</h2>
+                <div class="content"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js.js"></script>
+</body>
+
+</html>

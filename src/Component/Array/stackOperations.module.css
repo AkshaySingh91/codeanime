@@ -1,0 +1,55 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+}
+
+.header {
+    margin-bottom: 20px;
+}
+
+.stackOperations input[type="text"] {
+    padding: 10px;
+    font-size: 16px;
+    width: 300px;
+    margin-right: 10px;
+}
+
+.buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.buttons button {
+    padding: 10px 15px;
+    font-size: 16px;
+    background-color: #cccaca;
+    color: white;
+    border: none;
+    cursor: pointer;
+    margin: 0.5rem;
+}
+
+.buttons button:hover {
+    background-color: #9a9999;
+}
+
+#mainContent {
+    margin-top: 20px;
+    width: 100%;
+    height: 93%;
+}
+
+#mainContent canvas {
+    border: 1px solid #ccc;
+    background-color: #f9f9f9;
+    width: 100%;
+    height: 100%;
+}

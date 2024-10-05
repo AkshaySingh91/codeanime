@@ -3,45 +3,47 @@ import { BinaryTreePreview } from '../Component/CardPreview/index.jsx'
 export const algorithmCard = [
     {
         name: 'Binary Tree',
-        description: 'Lorem ipsum dolor sit amet consectetur, adipisicing elit. Voluptas, provident. Amet excepturi et beatae illum tempora maxime, tenetur adipisci possimus minima ad quia a aliquid, animi sunt quae cupiditate iusto?',
+        description: 'A Binary Tree Data Structure is a hierarchical data structure in which each node has at most two children, referred to as the left child and the right child. It is commonly used in computer science for efficient storage and retrieval of data, with various operations such as insertion, deletion, and traversal.',
         previewSvg: (classes) => {
             return (<BinaryTreePreview classes={classes} />)
         },
-        path: 'BinaryTree'
+        path: 'BinaryTree',
+        imagePath: '../Assets/images/arrayPreview.png'
     },
     {
-        name: 'Heap',
-        description: 'Lorem ipsum dolor sit amet consectetur, adipisicing elit. Voluptas, provident. Amet excepturi et beatae illum tempora maxime, tenetur adipisci possimus minima ad quia a aliquid, animi sunt quae cupiditate iusto?',
+        name: 'Array',
+        description: 'Array is a linear data structure where all elements are arranged sequentially. It is a collection of elements of same data type stored at contiguous memory locations. ',
         previewSvg: (classes) => {
             return (<BinaryTreePreview classes={classes} />)
         },
-        path: 'HeapBinaryTree'
+        path: 'Array',
+        imagePath: '../Assets/images/arrayPreview.png'
     },
     {
         name: 'Linked list',
-        description: 'Lorem ipsum dolor sit amet consectetur, adipisicing elit. Voluptas, provident. Amet excepturi et beatae illum tempora maxime, tenetur adipisci possimus minima ad quia a aliquid, animi sunt quae cupiditate iusto?',
+        description: 'A linked list is a fundamental data structure in computer science. It mainly allows efficient insertion and deletion operations compared to arrays. Like arrays, it is also used to implement other data structures like stack, queue and deque.',
         previewSvg: (classes) => {
             return (<BinaryTreePreview classes={classes} />)
         },
-        path: 'LinkedList'
+        path: 'LinkedList',
+        imagePath: '../Assets/images/arrayPreview.png'
     },
 ]
 
 export const algorithmName = [
     {
-        dataStructure: 'Backtracking',
-        algorithms: ['Hamiltonian Cycles', 'Knight\'s Tour Problem', 'N-Queens Problem', 'Sum of Subsets']
+        dataStructure: 'Binary Tree',
+        algorithms: ['Binary Search Tree', 'Heap'],
+        path: 'BinaryTree'
     },
     {
-        dataStructure: 'Branch and Bound',
-        algorithms: ['Binary Search', 'Binary Search Tree', 'Depth-Limited Search', 'Topological Sort']
+        dataStructure: 'Array',
+        algorithms: ['Infix to Postfix', 'Postfix evalution', 'Well formedness', 'queue', 'stack', 'sort', 'Prefix evalution'],
+        path: 'Array'
     },
     {
-        dataStructure: 'Brute Force',
-        algorithms: ['Subset Sum']
+        dataStructure: 'Linked list',
+        algorithms: ['Operation-in-Linkedlist'],
+        path: 'LinkedList'
     },
-    {
-        dataStructure: 'Divide and Conquer',
-        algorithms: ['Merge Sort', 'Quick Sort']
-    }
 ]

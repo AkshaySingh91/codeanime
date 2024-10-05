@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prefix Expression Visualizer</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div class="container">
+        <div id="heading">
+            <h4>Prefix Expression Visualizer</h4>
+            <hr id="hr">
+        </div>
+        <div class="controllers">
+            <input type="text" id="prefixInput" placeholder="Enter prefix expression" />
+            <button onclick="runVisualization()">Run</button>
+            <button onclick="pauseVisualization()">Pause/Resume</button>
+            <button onclick="undo()">Undo</button>
+            <button onclick="redo()">Redo</button>
+            <button onclick="clearVisualization()">Clear</button>
+
+            <label for="speedControl">Speed:</label>
+            <input type="range" id="speedControl" min="1000" max="4000" value="1000" />
+        </div>
+        <div class="visualization">
+            <div id="expression" class="section">
+                <div class="content"></div>
+                <h6>Expression</h6>
+            </div>
+
+            <div id="stack">
+                <div class="content">
+                  
+
+                </div>
+
+        </div>
+
+        <div id="operation" class="section">
+            <!-- <div id="operand1"></div>
+            <div id="operator"></div>
+            <div id="operand2"></div>
+            <h2>=</h2> -->
+            <div id="result"></div>
+            <h6>Operation</h6>
+        </div>
+    </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" integrity="sha512-7eHRwcbYkK4d9g/6tD/mhkf++eoTHwpNM9woBxtPUBWm67zeAfFC+HrdoE2GanKeocly/VxeLvIqwvCdk7qScg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

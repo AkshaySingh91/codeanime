@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CodeAnime Mini Project</title>
+    <link rel="stylesheet" href="st.css">
+</head>
+<body>
+    <header>
+        <h1>CodeAnime Mini Project</h1>
+    </header>
+    <main>
+        <section id="admin">
+            <h2>Admin Gateway</h2>
+            <button onclick="showAdminOptions()">Manage Visualizations</button>
+            <div id="adminOptions" class="hidden">
+                <button onclick="addVisualization()">Add New Visualization</button>
+                <button onclick="changeAnimation()">Change Animation</button>
+            </div>
+        </section>
+        <section id="user">
+            <h2>User Gateway</h2>
+            <button onclick="showVisualizations()">View Visualizations</button>
+            <div id="visualizations" class="hidden">
+                <button onclick="inputData()">Input & Manipulate</button>
+                <button onclick="learnMore()">Learn More</button>
+            </div>
+        </section>
+    </main>
+    <script src="j.js"></script>
+</body>
+</html>
