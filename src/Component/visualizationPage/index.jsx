@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { Link } from 'react-router-dom';
-import './index.css';
+import css from './index.module.css';
 import { algorithmName } from '../../Datastore/algoritmInfo';
 import BinarySearchTree from '../BinarySearchTree/BinarySearchTree';
 import HeapBinaryTree from '../HeapBinaryTree/HeapBinaryTree';
@@ -9,27 +9,17 @@ import InfixToPostfix from '../Array/infixToPostfix';
 import PostfixEvaluation from '../Array/postfixEvalution';
 import StackOperations from '../Array/stackOperations';
 import WellFormedParentheses from '../Array/WellFormedParentheses';
-import QueueOperations from '../Array/queueOperations';
- 
+
 const AlgorithmVisualization = (props) => {
-    const { dataStructure, algoName } = useParams();
-    const navigate = useNavigate();
-    const [selectedAlgorithm, setSelectedAlgorithm] = useState(algoName || '');
+    const { algoName } = useParams();
+    const [selectedAlgorithm, setSelectedAlgorithm] = useState(algoName);
     const [speed, setSpeed] = useState(1);
     const [isPlaying, setIsPlaying] = useState('play');
     const [toggleCollapse, setToggleCollapse] = useState({});
 
     useEffect(() => {
-        if (props.defaultAlgorithm) {
-            let firstAlgorithm = algorithmName.find(algo => algo.path === dataStructure)?.algorithms[0];
-            if (firstAlgorithm) {
-                const algoPath = firstAlgorithm.replaceAll(' ', '-');
-                navigate(`/${dataStructure}/${algoPath}/algorithm`);
-            }
-        } else {
-            setSelectedAlgorithm(algoName);
-        }
-    }, [dataStructure, algoName, navigate]);
+        setSelectedAlgorithm(algoName);
+    }, [algoName]);
 
     const handleSpeedChange = (e) => {
         setSpeed(Number.parseFloat(e.target.value));
@@ -78,22 +68,22 @@ const AlgorithmVisualization = (props) => {
     };
 
     return (
-        <div className="algorithm-visualization-page">
-            <div className="sidebar">
-                <div className="data-structure-list">
+        <div className={css[`${"algorithm-visualization-page"}`]}>
+            <div className={css[`${"sidebar"}`]}>
+                <div className={css[`${"data-structure-list"}`]}>
                     {algorithmName.map(({ dataStructure, algorithms, path }, idx) => (
-                        <div key={idx} className="algorithm-category">
+                        <div key={idx} className={css[`${"algorithm-category"}`]}>
                             <button
                                 type="button"
-                                className={`${''} collapsible`}
+                                className={css['collapsible']}
                                 onClick={() => handleToggleCollapse(dataStructure)}
                             >
                                 {dataStructure}
-                                <i className="arrow right"></i>
+                                <i className={css[`${"arrow"}`] + css["right"]}></i>
                             </button>
                             {toggleCollapse[dataStructure] && (
-                                <div className="content">
-                                    <ul className="algorithm-list">
+                                <div className={css[`${"content"}`]}>
+                                    <ul className={css[`${"algorithm-list"}`]}>
                                         {algorithms.map((algo, index) => {
                                             let algoPath = algo.replaceAll(' ', '-');
                                             return (
@@ -109,14 +99,14 @@ const AlgorithmVisualization = (props) => {
                     ))}
                 </div>
             </div>
-            <main className="main-content">
-                <div className="controller-bar">
-                    <div className="player">
-                        <button className={isPlaying} onClick={handlePlayBtn}></button>
+            <main className={css[`${"main-content"}`]}>
+                <div className={css[`${"controller-bar"}`]}>
+                    <div className={css[`${"player"}`]}>
+                        <button className={css[`${isPlaying}`]} onClick={handlePlayBtn}></button>
                         <span>{isPlaying}</span>
                     </div>
 
-                    <div className="speedController">
+                    <div className={css[`${"speedController"}`]}>
                         <label htmlFor="speed">Speed:</label>
                         <input
                             type="range"

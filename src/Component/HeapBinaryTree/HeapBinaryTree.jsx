@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import * as  d3 from "d3"
 import { Heapsort, insertByLevelrorder, InsertNode, DeleteNode, UpdateNode, ChangeMode, CreateHeap } from './BasicOperationInHeap'
+import css from '../visualizationPage/index.module.css'
 
 export class HeapBinaryTree extends Component {
     constructor() {
@@ -8,12 +9,13 @@ export class HeapBinaryTree extends Component {
         this.state = {
             root: null,
             flattenTree: [{}],
-            info: '',
+            info: 'hello',
             treeType: 'min',
             mode: 'Binary Tree Mode',
             width: 300,
             height: 300,
-            activeTab: 'Code',
+            featureTab: 'Create',
+            activeTab: 'Console',
         }
         this.svgRef = React.createRef();
         this.consoleRef = React.createRef();
@@ -575,200 +577,222 @@ export class HeapBinaryTree extends Component {
     }
     handleTabClick = (e) => {
         if (e.target.tagName === 'BUTTON') {
+            this.setState({ featureTab: e.target.value })
+        }
+    }
+    handleRightTabClick = (e) => {
+        if (e.target.tagName === 'BUTTON') {
             this.setState({ activeTab: e.target.value })
         }
     }
     render() {
 
-        const { activeTab, root, flattenTree, info, treeType, mode, width, height } = this.state
+        const { featureTab, activeTab, root, flattenTree, info, treeType, mode, width, height } = this.state
         return (<>
-            <div className="row">
-                <div className="mid-content">
-                    <div className="visualization-container">
-                        <div className="svg-area">
+            <div className={css["row"]}>
+                <div className={css["mid-content"]}>
+                    <div className={css["visualization-container"]}>
+                        <div className={css["svg-area"]}>
                             <svg ref={this.svgRef}></svg>
                         </div>
                     </div>
                     {/* step Display */}
-                    <div className="text-container">
-                        <div className="console">
-                            <span className='header'>Console</span>
-                            <div ref={this.consoleRef} className="step-line">
+                    <div className={css["feature-container"]}>
+                        <div className={css["tab-container"]} onClick={this.handleTabClick}>
+                            <div className={`${css['Create-tab']} ${css['tab']} ${css[`${featureTab === 'Create' ? 'active' : ''}`]}`}>
+                                <button value={'Create'} >Create</button>
                             </div>
+                            <div className={`${css['Insert-tab']} ${css['tab']} ${css[`${featureTab === 'Insert' ? 'active' : ''}`]}`}>
+                                <button value={'Insert'} >Insert</button>
+                            </div>
+                            <div className={`${css['Delete-tab']} ${css['tab']} ${css[`${featureTab === 'Delete' ? 'active' : ''}`]}`}>
+                                <button value={'Delete'} >Delete</button>
+                            </div>
+                            <div className={`${css['ChangeMode-tab']} ${css['tab']} ${css[`${featureTab === 'ChangeMode' ? 'active' : ''}`]}`}>
+                                <button value={'ChangeMode'} >ChangeMode</button>
+                            </div>
+                            <div className={`${css['Heapsort-tab']} ${css['tab']} ${css[`${featureTab === 'Heapsort' ? 'active' : ''}`]}`}>
+                                <button value={'Heapsort'} >Heapsort</button>
+                            </div>
+                        </div>
+                        <div className={css["selected-tab-content"]}>
+                            {featureTab === 'Code' &&
+                                <div className="code-container active">
+                                    <code>BST code</code>
+                                </div>
+                            }
+                            {featureTab === 'Create' &&
+                                <div className={css["create"]}>
+                                    <CreateHeap
+                                        findNode={this.findNode}
+                                        animateSwap={this.animateSwap}
+                                        drawArray={this.drawArray}
+                                        drawTree={this.drawTree}
+                                        swapNodeFromBottomUp={this.swapNodeFromBottomUp}
+                                        swapNodeFromTopDown={this.swapNodeFromTopDown}
+                                        CreateBottomUp={this.CreateBottomUp}
+                                        CreateTopDown={this.CreateTopDown}
+                                        root={root}
+                                        flattenTree={flattenTree}
+                                        updateRoot={this.updateRoot}
+                                        updateFlattenTree={this.updateFlattenTree}
+                                        svgRef={this.svgRef}
+                                        updateInfo={this.updateInfo}
+                                        treeType={treeType}
+                                        mode={mode}
+                                        updateMode={this.updateMode}
+                                        width={width}
+                                        height={height}
+                                        consoleRef={this.consoleRef}
+                                    />
+                                </div>
+                            }
+                            {featureTab === 'Insert' &&
+                                <div className={css["insert"]}>
+                                    <InsertNode findNode={this.findNode}
+                                        animateSwap={this.animateSwap}
+                                        drawArray={this.drawArray}
+                                        drawTree={this.drawTree}
+                                        swapNodeFromBottomUp={this.swapNodeFromBottomUp}
+                                        swapNodeFromTopDown={this.swapNodeFromTopDown}
+                                        CreateBottomUp={this.CreateBottomUp}
+                                        CreateTopDown={this.CreateTopDown}
+                                        root={root}
+                                        flattenTree={flattenTree}
+                                        updateRoot={this.updateRoot}
+                                        updateFlattenTree={this.updateFlattenTree}
+                                        svgRef={this.svgRef}
+                                        updateInfo={this.updateInfo}
+                                        treeType={treeType}
+                                        mode={mode}
+                                        updateMode={this.updateMode}
+                                        width={width}
+                                        height={height}
+                                        consoleRef={this.consoleRef} />
+                                </div>
+                            }
+                            {featureTab === 'Delete' &&
+                                <div className={css["Delete"]}>
+                                    <DeleteNode findNode={this.findNode}
+                                        animateSwap={this.animateSwap}
+                                        drawArray={this.drawArray}
+                                        drawTree={this.drawTree}
+                                        swapNodeFromBottomUp={this.swapNodeFromBottomUp}
+                                        swapNodeFromTopDown={this.swapNodeFromTopDown}
+                                        CreateBottomUp={this.CreateBottomUp}
+                                        CreateTopDown={this.CreateTopDown}
+                                        root={root}
+                                        flattenTree={flattenTree}
+                                        updateRoot={this.updateRoot}
+                                        updateFlattenTree={this.updateFlattenTree}
+                                        svgRef={this.svgRef}
+                                        updateInfo={this.updateInfo}
+                                        treeType={treeType}
+                                        mode={mode}
+                                        updateMode={this.updateMode}
+                                        width={width}
+                                        height={height}
+                                        consoleRef={this.consoleRef} />
+                                </div>
+                            }
+                            {featureTab === 'ChangeMode' &&
+                                <div className={css["ChangeMode"]}>
+                                    <ChangeMode findNode={this.findNode}
+                                        animateSwap={this.animateSwap}
+                                        drawArray={this.drawArray}
+                                        drawTree={this.drawTree}
+                                        swapNodeFromBottomUp={this.swapNodeFromBottomUp}
+                                        swapNodeFromTopDown={this.swapNodeFromTopDown}
+                                        CreateBottomUp={this.CreateBottomUp}
+                                        CreateTopDown={this.CreateTopDown}
+                                        root={root}
+                                        flattenTree={flattenTree}
+                                        updateRoot={this.updateRoot}
+                                        updateFlattenTree={this.updateFlattenTree}
+                                        svgRef={this.svgRef}
+                                        updateInfo={this.updateInfo}
+                                        treeType={treeType}
+                                        mode={mode}
+                                        updateMode={this.updateMode}
+                                        width={width}
+                                        height={height}
+                                        consoleRef={this.consoleRef} />
+                                </div>
+                            }
+                            {featureTab === 'Heapsort' &&
+                                <div className={css["Heapsort"]}>
+                                    <Heapsort findNode={this.findNode}
+                                        animateSwap={this.animateSwap}
+                                        drawArray={this.drawArray}
+                                        drawTree={this.drawTree}
+                                        swapNodeFromBottomUp={this.swapNodeFromBottomUp}
+                                        swapNodeFromTopDown={this.swapNodeFromTopDown}
+                                        CreateBottomUp={this.CreateBottomUp}
+                                        CreateTopDown={this.CreateTopDown}
+                                        root={root}
+                                        flattenTree={flattenTree}
+                                        updateRoot={this.updateRoot}
+                                        updateFlattenTree={this.updateFlattenTree}
+                                        svgRef={this.svgRef}
+                                        updateInfo={this.updateInfo}
+                                        treeType={treeType}
+                                        mode={mode}
+                                        updateMode={this.updateMode}
+                                        width={width}
+                                        height={height}
+                                        consoleRef={this.consoleRef} />
+                                </div>
+                            }
+                            {featureTab === 'UpdateNode' &&
+                                <div className={css["UpdateNode"]}>
+                                    <UpdateNode findNode={this.findNode}
+                                        animateSwap={this.animateSwap}
+                                        drawArray={this.drawArray}
+                                        drawTree={this.drawTree}
+                                        swapNodeFromBottomUp={this.swapNodeFromBottomUp}
+                                        swapNodeFromTopDown={this.swapNodeFromTopDown}
+                                        CreateBottomUp={this.CreateBottomUp}
+                                        CreateTopDown={this.CreateTopDown}
+                                        root={root}
+                                        flattenTree={flattenTree}
+                                        updateRoot={this.updateRoot}
+                                        updateFlattenTree={this.updateFlattenTree}
+                                        svgRef={this.svgRef}
+                                        updateInfo={this.updateInfo}
+                                        treeType={treeType}
+                                        mode={mode}
+                                        updateMode={this.updateMode}
+                                        width={width}
+                                        height={height}
+                                        consoleRef={this.consoleRef} />
+                                </div>
+                            }
                         </div>
                     </div>
                 </div>
-                <div className="right-panel">
-                    <div className="tab-container" onClick={this.handleTabClick}>
-                        <div className={`code-tab  tab ${activeTab === 'Code' ? 'active' : ''}`}>
-                            <button value={'Code'}>code</button>
+                <div className={css[`${"text-container"}`]}>
+                    <div className={css[`${"right-tab-container"}`]} onClick={this.handleRightTabClick}>
+                        <div className={`${css['Console-tab']} ${css['tab']} ${css[`${activeTab === 'Console' ? 'active' : ''}`]}`}>
+                            <button value={'Console'} >Console</button>
                         </div>
-                        <div className={`Create-tab tab ${activeTab === 'Create' ? 'active' : ''}`}>
-                            <button value={'Create'} >Create</button>
-                        </div>
-                        <div className={`Insert-tab tab ${activeTab === 'Insert' ? 'active' : ''}`}>
-                            <button value={'Insert'} >Insert</button>
-                        </div>
-                        <div className={`Delete-tab tab ${activeTab === 'Delete' ? 'active' : ''}`}>
-                            <button value={'Delete'} >Delete</button>
-                        </div>
-                        <div className={`ChangeMode-tab tab ${activeTab === 'ChangeMode' ? 'active' : ''}`}>
-                            <button value={'ChangeMode'} >ChangeMode</button>
-                        </div>
-                        <div className={`Heapsort-tab tab ${activeTab === 'Heapsort' ? 'active' : ''}`}>
-                            <button value={'Heapsort'} >Heapsort</button>
+                        <div className={`${css['Code-tab']} ${css['tab']} ${css[`${activeTab === 'Code' ? 'active' : ''}`]}`}>
+                            <button value={'Code'} >Code</button>
                         </div>
                     </div>
-                    <div className="selected-tab-content">
-                        {activeTab === 'Code' &&
-                            <div className="code-container active">
+
+                    <div className={css["right-selected-tab-content"]}>
+                        {
+                            activeTab === 'Code' &&
+                            <div className={`${css['code-container']} ${css['active']}`}>
                                 <code>BST code</code>
                             </div>
                         }
-                        {activeTab === 'Create' &&
-                            <div className="create">
-                                <CreateHeap
-                                    findNode={this.findNode}
-                                    animateSwap={this.animateSwap}
-                                    drawArray={this.drawArray}
-                                    drawTree={this.drawTree}
-                                    swapNodeFromBottomUp={this.swapNodeFromBottomUp}
-                                    swapNodeFromTopDown={this.swapNodeFromTopDown}
-                                    CreateBottomUp={this.CreateBottomUp}
-                                    CreateTopDown={this.CreateTopDown}
-                                    root={root}
-                                    flattenTree={flattenTree}
-                                    updateRoot={this.updateRoot}
-                                    updateFlattenTree={this.updateFlattenTree}
-                                    svgRef={this.svgRef}
-                                    updateInfo={this.updateInfo}
-                                    treeType={treeType}
-                                    mode={mode}
-                                    updateMode={this.updateMode}
-                                    width={width}
-                                    height={height}
-                                    consoleRef={this.consoleRef}
-                                />
-                            </div>
-                        }
-                        {activeTab === 'Insert' &&
-                            <div className="insert">
-                                <InsertNode findNode={this.findNode}
-                                    animateSwap={this.animateSwap}
-                                    drawArray={this.drawArray}
-                                    drawTree={this.drawTree}
-                                    swapNodeFromBottomUp={this.swapNodeFromBottomUp}
-                                    swapNodeFromTopDown={this.swapNodeFromTopDown}
-                                    CreateBottomUp={this.CreateBottomUp}
-                                    CreateTopDown={this.CreateTopDown}
-                                    root={root}
-                                    flattenTree={flattenTree}
-                                    updateRoot={this.updateRoot}
-                                    updateFlattenTree={this.updateFlattenTree}
-                                    svgRef={this.svgRef}
-                                    updateInfo={this.updateInfo}
-                                    treeType={treeType}
-                                    mode={mode}
-                                    updateMode={this.updateMode}
-                                    width={width}
-                                    height={height}
-                                    consoleRef={this.consoleRef} />
-                            </div>
-                        }
-                        {activeTab === 'Delete' &&
-                            <div className="Delete">
-                                <DeleteNode findNode={this.findNode}
-                                    animateSwap={this.animateSwap}
-                                    drawArray={this.drawArray}
-                                    drawTree={this.drawTree}
-                                    swapNodeFromBottomUp={this.swapNodeFromBottomUp}
-                                    swapNodeFromTopDown={this.swapNodeFromTopDown}
-                                    CreateBottomUp={this.CreateBottomUp}
-                                    CreateTopDown={this.CreateTopDown}
-                                    root={root}
-                                    flattenTree={flattenTree}
-                                    updateRoot={this.updateRoot}
-                                    updateFlattenTree={this.updateFlattenTree}
-                                    svgRef={this.svgRef}
-                                    updateInfo={this.updateInfo}
-                                    treeType={treeType}
-                                    mode={mode}
-                                    updateMode={this.updateMode}
-                                    width={width}
-                                    height={height}
-                                    consoleRef={this.consoleRef} />
-                            </div>
-                        }
-                        {activeTab === 'ChangeMode' &&
-                            <div className="ChangeMode">
-                                <ChangeMode findNode={this.findNode}
-                                    animateSwap={this.animateSwap}
-                                    drawArray={this.drawArray}
-                                    drawTree={this.drawTree}
-                                    swapNodeFromBottomUp={this.swapNodeFromBottomUp}
-                                    swapNodeFromTopDown={this.swapNodeFromTopDown}
-                                    CreateBottomUp={this.CreateBottomUp}
-                                    CreateTopDown={this.CreateTopDown}
-                                    root={root}
-                                    flattenTree={flattenTree}
-                                    updateRoot={this.updateRoot}
-                                    updateFlattenTree={this.updateFlattenTree}
-                                    svgRef={this.svgRef}
-                                    updateInfo={this.updateInfo}
-                                    treeType={treeType}
-                                    mode={mode}
-                                    updateMode={this.updateMode}
-                                    width={width}
-                                    height={height}
-                                    consoleRef={this.consoleRef} />
-                            </div>
-                        }
-                        {activeTab === 'Heapsort' &&
-                            <div className="Heapsort">
-                                <Heapsort findNode={this.findNode}
-                                    animateSwap={this.animateSwap}
-                                    drawArray={this.drawArray}
-                                    drawTree={this.drawTree}
-                                    swapNodeFromBottomUp={this.swapNodeFromBottomUp}
-                                    swapNodeFromTopDown={this.swapNodeFromTopDown}
-                                    CreateBottomUp={this.CreateBottomUp}
-                                    CreateTopDown={this.CreateTopDown}
-                                    root={root}
-                                    flattenTree={flattenTree}
-                                    updateRoot={this.updateRoot}
-                                    updateFlattenTree={this.updateFlattenTree}
-                                    svgRef={this.svgRef}
-                                    updateInfo={this.updateInfo}
-                                    treeType={treeType}
-                                    mode={mode}
-                                    updateMode={this.updateMode}
-                                    width={width}
-                                    height={height}
-                                    consoleRef={this.consoleRef} />
-                            </div>
-                        }
-                        {activeTab === 'UpdateNode' &&
-                            <div className="UpdateNode">
-                                <UpdateNode findNode={this.findNode}
-                                    animateSwap={this.animateSwap}
-                                    drawArray={this.drawArray}
-                                    drawTree={this.drawTree}
-                                    swapNodeFromBottomUp={this.swapNodeFromBottomUp}
-                                    swapNodeFromTopDown={this.swapNodeFromTopDown}
-                                    CreateBottomUp={this.CreateBottomUp}
-                                    CreateTopDown={this.CreateTopDown}
-                                    root={root}
-                                    flattenTree={flattenTree}
-                                    updateRoot={this.updateRoot}
-                                    updateFlattenTree={this.updateFlattenTree}
-                                    svgRef={this.svgRef}
-                                    updateInfo={this.updateInfo}
-                                    treeType={treeType}
-                                    mode={mode}
-                                    updateMode={this.updateMode}
-                                    width={width}
-                                    height={height}
-                                    consoleRef={this.consoleRef} />
+                        {
+                            activeTab === 'Console' &&
+                            <div className={css[`${"console"} ${css['active']}`]}>
+                                <div ref={this.consoleRef} className={css[`${"step-line"}`]}>
+                                    <Text />
+                                </div>
                             </div>
                         }
                     </div>
@@ -779,7 +803,7 @@ export class HeapBinaryTree extends Component {
 }
 
 
-class ShowInfo extends Component {
+class Text extends Component {
     render() {
         const { info } = this.props
         return (<>

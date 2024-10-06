@@ -1,5 +1,6 @@
 import React, { Component, createRef } from 'react';
-import css from './infixToPostfix.module.css'
+import css from './infixToPostfix.module.css';
+import css2 from '../visualizationPage/index.module.css';
 
 export class InfixToPostfix extends Component {
     constructor(props) {
@@ -9,8 +10,9 @@ export class InfixToPostfix extends Component {
             currentStep: -1,
             infixExpression: 'A + B * C + D',
             stepsArray: [],
-            activeTab: 'Code',
-            info: 'hello',
+            featureTab: 'Code',
+            activeTab: 'Console',
+            info: [],  // Changed to an array to store multiple messages
         };
         // Refs for the visual elements
         this.symbolScannedRef = createRef();
@@ -39,7 +41,7 @@ export class InfixToPostfix extends Component {
             this.stackRef.current.innerHTML = '';
             this.expressionRef.current.innerHTML = '';
         }
-        this.setState({ stepsArray: [] }, () => {
+        this.setState({ stepsArray: [], info: [] }, () => {  // Clear the info state here
             this.setState({ currentStep: -1 }, () => {
                 this.convertToPostfix(infixExpression);
             });
@@ -165,83 +167,108 @@ export class InfixToPostfix extends Component {
     };
     handleTabClick = (e) => {
         if (e.target.tagName === 'BUTTON') {
-            this.setState({ activeTab: e.target.value })
+            this.setState({ featureTab: e.target.value });
         }
-    }
+    };
+    handleRightTabClick = (e) => {
+        if (e.target.tagName === 'BUTTON') {
+            this.setState({ activeTab: e.target.value });
+        }
+    };
+
     updateInfo = (value) => {
-        this.setState({ info: value }, () => {
-            if (this.consoleRef.current) {
-                const span = document.createElement('span');
-                span.innerHTML = value;
-                this.consoleRef.current.append(span);
-            }
-        })
-    }
+        this.setState((prevState) => ({
+            info: [...prevState.info, value],  // Store all the messages in the array
+        }));
+    };
+
     render() {
-        const { infixExpression, activeTab } = this.state;
-        return (<>
-
-
-            <div className="row">
-                <div className="mid-content">
-                    <div className="visualization-container">
-                        <div className={css['visualization']}>
-                            <div className={css['column']} id="symbolScanned">
-                                <h2>Symbol Scanned</h2>
-                                <div className={css['content']} ref={this.symbolScannedRef}></div>
+        const { infixExpression, featureTab, activeTab, info } = this.state;
+        return (
+            <>
+                <div className={css2["row"]}>
+                    <div className={css2["mid-content"]}>
+                        <div className={css2["visualization-container"]}>
+                            <div className={css['visualization']}>
+                                <div className={css['column']} id="symbolScanned">
+                                    <h2>Symbol Scanned</h2>
+                                    <div className={css['content']} ref={this.symbolScannedRef}></div>
+                                </div>
+                                <div className={css['column']} id="stack">
+                                    <h2>Stack</h2>
+                                    <div className={css['content']} ref={this.stackRef}></div>
+                                </div>
+                                <div className={css['column']} id="expression">
+                                    <h2>Expression</h2>
+                                    <div className={css['content']} ref={this.expressionRef}></div>
+                                </div>
                             </div>
-                            <div className={css['column']} id="stack">
-                                <h2>Stack</h2>
-                                <div className={css['content']} ref={this.stackRef}></div>
+                        </div>
+                        <div className={css2["feature-container"]}>
+                            <div className={css2["tab-container"]} onClick={this.handleTabClick}>
+                                <div className={`${css2['code-tab']} ${css2['tab']} ${css2[featureTab === 'Code' ? 'active' : '']}`}>
+                                    <button value={'Code'}>Code</button>
+                                </div>
+                                <div className={`${css['Expression-tab']} ${css2['tab']} ${css2[`${featureTab === 'Expression' ? 'active' : ''}`]}`}>
+                                    <button value={'Expression'} >Expression</button>
+                                </div>
                             </div>
-                            <div className={css['column']} id="expression">
-                                <h2>Expression</h2>
-                                <div className={css['content']} ref={this.expressionRef}></div>
+                            <div className={css2["selected-tab-content"]}>
+                                {featureTab === 'Code' &&
+                                    <div className={`${css2['code-Expression']} ${css2['active']}`}>
+                                        <code>BST code</code>
+                                    </div>
+                                }
+                                {featureTab === 'Expression' &&
+                                    <div className={css["Expression"]}>
+                                        <form onSubmit={this.startVisualization}>
+                                            <input
+                                                type="text"
+                                                id="infixExpression"
+                                                value={infixExpression}
+                                                onChange={this.setExpression}
+                                                placeholder="Enter infix expression"
+                                            />
+                                            <button type="submit">Run</button>
+                                        </form>
+                                    </div>
+                                }
                             </div>
                         </div>
                     </div>
-                    {/* step Display */}
-                    <div className="text-container">
-                        <div className="console">
-                            <span className='header'>Console</span>
-                            <div ref={this.consoleRef} className="step-line">
+                    <div className={css2["text-container"]}>
+                        <div className={css2[`${"right-tab-container"}`]} onClick={this.handleRightTabClick}>
+                            <div className={`${css2['Console-tab']} ${css2['tab']} ${css2[`${activeTab === 'Console' ? 'active' : ''}`]}`}>
+                                <button value={'Console'} >Console</button>
                             </div>
+                            <div className={`${css2['Code-tab']} ${css2['tab']} ${css2[`${activeTab === 'Code' ? 'active' : ''}`]}`}>
+                                <button value={'Code'} >Code</button>
+                            </div>
+                        </div>
+
+                        <div className={css2["right-selected-tab-content"]}>
+                            {
+                                activeTab === 'Code' &&
+                                <div className={`${css2['code-container']} ${css2['active']}`}>
+                                    <code>code</code>
+                                </div>
+                            }
+                            {
+                                activeTab === 'Console' &&
+                                <div className={css2["console"]}> 
+                                    <div ref={this.consoleRef} className={css2["step-line"]}>
+                                        {/* Render all the console messages from the state */}
+                                        {info.map((message, index) => (
+                                            <span key={index}>{message}</span>
+                                        ))}
+                                    </div>
+                                </div>
+                            }
                         </div>
                     </div>
                 </div>
-                <div className="right-panel">
-                    <div className="tab-container" onClick={this.handleTabClick}>
-                        <div className={`code-tab  tab ${activeTab === 'Code' ? 'active' : ''}`}>
-                            <button value={'Code'}>code</button>
-                        </div>
-                        <div className={`Expression-tab tab ${activeTab === 'Expression' ? 'active' : ''}`}>
-                            <button value={'Expression'} >Expression</button>
-                        </div>
-                    </div>
-                    <div className="selected-tab-content">
-                        {activeTab === 'Code' &&
-                            <div className="code-Expression active">
-                                <code>BST code</code>
-                            </div>
-                        }
-                        {activeTab === 'Expression' &&
-                            <div className="Expression">
-                                <form onSubmit={this.startVisualization}>
-                                    <input
-                                        type="text"
-                                        id="infixExpression"
-                                        value={infixExpression}
-                                        onChange={this.setExpression}
-                                        placeholder="Enter infix expression"
-                                    />
-                                    <button type="submit">Run</button>
-                                </form>
-                            </div>
-                        }
-                    </div>
-                </div>
-            </div >
-        </>);
+            </>
+        );
     }
 }
 

@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { BinaryTreeNode, drawBinaryTree, VisualizationType, setTheme } from 'binary-tree-visualizer';
-import { SearchInBST, DeleteNodeFromBST, InsertInBst, TraverseInBST } from './BasicOperationInBST';
-
+import { SearchInBST, DeleteNodeFromBST, InsertInBst, TraverseInBST, GenerateTrees } from './BasicOperationInBST';
+import css from '../visualizationPage/index.module.css'
 
 const TreeContext = React.createContext(null)
 
@@ -13,7 +13,8 @@ export class BinarySearchTree extends Component {
             root: null,
             prevRoot: null,
             info: 'hello',
-            activeTab: 'Code'
+            featureTab: 'Insert',
+            activeTab: 'Console',
         }
         this.canvasRef = React.createRef();
         this.consoleRef = React.createRef();
@@ -101,81 +102,99 @@ export class BinarySearchTree extends Component {
     }
     handleTabClick = (e) => {
         if (e.target.tagName === 'BUTTON') {
+            this.setState({ featureTab: e.target.value })
+        }
+    }
+    handleRightTabClick = (e) => {
+        if (e.target.tagName === 'BUTTON') {
             this.setState({ activeTab: e.target.value })
         }
     }
     render() {
-        const { activeTab } = this.state
+        const { featureTab, activeTab } = this.state
         const { speed, isPlaying } = this.props;
+        console.log(activeTab)
         return (<>
             <TreeContext.Provider value={{ info: this.state.info }}>
-                <div className="row">
-                    <div className="mid-content">
-                        <div className="visualization-container">
-                            <div className="svg-area">
+                <div className={css[`${"row"}`]}>
+                    <div className={css[`${"mid-content"}`]}>
+                        <div className={css[`${"visualization-container"}`]}>
+                            <div className={css[`${"svg-area"}`]}>
                                 <canvas ref={this.canvasRef} ></canvas>
                             </div>
                         </div>
                         {/* step Display */}
-                        <div className="text-container">
-                            <div className="console">
-                                <span className='header'>Console</span>
-                                <div ref={this.consoleRef} className="step-line">
-                                    <Text />
+                        <div className={css[`${"feature-container"}`]}>
+                            <div className={css[`${"tab-container"}`]} onClick={this.handleTabClick}>
+
+                                <div className={`${css['Insert-tab']} ${css['tab']} ${css[`${featureTab === 'Insert' ? 'active' : ''}`]}`}>
+                                    <button value={'Insert'} >Insert</button>
                                 </div>
+                                <div className={`${css['Search-tab']} ${css['tab']} ${css[`${featureTab === 'Search' ? 'active' : ''}`]}`}>
+                                    <button value={'Search'} >Search</button>
+                                </div>
+                                <div className={`${css['Delete-tab']} ${css['tab']} ${css[`${featureTab === 'Delete' ? 'active' : ''}`]}`}>
+                                    <button value={'Delete'} >Delete</button>
+                                </div>
+                                <div className={`${css['Traverse-tab']} ${css['tab']} ${css[`${featureTab === 'Traverse' ? 'active' : ''}`]}`}>
+                                    <button value={'Traverse'} >Traverse</button>
+                                </div>
+                                <div className={`${css['GenerateTree-tab']} ${css['tab']} ${css[`${featureTab === 'GenerateTree' ? 'active' : ''}`]}`}>
+                                    <button value={'GenerateTree'} >GenerateTree</button>
+                                </div>
+                            </div>
+                            <div className={css[`${"selected-tab-content"}`]}>
+                                {featureTab === 'Insert' &&
+                                    <div className={css[`${"insert"}`]}>
+                                        <InsertInBst root={this.state.root} updateInfo={this.updateInfo} updateRoot={this.updateRoot} highlightNode={this.highlightNode} nodes={this.state.nodes} updateNodes={this.updateNodes} canvas={this.canvasRef} consoleRef={this.consoleRef} speed={speed} isPlaying={isPlaying} />
+                                    </div>
+                                }
+                                {featureTab === 'Traverse' &&
+                                    <div className={css[`${"traverse"}`]}>
+                                        <TraverseInBST root={this.state.root} highlightNode={this.highlightNode} updateInfo={this.updateInfo} consoleRef={this.consoleRef} speed={speed} isPlaying={isPlaying} />
+                                    </div>
+                                }
+                                {featureTab === 'Search' &&
+                                    <div className={css[`${"search"}`]}>
+                                        <SearchInBST root={this.state.root} highlightNode={this.highlightNode} updateInfo={this.updateInfo} consoleRef={this.consoleRef} speed={speed} isPlaying={isPlaying} />
+                                    </div>
+                                }
+                                {featureTab === 'Delete' &&
+                                    <div className={css[`${"delete"}`]}>
+                                        <DeleteNodeFromBST updateRoot={this.updateRoot} root={this.state.root} highlightNode={this.highlightNode} updateInfo={this.updateInfo} canvas={this.canvasRef} consoleRef={this.consoleRef} speed={speed} isPlaying={isPlaying} />
+                                    </div>
+                                }
+                                {featureTab === 'GenerateTree' &&
+                                    <div className={css[`${"generateTree"}`]}>
+                                        <GenerateTrees updateRoot={this.updateRoot} updateNodes={this.updateNodes} consoleRef={this.consoleRef} />
+                                    </div>
+                                }
                             </div>
                         </div>
                     </div>
-                    <div className="right-panel">
-                        <div className="tab-container" onClick={this.handleTabClick}>
-                            <div className={`code-tab  tab ${activeTab === 'Code' ? 'active' : ''}`}>
-                                <button value={'Code'}>code</button>
+                    <div className={css[`${"text-container"}`]}>
+                        <div className={css[`${"right-tab-container"}`]} onClick={this.handleRightTabClick}>
+                            <div className={`${css['Console-tab']} ${css['tab']} ${css[`${activeTab === 'Console' ? 'active' : ''}`]}`}>
+                                <button value={'Console'} >Console</button>
                             </div>
-                            <div className={`Insert-tab tab ${activeTab === 'Insert' ? 'active' : ''}`}>
-                                <button value={'Insert'} >Insert</button>
-                            </div>
-                            <div className={`Search-tab tab ${activeTab === 'Search' ? 'active' : ''}`}>
-                                <button value={'Search'} >Search</button>
-                            </div>
-                            <div className={`Delete-tab tab ${activeTab === 'Delete' ? 'active' : ''}`}>
-                                <button value={'Delete'} >Delete</button>
-                            </div>
-                            <div className={`Traverse-tab tab ${activeTab === 'Traverse' ? 'active' : ''}`}>
-                                <button value={'Traverse'} >Traverse</button>
-                            </div>
-                            <div className={`GenerateTree-tab tab ${activeTab === 'GenerateTree' ? 'active' : ''}`}>
-                                <button value={'GenerateTree'} >GenerateTree</button>
+                            <div className={`${css['Code-tab']} ${css['tab']} ${css[`${activeTab === 'Code' ? 'active' : ''}`]}`}>
+                                <button value={'Code'} >Code</button>
                             </div>
                         </div>
-                        <div className="selected-tab-content">
-                            {activeTab === 'Code' &&
-                                <div className="code-container active">
+
+                        <div className={css["right-selected-tab-content"]}>
+                            {
+                                activeTab === 'Code' &&
+                                <div className={`${css['code-container']} ${css['active']}`}>
                                     <code>BST code</code>
                                 </div>
                             }
-                            {activeTab === 'Insert' &&
-                                <div className="insert">
-                                    <InsertInBst root={this.state.root} updateInfo={this.updateInfo} updateRoot={this.updateRoot} highlightNode={this.highlightNode} nodes={this.state.nodes} updateNodes={this.updateNodes} canvas={this.canvasRef} consoleRef={this.consoleRef} speed={speed} isPlaying={isPlaying} />
-                                </div>
-                            }
-                            {activeTab === 'Traverse' &&
-                                <div className="traverse">
-                                    <TraverseInBST root={this.state.root} highlightNode={this.highlightNode} updateInfo={this.updateInfo} consoleRef={this.consoleRef} speed={speed} isPlaying={isPlaying} />
-                                </div>
-                            }
-                            {activeTab === 'Search' &&
-                                <div className="search">
-                                    <SearchInBST root={this.state.root} highlightNode={this.highlightNode} updateInfo={this.updateInfo} consoleRef={this.consoleRef} speed={speed} isPlaying={isPlaying} />
-                                </div>
-                            }
-                            {activeTab === 'Delete' &&
-                                <div className="delete">
-                                    <DeleteNodeFromBST updateRoot={this.updateRoot} root={this.state.root} highlightNode={this.highlightNode} updateInfo={this.updateInfo} canvas={this.canvasRef} consoleRef={this.consoleRef} speed={speed} isPlaying={isPlaying} />
-                                </div>
-                            }
-                            {activeTab === 'GenerateTree' &&
-                                <div className="generateTree">
-                                    <GenerateTrees updateRoot={this.updateRoot} updateNodes={this.updateNodes} consoleRef={this.consoleRef} />
+                            {
+                                activeTab === 'Console' &&
+                                <div className={css[`${"console"} ${css['active']}`]}>
+                                    <div ref={this.consoleRef} className={css[`${"step-line"}`]}>
+                                        <Text />
+                                    </div>
                                 </div>
                             }
                         </div>
@@ -186,65 +205,6 @@ export class BinarySearchTree extends Component {
     }
 }
 
-
-
-class GenerateTrees extends Component {
-    constructor() {
-        super()
-        this.state = {
-            treeType: 'Generate random tree'
-        }
-    }
-    getPerfectBinaryTree = () => {
-        const { updateRoot, updateNodes } = this.props
-        const buildBalancedBST = (arr, start, end) => {
-            if (start > end) return null;
-            let mid = Math.floor((start + end) / 2);
-            let node = new BinaryTreeNode(arr[mid])
-
-            node.left = buildBalancedBST(arr, start, mid - 1);
-            node.right = buildBalancedBST(arr, mid + 1, end);
-            return node;
-        }
-
-        const generateRandomBST = () => {
-            const size = 15
-            let values = [];
-            while (values.length < size) {
-                let num = Math.floor(Math.random() * 100);
-                if (!values.includes(num)) {
-                    values.push(num);
-                }
-            }
-            values.sort((a, b) => a - b);
-            updateNodes(values)
-
-            return buildBalancedBST(values, 0, values.length - 1);
-        }
-        const newTree = generateRandomBST()
-        updateRoot(newTree)
-    }
-    render() {
-        return (<>
-            <div className="input-group">
-                <select defaultValue={this.state.treeType} className="custom-select" id="inputGroupSelect04"
-                    onChange={(e) => {
-                        this.setState({ treeType: e.target.value }, () => {
-                            if (this.state.treeType === 'Perfect-binary-tree') {
-                                this.getPerfectBinaryTree()
-                            }
-                            console.log(this.state.treeType)
-                            this.setState({ treeType: 'Generate random tree' })
-                        })
-                    }}>
-                    <option value={'Generate random tree'} disabled={true}>Generate random tree</option>
-                    <option value={'Perfect-binary-tree'} >Perfect binary tree</option>
-                    <option value={'Complete-binary-tree'} >Complete binary tree</option>
-                </select>
-            </div >
-        </>)
-    }
-}
 
 class Text extends Component {
     render() {

@@ -1,6 +1,6 @@
 import { Component } from 'react';
 import { BinaryTreeNode, drawBinaryTree, VisualizationType, setTheme } from 'binary-tree-visualizer';
-
+import css from './BinarySearchTree.module.css'
 // default {bgColor: 'white', borderColor: 'black'}
 setTheme({
     radius: 17,
@@ -79,8 +79,8 @@ class SearchInBST extends Component {
     }
     render() {
         return (<>
-            <div className="searchInBST">
-                <form className='my-2' onSubmit={this.searchingInBST}>
+            <div className={css["searchInBST"]}>
+                <form className={css["my-2"]} onSubmit={this.searchingInBST}>
                     <label htmlFor="searchInBST">Search In BSt</label>
                     <div className="input-group w-25" >
                         <input name='searchValue' type="number" className="form-control w-25" id="searchInBST" aria-describedby="emailHelp" placeholder="Enter Vertex"
@@ -167,16 +167,18 @@ class DeleteNodeFromBST extends Component {
     }
     render() {
         return (<>
-            <form className='my-3' onSubmit={this.DeleteingInBST}>
-                <label htmlFor="deleteInBST">Delete In BSt</label>
-                <div className="input-group w-25" >
-                    <input name='deleteValue' type="number" className="form-control w-25" id="deleteInBST" placeholder="Enter Vertex"
-                        onChange={(e) => {
-                            this.setState({ deleteValue: Number.parseInt(e.target.value) })
-                        }} />
-                    <button type="submit" className="btn btn-primary">Go</button>
-                </div>
-            </form>
+            <div className={css["deleteInBST"]}>
+                <form className={css["my-3"]} onSubmit={this.DeleteingInBST}>
+                    <label htmlFor="deleteInBST">Delete In BSt</label>
+                    <div className="input-group w-25" >
+                        <input name='deleteValue' type="number" className="form-control w-25" id="deleteInBST" placeholder="Enter Vertex"
+                            onChange={(e) => {
+                                this.setState({ deleteValue: Number.parseInt(e.target.value) })
+                            }} />
+                        <button type="submit" className="btn btn-primary">Go</button>
+                    </div>
+                </form>
+            </div>
         </>)
     }
 
@@ -259,18 +261,18 @@ class InsertInBst extends Component {
 
     render() {
         return (<>
-            <form onSubmit={this.insertInBst} action="">
-                <div className="input-group mb-3 w-25">
-                    <input value={this.state.userInput} name='userInput' type="text" className="form-control" placeholder="Insert in BST"
-                        onChange={(e) => {
-                            this.setState({ userInput: e.target.value })
-                        }} />
-                    <div className="input-group-append">
+            <div className={css["insertInBST"]}>
+                <form onSubmit={this.insertInBst} action="">
+                    <label htmlFor="insertInBST">Insert In BSt</label>
+                    <div className="input-group mb-3 w-25">
+                        <input id='insertInBST' value={this.state.userInput} name='userInput' type="text" className={css["form-control"]} placeholder="Insert in BST"
+                            onChange={(e) => {
+                                this.setState({ userInput: e.target.value })
+                            }} />
                         <button className="btn btn-outline-secondary" type="submit">Insert</button>
                     </div>
-                </div>
-            </form>
-
+                </form>
+            </div>
         </>)
     }
 }
@@ -373,8 +375,8 @@ class TraverseInBST extends Component {
     render() {
         const { root } = this.props
         return (<>
-            <div className="input-group">
-                <select defaultValue={'Choose Traveral Type'} className="custom-select" id="inputGroupSelect04"
+            <div className={css["input-group"]}>
+                <select defaultValue={'Choose Traveral Type'} className={css["custom-select"]}
                     onChange={async (e) => {
                         const trav = e.target.value
                         if (trav === 'Inorder') {
@@ -397,4 +399,63 @@ class TraverseInBST extends Component {
     }
 }
 
-export { SearchInBST, DeleteNodeFromBST, InsertInBst, TraverseInBST }
+
+class GenerateTrees extends Component {
+    constructor() {
+        super()
+        this.state = {
+            treeType: 'Generate random tree'
+        }
+    }
+    getPerfectBinaryTree = () => {
+        const { updateRoot, updateNodes } = this.props
+        const buildBalancedBST = (arr, start, end) => {
+            if (start > end) return null;
+            let mid = Math.floor((start + end) / 2);
+            let node = new BinaryTreeNode(arr[mid])
+
+            node.left = buildBalancedBST(arr, start, mid - 1);
+            node.right = buildBalancedBST(arr, mid + 1, end);
+            return node;
+        }
+
+        const generateRandomBST = () => {
+            const size = 15
+            let values = [];
+            while (values.length < size) {
+                let num = Math.floor(Math.random() * 100);
+                if (!values.includes(num)) {
+                    values.push(num);
+                }
+            }
+            values.sort((a, b) => a - b);
+            updateNodes(values)
+
+            return buildBalancedBST(values, 0, values.length - 1);
+        }
+        const newTree = generateRandomBST()
+        updateRoot(newTree)
+    }
+    render() {
+        return (<>
+            <div className={css[`${"input-group"}`]}>
+                <select defaultValue={this.state.treeType} className={css[`${"custom-select"}`]} id="inputGroupSelect04"
+                    onChange={(e) => {
+                        this.setState({ treeType: e.target.value }, () => {
+                            if (this.state.treeType === 'Perfect-binary-tree') {
+                                this.getPerfectBinaryTree()
+                            }
+                            console.log(this.state.treeType)
+                            this.setState({ treeType: 'Generate random tree' })
+                        })
+                    }}>
+                    <option value={'Generate random tree'} disabled={true}>Generate random tree</option>
+                    <option value={'Perfect-binary-tree'} >Perfect binary tree</option>
+                    <option value={'Complete-binary-tree'} >Complete binary tree</option>
+                </select>
+            </div >
+        </>)
+    }
+}
+
+export { SearchInBST, DeleteNodeFromBST, InsertInBst, TraverseInBST, GenerateTrees }

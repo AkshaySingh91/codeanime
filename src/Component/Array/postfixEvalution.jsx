@@ -1,5 +1,6 @@
 import React, { Component, createRef } from 'react';
 import css from './postfixEvaluation.module.css';
+import css2 from '../visualizationPage/index.module.css';
 
 class PostfixEvaluation extends Component {
     constructor(props) {
@@ -8,7 +9,8 @@ class PostfixEvaluation extends Component {
             postfixExpression: '5 6 2 + * 12 4 / -', // default postfix expression
             currentStep: -1,
             stepsArray: [],
-            activeTab: 'Code'
+            featureTab: 'Code',
+            activeTab: 'Console',
         };
         this.symbolScannedRef = createRef();
         this.stackRef = createRef();
@@ -82,13 +84,13 @@ class PostfixEvaluation extends Component {
                 // Token is a number, push it to the stack
                 stack.push(parseInt(token));
                 this.setSteps({ scanSymbol: token, stack: [...stack] });
-                this.updateInfo(`Push ${token} into stack.`);
+                this.updateInfo(`Push <b>${token}</b> into stack.`);
             } else {
                 // Token is an operator, pop two operands and apply the operator
                 const b = stack.pop();
                 const a = stack.pop();
                 let result;
-                
+
                 switch (token) {
                     case '+': result = a + b; break;
                     case '-': result = a - b; break;
@@ -97,7 +99,7 @@ class PostfixEvaluation extends Component {
                     case '%': result = a % b; break;
                     default: throw new Error(`Unknown operator: ${token}`);
                 }
-                this.updateInfo(`Pop  ${b} and ${a} from stack, push ${b}${token}${a} = ${result} in stack.`);
+                this.updateInfo(`Pop  ${b} and ${a} from stack, push <b> ${a} ${token} ${b} = ${result}</b> in stack.`);
                 stack.push(result);
                 this.setSteps({ scanSymbol: token, stack: [...stack], result });
             }
@@ -121,7 +123,7 @@ class PostfixEvaluation extends Component {
     };
     handleTabClick = (e) => {
         if (e.target.tagName === 'BUTTON') {
-            this.setState({ activeTab: e.target.value })
+            this.setState({ featureTab: e.target.value })
         }
     }
     updateInfo = (value) => {
@@ -133,13 +135,18 @@ class PostfixEvaluation extends Component {
             }
         })
     }
+    handleRightTabClick = (e) => {
+        if (e.target.tagName === 'BUTTON') {
+            this.setState({ activeTab: e.target.value })
+        }
+    }
     render() {
-        const { activeTab, postfixExpression } = this.state;
+        const { featureTab, activeTab, postfixExpression } = this.state;
 
         return (<>
-            <div className="row">
-                <div className="mid-content">
-                    <div className="visualization-container">
+            <div className={css2["row"]}>
+                <div className={css2["mid-content"]}>
+                    <div className={css2["visualization-container"]}>
                         <div className={css['container']}>
                             <div className={css['visualization']}>
                                 <div className={css['column']} id="symbolScanned">
@@ -158,40 +165,61 @@ class PostfixEvaluation extends Component {
                         </div>
                     </div>
                     {/* step Display */}
-                    <div className="text-container">
-                        <div className="console">
-                            <span className='header'>Console</span>
-                            <div ref={this.consoleRef} className="step-line">
+                    <div className={css2["feature-container"]}>
+                        <div className={css2["tab-container"]} onClick={this.handleTabClick}>
+                            <div className={`${css2['code-tab']} ${css2['tab']} ${css2[featureTab === 'Code' ? 'active' : '']}`}>
+                                <button value={'Code'}>code</button>
                             </div>
+                            <div className={`${css['Expression-tab']} ${css2['tab']} ${css2[`${featureTab === 'Expression' ? 'active' : ''}`]}`}>
+                                <button value={'Expression'} >Expression</button>
+                            </div>
+                        </div>
+                        <div className={css2["selected-tab-content"]}>
+                            {featureTab === 'Code' &&
+                                <div className={`${css2['code-Expression']} ${css2['active']}`}>
+                                    <code>BST code</code>
+                                </div>
+                            }
+                            {featureTab === 'Expression' &&
+                                <div className={css['Expression']}>
+                                    <form onSubmit={this.startEvaluation}>
+                                        <input
+                                            type="text"
+                                            value={postfixExpression}
+                                            onChange={this.setExpression}
+                                            placeholder="Enter postfix expression"
+                                        />
+                                        <button type="submit">Run</button>
+                                    </form>
+                                </div>
+                            }
                         </div>
                     </div>
                 </div>
-                <div className="right-panel">
-                    <div className="tab-container" onClick={this.handleTabClick}>
-                        <div className={`code-tab  tab ${activeTab === 'Code' ? 'active' : ''}`}>
-                            <button value={'Code'}>code</button>
+
+                <div className={css2["text-container"]}>
+                    <div className={css2[`${"right-tab-container"}`]} onClick={this.handleRightTabClick}>
+                        <div className={`${css2['Console-tab']} ${css2['tab']} ${css2[`${activeTab === 'Console' ? 'active' : ''}`]}`}>
+                            <button value={'Console'} >Console</button>
                         </div>
-                        <div className={`Expression-tab tab ${activeTab === 'Expression' ? 'active' : ''}`}>
-                            <button value={'Expression'} >Expression</button>
+                        <div className={`${css2['Code-tab']} ${css2['tab']} ${css2[`${activeTab === 'Code' ? 'active' : ''}`]}`}>
+                            <button value={'Code'} >Code</button>
                         </div>
                     </div>
-                    <div className="selected-tab-content">
-                        {activeTab === 'Code' &&
-                            <div className="code-Expression active">
-                                <code>BST code</code>
+
+                    <div className={css2["right-selected-tab-content"]}>
+                        {
+                            activeTab === 'Code' &&
+                            <div className={`${css2['code-container']} ${css2['active']}`}>
+                                <code>code</code>
                             </div>
                         }
-                        {activeTab === 'Expression' &&
-                            <div className={css['expression']}>
-                                <form onSubmit={this.startEvaluation}>
-                                    <input
-                                        type="text"
-                                        value={postfixExpression}
-                                        onChange={this.setExpression}
-                                        placeholder="Enter postfix expression"
-                                    />
-                                    <button type="submit">Run</button>
-                                </form>
+                        {
+                            activeTab === 'Console' &&
+                            <div className={css2["console"]}>
+                                <span className={css2["header"]}></span>
+                                <div ref={this.consoleRef} className={css2["step-line"]}>
+                                </div>
                             </div>
                         }
                     </div>

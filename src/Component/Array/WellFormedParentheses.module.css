@@ -1,6 +1,7 @@
 .visualization {
     display: flex;
     justify-content: space-evenly;
+    overflow: auto;
 }
 
 .column .content {

@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
+import css from '../App.module.css'
 
 export default class Card extends Component {
     constructor() {
@@ -63,17 +64,17 @@ export default class Card extends Component {
     }
     render() {
 
-        const { name, path, previewSvg , imagePath} = this.props
+        const { name, path, previewSvg, imagePath } = this.props
         return (
             <>
-                <div ref={this.cardRef} className="algorithm-card">
+                <div ref={this.cardRef} className={css[`${"algorithm-card"}`]}>
                     <Link to={path}>
                         {/* it will change depending on which algorithm card it is */}
                         {previewSvg && previewSvg()}
                         {/* {!previewSvg && <img src={}></img>} */}
                     </Link>
-                    {/* <div ref={this.spotRef} className="blur-spot"></div> */}
-                    <div className="algorithm-title">
+                    {/* <div ref={this.spotRef} className={css[`${"blur-spot"}`]}></div> */}
+                    <div className={css[`${"algorithm-title"}`]}>
                         {name}
                     </div>
                 </div>

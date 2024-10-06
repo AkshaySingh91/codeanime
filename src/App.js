@@ -4,7 +4,7 @@ import { AlgorithmPage } from './Component/algorithmPage/AlgorithmPage';
 import Card from './Component/Card';
 import { algorithmCard } from './Datastore/algoritmInfo';
 import AlgorithmVisualization from './Component/visualizationPage';
-import './App.css';
+import css from "./App.module.css"
 
 const ThemeContext = createContext('dark');
 const App = () => {
@@ -19,19 +19,15 @@ const App = () => {
           ></Route>
           <Route
             exact path='/BinaryTree'
-            element={<AlgorithmPage path={'BinaryTree'} algorithmCard={algorithmCard} />}
+            element={<AlgorithmPage dataStructureName={'BinaryTree'} algorithmCard={algorithmCard} />}
           ></Route>
           <Route
             exact path='/Array'
-            element={<AlgorithmPage path={'Array'} algorithmCard={algorithmCard} />}
+            element={<AlgorithmPage dataStructureName={'Array'} algorithmCard={algorithmCard} />}
           ></Route>
           <Route
             exact path='/LinkedList'
-            element={<AlgorithmPage path={'LinkedList'} algorithmCard={algorithmCard} />}
-          ></Route>
-          <Route
-            exact path='/:dataStructure/algorithm'
-            element={<AlgorithmVisualization defaultAlgorithm={true} />}
+            element={<AlgorithmPage dataStructureName={'LinkedList'} algorithmCard={algorithmCard} />}
           ></Route>
           <Route
             exact path='/:dataStructure/:algoName/algorithm'
@@ -46,8 +42,9 @@ const App = () => {
 const HomePage = ({ algorithmCard }) => {
   return (
     <>
-      <div className="algorithmList">
-        <div className="algorithm-grid">
+      <canvas className={css[`${"backgroundCanvas"}`]}></canvas>
+      <div className={css[`${"algorithmList"}`]}>
+        <div className={css[`${"algorithm-grid"}`]}>
           {algorithmCard.map((algo) => (
             <Card
               key={algo.path}

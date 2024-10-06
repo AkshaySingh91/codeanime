@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import * as d3 from "d3"
+import css from './BinaryHeap.module.css'
 
 function insertByLevelrorder(root, key, id) {
     if (!root) {
@@ -42,40 +43,43 @@ class CreateHeap extends Component {
         const { userInput } = this.state;
         const { CreateBottomUp, CreateTopDown, consoleRef } = this.props;
         return (<>
-            <form action="" onSubmit={(e) => {
-                e.preventDefault()
-                if (this.state.userInput === '') {
-                    alert("Enter valid array")
-                }
-                let array = userInput.split(',').map((elem) => { return Number.parseInt(elem.trim()) })
-                if (consoleRef.current) {
-                    consoleRef.current.innerHTML = '';
-                }
-                if (this.state.method === 'Heapify O(n)') {
-                    CreateTopDown(array)
-                }
-                else {
-                    CreateBottomUp(array)
-                }
-            }}>
-                <div className="input-group mb-3 w-25">
-                    <select className="px-2 py-1 my-4 custom-select" id="inputGroupSelect04"
-                        onChange={(e) => {
-                            this.setState({ method: e.target.value })
-                        }}>
-                        <option className='px-2' value={'Botton-up Approch'} >Botton-up Approch</option>
-                        <option className='px-2' value={'Heapify O(n)'} >Heapify O(n)</option>
-                    </select>
-                    <div className="input-group">
-                        <input value={this.state.userInput} name='userInput' type="text" className="form-control" placeholder="eg: 45, 12, 34"
+            <div className={css["createHeap"]}>
+                <form action="" onSubmit={(e) => {
+                    e.preventDefault()
+                    if (this.state.userInput === '') {
+                        alert("Enter valid array")
+                    }
+                    let array = userInput.split(',').map((elem) => { return Number.parseInt(elem.trim()) })
+                    if (consoleRef.current) {
+                        consoleRef.current.innerHTML = '';
+                    }
+                    if (this.state.method === 'Heapify O(n)') {
+                        CreateTopDown(array)
+                    }
+                    else {
+                        CreateBottomUp(array)
+                    }
+                }}>
+                    <div className="input-group mb-3 w-25">
+                        <select className="px-2 py-1 my-4 custom-select" id="inputGroupSelect04"
                             onChange={(e) => {
-                                this.setState({ userInput: e.target.value })
-                            }} />
+                                this.setState({ method: e.target.value })
+                            }}>
+                            <option className='px-2' value={'Botton-up Approch'} >Botton-up Approch</option>
+                            <option className='px-2' value={'Heapify O(n)'} >Heapify O(n)</option>
+                        </select>
+                        <div className="input-group">
+                            <input value={this.state.userInput} name='userInput' type="text" className="form-control" placeholder="eg: 45, 12, 34"
+                                onChange={(e) => {
+                                    this.setState({ userInput: e.target.value })
+                                }} />
 
-                        <button className="btn btn-outline-secondary" type="submit">Insert</button>
+                            <button className="btn btn-outline-secondary" type="submit">Insert</button>
+                        </div>
                     </div>
-                </div>
-            </form></>)
+                </form>
+            </div >
+        </>)
     }
 }
 class Heapsort extends Component {
@@ -169,31 +173,32 @@ class Heapsort extends Component {
         const { K } = this.state;
         const { flattenTree } = this.props;
         return (<>
-
-            <form className='my-3' onSubmit={(e) => {
-                e.preventDefault()
-                if (!this.state.K) {
-                    alert("Enter Valid Input");
-                    return;
-                }
-                if (K >= flattenTree.length) {
-                    alert("K should be less than array length")
-                } else {
-                    this.HeapSort()
-                }
-            }}>
-                <label htmlFor="noOfValue">Extract  {this.props.treeType}</label>
-                <div className="input-group w-25" >
-                    <input name='noOfValue' type="number" className="form-control w-25" id="noOfValue" placeholder="Enter K"
-                        onChange={(e) => {
-                            this.setState({ K: Number.parseInt(e.target.value) })
-                        }} />
-                    <button type="submit" className="btn btn-primary">Go</button>
-                </div>
-            </form>
+            <div className={css["heapSort"]}>
+                <form className='my-3' onSubmit={(e) => {
+                    e.preventDefault()
+                    if (!this.state.K) {
+                        alert("Enter Valid Input");
+                        return;
+                    }
+                    if (K >= flattenTree.length) {
+                        alert("K should be less than array length")
+                    } else {
+                        this.HeapSort()
+                    }
+                }}>
+                    <label htmlFor="noOfValue">Extract  {this.props.treeType}</label>
+                    <div className="input-group w-25" >
+                        <input name='noOfValue' type="number" className="form-control w-25" id="noOfValue" placeholder="Enter K"
+                            onChange={(e) => {
+                                this.setState({ K: Number.parseInt(e.target.value) })
+                            }} />
+                        <button type="submit" className="btn btn-primary">Go</button>
+                    </div>
+                </form>
+            </div>
         </>)
     }
-} 
+}
 
 class InsertNode extends Component {
     constructor() {
@@ -352,22 +357,24 @@ class InsertNode extends Component {
     }
     render() {
         return (<>
-            <form className='my-3' onSubmit={(e) => {
-                e.preventDefault()
-                if (!this.state.insertedNodeValue) {
-                    alert('Enter valid value'); return;
-                }
-                this.insertNodeInTree(this.state.insertedNodeValue)
-            }}>
-                <label htmlFor="newNodeValue">Enter new node value</label>
-                <div className="input-group w-25" >
-                    <input name='newNodeValue' type="number" className="form-control w-25" id="newNodeValue" placeholder="value"
-                        onChange={(e) => {
-                            this.setState({ insertedNodeValue: Number.parseInt(e.target.value) })
-                        }} />
-                    <button type="submit" className="btn btn-primary">Go</button>
-                </div>
-            </form>
+            <div className={css["insertInHeap"]}>
+                <form className='my-3' onSubmit={(e) => {
+                    e.preventDefault()
+                    if (!this.state.insertedNodeValue) {
+                        alert('Enter valid value'); return;
+                    }
+                    this.insertNodeInTree(this.state.insertedNodeValue)
+                }}>
+                    <label htmlFor="newNodeValue">Enter new node value</label>
+                    <div className="input-group w-25" >
+                        <input name='newNodeValue' type="number" className="form-control w-25" id="newNodeValue" placeholder="value"
+                            onChange={(e) => {
+                                this.setState({ insertedNodeValue: Number.parseInt(e.target.value) })
+                            }} />
+                        <button type="submit" className="btn btn-primary">Go</button>
+                    </div>
+                </form>
+            </div>
         </>)
     }
 }
@@ -425,29 +432,31 @@ class UpdateNode extends Component {
     render() {
         const { flattenTree } = this.props;
         return (<>
-            <form className='my-3' onSubmit={(e) => {
-                e.preventDefault()
-                if (!this.state.updateNodeIdx || !this.state.updateNodeValue) {
-                    alert('Enter valid input'); return;
-                }
-                else if (this.state.updateNodeIdx > flattenTree.length) {
-                    alert('Enter in Range value'); return;
-                }
-                this.updateNodeFromTree(this.state.updateNodeIdx, this.state.updateNodeValue)
-            }}>
-                <label htmlFor="indexOfNode">update node on index i</label>
-                <div className="input-group w-25" >
-                    <input name='indexOfNode' type="number" className="form-control w-25" id="indexOfNode" placeholder="Enter i"
-                        onChange={(e) => {
-                            this.setState({ updateNodeIdx: Number.parseInt(e.target.value) })
-                        }} />
-                    <input name='newNodeValue' type="number" className="form-control w-25" id="newNodeValue" placeholder="value"
-                        onChange={(e) => {
-                            this.setState({ updateNodeValue: Number.parseInt(e.target.value) })
-                        }} />
-                    <button type="submit" className="btn btn-primary">Go</button>
-                </div>
-            </form>
+            <div className="updateNodeInHeap">
+                <form className='my-3' onSubmit={(e) => {
+                    e.preventDefault()
+                    if (!this.state.updateNodeIdx || !this.state.updateNodeValue) {
+                        alert('Enter valid input'); return;
+                    }
+                    else if (this.state.updateNodeIdx > flattenTree.length) {
+                        alert('Enter in Range value'); return;
+                    }
+                    this.updateNodeFromTree(this.state.updateNodeIdx, this.state.updateNodeValue)
+                }}>
+                    <label htmlFor="indexOfNode">update node on index i</label>
+                    <div className="input-group w-25" >
+                        <input name='indexOfNode' type="number" className="form-control w-25" id="indexOfNode" placeholder="Enter i"
+                            onChange={(e) => {
+                                this.setState({ updateNodeIdx: Number.parseInt(e.target.value) })
+                            }} />
+                        <input name='newNodeValue' type="number" className="form-control w-25" id="newNodeValue" placeholder="value"
+                            onChange={(e) => {
+                                this.setState({ updateNodeValue: Number.parseInt(e.target.value) })
+                            }} />
+                        <button type="submit" className="btn btn-primary">Go</button>
+                    </div>
+                </form>
+            </div>
         </>)
     }
 }
@@ -529,25 +538,27 @@ class DeleteNode extends Component {
     render() {
         const { flattenTree } = this.props
         return (<>
-            <form className='my-3' onSubmit={(e) => {
-                if (!this.state.deleteNodeIdx) {
-                    alert('Enter valid index'); return;
-                }
-                else if (this.state.deleteNodeIdx > flattenTree.length) {
-                    alert('Enter in Range value'); return;
-                }
-                this.deleteNodeFromTree(this.state.deleteNodeIdx)
-                e.preventDefault()
-            }}>
-                <label htmlFor="indexOfNode">Delete node on index i</label>
-                <div className="input-group w-25" >
-                    <input name='indexOfNode' type="number" className="form-control w-25" id="indexOfNode" placeholder="Enter i"
-                        onChange={(e) => {
-                            this.setState({ deleteNodeIdx: Number.parseInt(e.target.value) })
-                        }} />
-                    <button type="submit" className="btn btn-primary">Go</button>
-                </div>
-            </form>
+            <div className={css["deleteNodeInHeap"]}>
+                <form className='my-3' onSubmit={(e) => {
+                    if (!this.state.deleteNodeIdx) {
+                        alert('Enter valid index'); return;
+                    }
+                    else if (this.state.deleteNodeIdx > flattenTree.length) {
+                        alert('Enter in Range value'); return;
+                    }
+                    this.deleteNodeFromTree(this.state.deleteNodeIdx)
+                    e.preventDefault()
+                }}>
+                    <label htmlFor="indexOfNode">Delete node on index i</label>
+                    <div className="input-group w-25" >
+                        <input name='indexOfNode' type="number" className="form-control w-25" id="indexOfNode" placeholder="Enter i"
+                            onChange={(e) => {
+                                this.setState({ deleteNodeIdx: Number.parseInt(e.target.value) })
+                            }} />
+                        <button type="submit" className="btn btn-primary">Go</button>
+                    </div>
+                </form>
+            </div>
         </>)
     }
 }
@@ -634,7 +645,7 @@ class ChangeMode extends Component {
     render() {
         const { updateMode, mode } = this.props;
         return (<>
-            <div className="container w-25">
+            <div className={css["changeModeInHeap"]}>
                 <button onClick={() => {
                     if (mode === 'Binary Tree Mode')
                         updateMode('Compact Array Mode')

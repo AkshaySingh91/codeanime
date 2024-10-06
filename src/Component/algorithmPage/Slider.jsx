@@ -3,6 +3,8 @@ import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import { Link } from 'react-router-dom';
+import css from '../../App.module.css';
+
 
 export default class SliderComponenet extends Component {
     constructor() {
@@ -57,9 +59,9 @@ export default class SliderComponenet extends Component {
 
 export class SliderCards extends Component {
     render() {
-        const { path, previewSvg, name } = this.props; 
+        const { path, previewSvg, name } = this.props;
         return (
-            <div className="slide">
+            <div className={css[`${"slide"}`]}>
                 <Link to={`/${path}`}>
                     {previewSvg && previewSvg({ svgClassName: 'slider-preview' })}
                 </Link>

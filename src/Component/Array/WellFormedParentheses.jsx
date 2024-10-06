@@ -1,5 +1,6 @@
 import React, { Component, createRef } from 'react';
-import css from './WellFormedParentheses.module.css';
+import css from '../visualizationPage/index.module.css';
+import css2 from './WellFormedParentheses.module.css';
 
 class WellFormedParentheses extends Component {
     constructor(props) {
@@ -8,28 +9,31 @@ class WellFormedParentheses extends Component {
             inputExpression: '({[()]})', // Default expression
             currentStep: -1,
             stepsArray: [],
-            activeTab: 'Code',
+            featureTab: 'Code',
+            activeTab: 'Console',
             isValid: null, // Will track if the expression is well-formed or not
+            isPaused: false, // Used for controlling visualization
+            speed: 1, // Speed control
         };
         this.symbolScannedRef = createRef();
         this.stackRef = createRef();
         this.consoleRef = createRef();
     }
 
-    componentDidUpdate() {
+    componentDidUpdate(prevProps, prevState) {
         const { currentStep, stepsArray, isPaused, speed } = this.state;
         if (currentStep < stepsArray.length - 1 && !isPaused) {
             const timer = setTimeout(() => {
                 this.visualizeNextStep();
-            }, speed);
+            }, 1000 / speed); // Adjust speed here
             return () => clearTimeout(timer);
         }
     }
 
     startCheck = (e) => {
-        e.preventDefault();
+        e.preventDefault(); // Prevent page reload
         if (this.consoleRef.current) {
-            this.consoleRef.current.innerHTML = ''
+            this.consoleRef.current.innerHTML = '';
         }
         const { inputExpression } = this.state;
 
@@ -39,7 +43,7 @@ class WellFormedParentheses extends Component {
             this.stackRef.current.innerHTML = '';
         }
 
-        this.setState({ stepsArray: [], isValid: null }, () => {
+        this.setState({ stepsArray: [], isValid: null, isPaused: false }, () => {
             this.setState({ currentStep: -1 }, () => {
                 this.checkWellFormedness(inputExpression);
             });
@@ -82,21 +86,21 @@ class WellFormedParentheses extends Component {
             if (['(', '[', '{'].includes(char)) {
                 // If an opening bracket is found, push it to the stack
                 stack.push(char);
-                this.updateInfo(`push ${char} into stack.`);
+                this.updateInfo(`push <b>${char}</b> into stack.`);
                 this.setSteps({ scanSymbol: char, stack: [...stack] });
             } else if ([')', ']', '}'].includes(char)) {
                 // If a closing bracket is found, check if it matches the top of the stack
                 if (stack.length === 0 || stack[stack.length - 1] !== matchingPairs[char]) {
                     if (stack.length === 0) {
-                        this.updateInfo(`Extra ${char} bracket in expression.`);
+                        this.updateInfo(`Extra <b>${char}</b> bracket in expression.`);
                     } else {
-                        this.updateInfo(`${char} bracket does not match.`);
+                        this.updateInfo(`<b>${char}</b> bracket does not match.`);
                     }
                     this.setSteps({ scanSymbol: char, stack: [...stack] });
                     this.setState({ isValid: false });
                     return;
                 }
-                this.updateInfo(`pop ${char} from stack.`);
+                this.updateInfo(`pop <b>${char}</b> from stack.`);
                 stack.pop(); // Pop the matching opening bracket
                 this.setSteps({ scanSymbol: char, stack: [...stack] });
             }
@@ -108,7 +112,7 @@ class WellFormedParentheses extends Component {
             this.setState({ isValid: true });
         } else {
             this.setState({ isValid: false });
-            this.updateInfo(`Extra opening bracket in expression.`);
+            this.updateInfo(`<b>Extra opening bracket in expression.</b>`);
         }
 
         // Start visualization
@@ -127,6 +131,7 @@ class WellFormedParentheses extends Component {
     setExpression = (e) => {
         this.setState({ inputExpression: e.target.value });
     };
+
     updateInfo = (value) => {
         this.setState({ info: value }, () => {
             if (this.consoleRef.current) {
@@ -134,85 +139,113 @@ class WellFormedParentheses extends Component {
                 span.innerHTML = value;
                 this.consoleRef.current.append(span);
             }
-        })
-    }
+        });
+    };
+
     handleTabClick = (e) => {
         if (e.target.tagName === 'BUTTON') {
-            this.setState({ activeTab: e.target.value })
+            this.setState({ featureTab: e.target.value });
         }
-    }
+    };
+
+    handleRightTabClick = (e) => {
+        if (e.target.tagName === 'BUTTON') {
+            this.setState({ activeTab: e.target.value });
+        }
+    };
+
     render() {
-        const { inputExpression, isValid, activeTab } = this.state;
-        return (<>
-            <div className="row">
-                <div className="mid-content">
-                    <div className="visualization-container">
-                        <div className={css['container']}>
-                            <div className={css['visualization']}>
-                                <div className={css['column']} id="symbolScanned">
-                                    <h2>Symbol Scanned</h2>
-                                    <div className={css['content']} ref={this.symbolScannedRef}></div>
-                                </div>
-                                <div className={css['column']} id="stack">
-                                    <h2>Stack</h2>
-                                    <div className={css['content']} ref={this.stackRef}></div>
-                                </div>
-                            </div>
-                            {isValid !== null && (
-                                <div className={css['result']} id="stack">
-                                    <div className={css['content']}>
-                                        Result:
-                                        <span>
-                                            {isValid ? 'The expression is well-formed!' : 'The expression is not well-formed!'}
-                                        </span>
+        const { inputExpression, isValid, featureTab, activeTab } = this.state;
+        return (
+            <>
+                <div className={css['row']}>
+                    <div className={css['mid-content']}>
+                        <div className={css['visualization-container']}>
+                            <div className={css['container']}>
+                                <div className={css2['visualization']}>
+                                    <div className={css2['column']} id="symbolScanned">
+                                        <h2>Symbol Scanned</h2>
+                                        <div className={css2['content']} ref={this.symbolScannedRef}></div>
+                                    </div>
+                                    <div className={css2['column']} id="stack">
+                                        <h2>Stack</h2>
+                                        <div className={css2['content']} ref={this.stackRef}></div>
                                     </div>
                                 </div>
-                            )}
+                                {isValid !== null && (
+                                    <div className={css2['result']} id="stack">
+                                        <div className={css2['content']}>
+                                            Result:
+                                            <span>
+                                                {isValid ? 'The expression is well-formed!' : 'The expression is not well-formed!'}
+                                            </span>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                        {/* step Display */}
+                        <div className={css['feature-container']}>
+                            <div className={css['tab-container']} onClick={this.handleTabClick}>
+                                <div className={`${css['code-tab']} ${css['tab']} ${css[featureTab === 'Code' ? 'active' : '']}`}>
+                                    <button value={'Code'}>code</button>
+                                </div>
+                                <div
+                                    className={`${css['Expression-tab']} ${css['tab']} ${css[`${featureTab === 'Expression' ? 'active' : ''}`]}`}
+                                >
+                                    <button value={'Expression'}>Expression</button>
+                                </div>
+                            </div>
+                            <div className={css['selected-tab-content']}>
+                                {featureTab === 'Code' && (
+                                    <div className={`${css['code-Expression']} ${css['active']}`}>
+                                        <code>BST code</code>
+                                    </div>
+                                )}
+                                {featureTab === 'Expression' && (
+                                    <div className={css['Expression']}>
+                                        <form onSubmit={this.startCheck}>
+                                            <input
+                                                type="text"
+                                                id="infixExpression"
+                                                value={inputExpression}
+                                                onChange={this.setExpression}
+                                                placeholder="Enter infix expression"
+                                            />
+                                            <button type="submit">Run</button>
+                                        </form>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                    <div className={css['text-container']}>
+                        <div className={css[`${'right-tab-container'}`]} onClick={this.handleRightTabClick}>
+                            <div className={`${css['Console-tab']} ${css['tab']} ${css[`${activeTab === 'Console' ? 'active' : ''}`]}`}>
+                                <button value={'Console'}>Console</button>
+                            </div>
+                            <div className={`${css['Code-tab']} ${css['tab']} ${css[`${activeTab === 'Code' ? 'active' : ''}`]}`}>
+                                <button value={'Code'}>Code</button>
+                            </div>
+                        </div>
 
-                        </div>
-                    </div>
-                    {/* step Display */}
-                    <div className="text-container">
-                        <div className="console">
-                            <span className='header'>Console</span>
-                            <div ref={this.consoleRef} className="step-line">
-                            </div>
+                        <div className={css['right-selected-tab-content']}>
+                            {activeTab === 'Code' && (
+                                <div className={`${css['code-container']} ${css['active']}`}>
+                                    <code>code</code>
+                                </div>
+                            )}
+                            {activeTab === 'Console' && (
+                                <div className={css['console']}>
+                                    <span className={css['header']}></span>
+                                    <div ref={this.consoleRef} className={css['step-line']}></div>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>
-                <div className="right-panel">
-                    <div className="tab-container" onClick={this.handleTabClick}>
-                        <div className={`code-tab  tab ${activeTab === 'Code' ? 'active' : ''}`}>
-                            <button value={'Code'}>code</button>
-                        </div>
-                        <div className={`Expression-tab tab ${activeTab === 'Expression' ? 'active' : ''}`}>
-                            <button value={'Expression'} >Expression</button>
-                        </div>
-                    </div>
-                    <div className="selected-tab-content">
-                        {activeTab === 'Code' &&
-                            <div className="code-Expression active">
-                                <code>BST code</code>
-                            </div>
-                        }
-                        {activeTab === 'Expression' &&
-                            <div className={css['expression']}>
-                                <form onSubmit={this.startCheck}>
-                                    <input
-                                        type="text"
-                                        value={inputExpression}
-                                        onChange={this.setExpression}
-                                        placeholder="Enter expression with parentheses"
-                                    />
-                                    <button type="submit">Run</button>
-                                </form>
-                            </div>
-                        }
-                    </div>
-                </div>
-            </div >
-            
-        </>);
+            </>
+        );
     }
 }
 

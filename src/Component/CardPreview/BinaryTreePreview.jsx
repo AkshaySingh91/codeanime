@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import * as d3 from "d3"
 import { insertByLevelrorder } from '../HeapBinaryTree/BasicOperationInHeap'
+import css from '../../App.module.css'
 
 export class BinaryTreePreview extends Component {
     constructor() {
@@ -114,7 +115,7 @@ export class BinaryTreePreview extends Component {
         const svgClassName = this.props.classes ? this.props.classes.svgClassName : ''; 
         return (
             <>
-                <svg ref={this.svgRef} className={`${svgClassName} algorithm-image`}></svg >
+                <svg ref={this.svgRef} className={`${svgClassName} ` + css[`${'algorithm-image'}`]}></svg >
             </>
         )
     }

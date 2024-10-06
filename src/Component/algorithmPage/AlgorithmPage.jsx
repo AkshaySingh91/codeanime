@@ -3,17 +3,19 @@ import * as d3 from "d3"
 import { insertByLevelrorder } from '../HeapBinaryTree/BasicOperationInHeap'
 import SliderComponenet from './Slider';
 import { Link } from 'react-router-dom';
+import { algorithmName } from '../../Datastore/algoritmInfo';
+import css from '../../App.module.css'
 
 class AlgorithmPage extends Component {
     constructor(props) {
         super(props);
         this.backgroundSvg = React.createRef();
         this.algorithmCard = this.props.algorithmCard
-        this.path = this.props.path;
+        this.firstAlgoPath = algorithmName.find((dataStructure) => dataStructure.path === this.props.dataStructureName).algorithms[0].replaceAll(' ', '-');
         this.description = this.name = null;
-         
+
         this.algorithmCard.forEach(algoInfo => {
-            if (algoInfo.path === this.path) {
+            if (algoInfo.path === this.props.dataStructureName) {
                 this.description = algoInfo.description;
                 this.name = algoInfo.name;
             }
@@ -21,25 +23,26 @@ class AlgorithmPage extends Component {
     }
 
     render() {
+        const { dataStructureName } = this.props;
         return (
             <>
-                <section className="hero-section">
-                    <div className="hero-content">
+                <section className={css[`${"hero-section"}`]}>
+                    <div className={css[`${"hero-content"}`]}>
                         <h1>{this.name}</h1>
                         <p>{this.description}</p>
-                        <div className="buttons">
-                            <Link to={`/${this.path}/algorithm`} className="play-btn">
+                        <div className={css[`${"buttons"}`]}>
+                            <Link to={`/${dataStructureName}/${this.firstAlgoPath}/algorithm`} className={css[`${"play-btn"}`]}>
                                 <i className='fa fa-play' />
                             </Link>
                         </div>
                     </div>
 
-                    <div className="svgContainer">
+                    <div className={css[`${"svgContainer"}`]}>
                         {/* it will change based on algorithm page */}
                         <BinaryTreeAnimation backgroundSvgRef={this.backgroundSvg} />
                     </div>
 
-                    <div className="hero-slider">
+                    <div className={css[`${"hero-slider"}`]}>
                         <SliderComponenet algorithmCard={this.algorithmCard} />
                     </div>
                 </section>

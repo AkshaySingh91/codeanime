@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import css from './queueOperations.module.css'; // Import CSS for styling
+import css2 from '../visualizationPage/index/module.css'
 
 class QueueOperations extends Component {
     constructor(props) {
@@ -203,24 +204,23 @@ class QueueOperations extends Component {
                             </div>
                         </div>
                         {/* step Display */}
-                        <div className="text-container">
-                            <div className="console">
-                                <span className='header'>Console</span>
-                                <div ref={this.consoleRef} className="step-line">
+                        <div className={css2["text-container"]}>
+                            <div className={css2["console"]}>
+                                <span className={css2["header"]}>Console</span>
+                                <div ref={this.consoleRef} className={css2["step-line"]}>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div className="right-panel">
-                        <div className="tab-container" onClick={this.handleTabClick}>
-                            <div className={`code-tab  tab ${activeTab === 'Code' ? 'active' : ''}`}>
-                                <button value={'Code'}>code</button>
+                    <div className={css2["right-panel"]}>
+                        <div className={css2["tab-container"]} onClick={this.handleTabClick}>
+                            <div className={`${css2['code-tab']} ${css2['tab']} ${css2[activeTab === 'Code' ? 'active' : '']}`}>                                <button value={'Code'}>code</button>
                             </div>
                             <div className={`queueOperations-tab tab ${activeTab === 'queueOperations' ? 'active' : ''}`}>
                                 <button value={'queueOperations'} >queueOperations</button>
                             </div>
                         </div>
-                        <div className="selected-tab-content">
+                        <div className={css2["selected-tab-content"]}>
                             {activeTab === 'Code' &&
                                 <div className="code-Expression active">
                                     <code>BST code</code>

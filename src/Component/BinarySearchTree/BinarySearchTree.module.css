@@ -1,0 +1,52 @@
+.searchInBST,
+.insertInBST,
+.deleteInBST {
+    margin: 0 1rem;
+}
+
+.searchInBST form,
+.insertInBST form,
+.deleteInBST form {
+    display: flex;
+    flex-flow: column;
+    gap: 0.5rem;
+}
+
+.deleteInBST form input,
+.insertInBST form input,
+.searchInBST form input {
+    border: none;
+    padding: 0.5rem;
+    font-size: 1.2rem;
+    background-color: #e8dfdf;
+    border-bottom-left-radius: 5px;
+    border-top-left-radius: 5px;
+    outline: none;
+}
+
+.deleteInBST form button,
+.insertInBST form button,
+.searchInBST form button {
+    border-bottom-right-radius: 5px;
+    border-top-right-radius: 5px;
+    padding: 0.5rem;
+    font-size: 1.2rem;
+    cursor: pointer;
+}
+
+.custom-select {
+    margin: 0 1rem;
+    background-color: rgb(191, 213, 236);
+    padding: 0.5rem;
+    cursor: pointer;
+    border: none;
+    outline: none;
+}
+
+.custom-select option {
+    padding: 0.5rem;
+}
+
+.custom-select option:hover {
+    background-color: white;
+}
