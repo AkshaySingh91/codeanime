@@ -1,5 +1,5 @@
 .navbar {
-    background-color: #c6c4c4 !important;
+    background-color: var(--navbarBackgroundColor);
 }
 
 .container {
@@ -62,15 +62,15 @@
 }
 
 /* The slider */
-.slider {
-    --background: #b6b3b6;
+.slider { 
     position: absolute;
     cursor: pointer;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: var(--background);
+    background-color: var(--themeToggleBgcolor);
+    box-shadow: var(--toogleBoxShadow);
     transition: .5s;
     border-radius: 30px;
 }
@@ -82,16 +82,16 @@
     width: 1.4em;
     border-radius: 50%;
     left: 10%;
-    bottom: 15%;
-    background: var(--background);
+    bottom: 15%; 
     transition: .5s;
-    box-shadow: inset 15px -4px 0px 15px #fff000;
+    box-shadow: inset 15px -4px 0px 15px var(--themeToggleColor);
     transform: translateX(100%);
 }
 
+
 input:checked+.slider:before {
     transform: translateX(0%);
-    box-shadow: inset 8px -4px 0px 0px #fff000;
+    box-shadow: inset 8px -4px 0px 0px var(--themeToggleColor);
 }
 
 .toggleTheme {

@@ -10,9 +10,9 @@
 .sidebar {
     width: 10rem;
     overflow-x: hidden;
-    overflow-y: auto;
-    background-color: #353232;
-    color: white;
+    overflow-y: auto; 
+    background-color: var(--sidebarBgcolor); 
+    color: var(--visulationText);
     display: flex;
     flex-flow: column;
     box-sizing: border-box;
@@ -36,7 +36,7 @@
     text-align: left;
     outline: none;
     background-color: transparent;
-    color: #b4b4b4;
+    color: var(--visulationText); 
     font-size: 0.9rem;
     display: flex;
     justify-content: space-between;
@@ -44,7 +44,7 @@
 
 .active,
 .collapsible:hover {
-    background-color: #555;
+    background-color: var(--sidebarHovercolor);
 }
 
 /* arrow for btn */
@@ -62,8 +62,8 @@
 }
 
 .content {
-    overflow: hidden;
-    background-color: #201f1f;
+    overflow: hidden; 
+    background-color: var(--sidebarAlgoBgcolor);
 }
 
 .algorithm-list {
@@ -81,7 +81,7 @@
 }
 
 .algorithm-list li a:hover {
-    color: #ffffff;
+    opacity: 0.5;
 }
 
 @keyframes movingTape {
@@ -96,15 +96,15 @@
 
 .algorithm-list li a {
     text-decoration: none;
-    color: #b4b4b4;
+    color: var(--visulationText);
 }
 
 /* main content */
 .main-content {
     flex: 1;
     display: flex;
-    flex-direction: column;
-    background-color: #252522;
+    flex-direction: column; 
+    background-color: var(--visulationContainerBgcolor);
     outline: 1px solid #bbb;
 }
 
@@ -139,7 +139,7 @@
 .console {
     overflow-x: auto;
     overflow-y: auto; 
-    color: white;
+    color: var(--visulationText);
     display: flex;
     flex-flow: column;
     box-sizing: border-box;
@@ -170,7 +170,7 @@
 .feature-container {
     overflow-y: auto;
     border: 1px solid grey;
-    color: rgb(195, 195, 195);
+    color: var(--visulationText);
     text-align: justify;
     border-bottom: none;
     min-width: 100%;
@@ -182,7 +182,7 @@
     font-family: Roboto, sans-serif;
     -webkit-font-smoothing: subpixel-antialiased;
     user-select: none;
-    color: #bbb;
+    color: var(--visulationText);
     font-size: 12px;
     box-sizing: border-box;
     display: flex;
@@ -202,15 +202,16 @@
     box-sizing: border-box;
     display: flex;
     align-items: center;
-    background-color: #353232;
+    background-color: var(--activeTabBgcolor);
     border-bottom: 1px solid #505050;
+    opacity: 0.6;
 }
 
 .tab-container button,
 .right-tab-container button {
     border: none;
     background-color: transparent;
-    color: #bbb;
+    color: var(--visulationText);
     font-family: Roboto, sans-serif;
     font-size: 12px;
     cursor: pointer;
@@ -220,23 +221,23 @@
 
 /* it will show which tab selected */
 .tab-container .active,
-.right-tab-container .active {
-    background-color: #242424;
+.right-tab-container .active { 
+    background-color: var(--activeTabBgcolor);
     border-left: 1px solid #505050;
     border-right: 1px solid #505050;
     border-bottom: none;
+    opacity: 1;
 }
 
 
 .selected-tab-content {
     max-height: 100vh;
-    padding-bottom: 1rem;
-    background-color: #242424;
+    padding-bottom: 1rem; 
+    background-color: var(--visulationContainerBgcolor);
 }
 
 /* this style apply on content in selected tab */
 .selected-tab-content .active {
-    background-color: #242424;
     background-color: transparent;
     overflow-y: auto;
     color: #c3c3c3;
@@ -247,8 +248,8 @@
 .right-selected-tab-content{
     min-height: 80vh;
 }
-.right-selected-tab-content .active {
-    background-color: #242424;
+.right-selected-tab-content .active { 
+    background-color: var(--visulationContainerBgcolor);
     background-color: transparent;
     overflow-y: auto;
     color: #c3c3c3;
@@ -259,8 +260,8 @@
 
 
 .svg-area {
-    height: 100%;
-    background-color: #010101;
+    height: 100%; 
+    background-color: var(--svgBgcolor);
     overflow: auto;
 }
 
@@ -272,6 +273,8 @@
     align-items: center;
     justify-content: flex-end;
     padding: 0.4rem 1rem;
+    /* background-color: grey; */
+    background: var(--visulationContainerBgcolor);
 }
 
 .speedController {
@@ -283,7 +286,8 @@
 
 .speedController label[for="speed"],
 span {
-    color: rgb(195, 195, 195);
+    /* color: rgb(195, 195, 195); */
+    color: var(--visulationText);
     font-size: 1rem;
 }
 
@@ -331,7 +335,7 @@ input[type="range"]::-webkit-slider-thumb {
     border: none;
     border-top: 0.4rem solid transparent;
     border-bottom: 0.4rem solid transparent;
-    border-left: calc(0.4rem * 2 * 0.86) solid #edd;
+    border-left: calc(0.4rem * 2 * 0.86) solid var(--visulationText);;
     cursor: pointer;
 }
 
@@ -351,7 +355,8 @@ input[type="range"]::-webkit-slider-thumb {
         top: 0;
         height: 100%;
         width: 33%;
-        background: #edd;
+        /* background: #edd; */
+        background: var(--visulationText);
     }
 
     &:before {

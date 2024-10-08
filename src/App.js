@@ -4,11 +4,9 @@ import { AlgorithmPage } from './Component/algorithmPage/AlgorithmPage';
 import Card from './Component/Card';
 import { algorithmCard } from './Datastore/algoritmInfo';
 import AlgorithmVisualization from './Component/visualizationPage';
-import css from "./App.module.css"
+import css from "./App.module.css" 
 
-const ThemeContext = createContext('dark');
 const App = () => {
-  const [theme, setTheme] = useState('dark');
   return (
     <>
       <Router>

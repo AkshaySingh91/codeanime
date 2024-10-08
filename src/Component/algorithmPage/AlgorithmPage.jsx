@@ -32,7 +32,7 @@ class AlgorithmPage extends Component {
                         <p>{this.description}</p>
                         <div className={css[`${"buttons"}`]}>
                             <Link to={`/${dataStructureName}/${this.firstAlgoPath}/algorithm`} className={css[`${"play-btn"}`]}>
-                                <i className='fa fa-play' />
+                                <button>GET STARTED</button>
                             </Link>
                         </div>
                     </div>
@@ -85,7 +85,7 @@ class BinaryTreeAnimation extends Component {
             .append('path')
             .attr('d', link)
             .attr('fill', 'none')
-            .attr('stroke', 'white')
+            .attr('stroke', 'grey')
             .attr('stroke-width', 2);
 
         // Create groups for each node

@@ -3,8 +3,7 @@ import css from './Navbar.module.css';
 import { useTheme } from '../Datastore/Context';
 
 const Navbar = () => {
-    // const { theme, toggleTheme } = useTheme();
-    console.log(useTheme())
+    const { toggleTheme } = useTheme();
     return (
         <>
             < nav className={css[`${"navbar"}`]} >
@@ -20,7 +19,7 @@ const Navbar = () => {
                     <div className={css[`${"toggleTheme"}`]}>
                         <label className={css[`${"switch"}`]}>
                             <input type="checkbox" onChange={(e) => {
-                                // toggleTheme();
+                                toggleTheme();
                             }} />
                             <span className={css[`${"slider"}`]}></span>
                         </label>

@@ -60,7 +60,7 @@ export class BinaryTreePreview extends Component {
             .append('path')
             .attr('d', link)
             .attr('fill', 'none')
-            .attr('stroke', 'white')
+            .attr('stroke', 'grey')
             .attr('stroke-width', 2);
 
         // Create groups for each node
