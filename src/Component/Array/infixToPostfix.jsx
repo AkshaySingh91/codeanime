@@ -1,6 +1,60 @@
 import React, { Component, createRef } from 'react';
 import css from './infixToPostfix.module.css';
 import css2 from '../visualizationPage/index.module.css';
+import { Editor } from '@monaco-editor/react';
+import { ThemeContext } from '../../Datastore/Context';
+
+const codeToDisplay = `function infixToPostfix(expression) {\n\
+const precedence = {\n\
+    '+': 1,\n\
+    '-': 1,\n\
+    '*': 2,\n\
+    '/': 2,\n\
+    '^': 3\n\
+};\n\
+\n\
+const isLeftAssociative = (operator) => operator !== '^';\n\
+\n\
+let stack = [];\n\
+let result = [];\n\
+\n\
+const isOperator = (ch) => ['+', '-', '*', '/', '^'].includes(ch);\n\
+\n\
+for (let i = 0; i < expression.length; i++) {\n\
+    const char = expression[i];\n\
+\n\
+    if (/[a-zA-Z0-9]/.test(char)) {\n\
+        result.push(char);\n\
+    }\n\
+    else if (char === '(') {\n\
+        stack.push(char);\n\
+    }\n\
+    else if (char === ')') {\n\
+        while (stack.length && stack[stack.length - 1] !== '(') {\n\
+            result.push(stack.pop());\n\
+        }\n\
+        stack.pop();\n\
+    }\n\
+    else if (isOperator(char)) {\n\
+        while (\n\
+            stack.length &&\n\
+            isOperator(stack[stack.length - 1]) &&\n\
+            (precedence[char] < precedence[stack[stack.length - 1]] ||\n\
+                (precedence[char] === precedence[stack[stack.length - 1]] && isLeftAssociative(char)))\n\
+        ) {\n\
+            result.push(stack.pop());\n\
+        }\n\
+        stack.push(char);\n\
+    }\n\
+}\n\
+\n\
+while (stack.length) {\n\
+    result.push(stack.pop());\n\
+}\n\
+\n\
+return result.join(' ');\n\
+}`;
+
 
 export class InfixToPostfix extends Component {
     constructor(props) {
@@ -10,7 +64,7 @@ export class InfixToPostfix extends Component {
             currentStep: -1,
             infixExpression: 'A + B * C + D',
             stepsArray: [],
-            featureTab: 'Code',
+            featureTab: 'Expression',
             activeTab: 'Console',
             info: [],  // Changed to an array to store multiple messages
         };
@@ -19,15 +73,24 @@ export class InfixToPostfix extends Component {
         this.stackRef = createRef();
         this.expressionRef = createRef();
         this.consoleRef = createRef();
+        this.isPlayingRef = createRef();
     }
-
-    componentDidUpdate() {
+    checkIsPlaying = async () => {
+        while (this.isPlayingRef.current === 'pause') {
+            await new Promise(resolve => setTimeout(resolve, 100)); // Poll every 100ms
+        }
+    };
+    componentDidUpdate(prevProps) {
         const { currentStep, steps, isPaused, speed } = this.state;
         if (currentStep < steps.length - 1 && !isPaused) {
             const timer = setTimeout(() => {
                 this.visualizeNextStep();
             }, speed);
             return () => clearTimeout(timer);
+        }
+        console.log(prevProps.isPlaying, this.props.isPlaying)
+        if (prevProps.isPlaying !== this.props.isPlaying) {
+            this.isPlayingRef.current = this.props.isPlaying;
         }
     }
 
@@ -83,13 +146,14 @@ export class InfixToPostfix extends Component {
         const operators = new Set(['+', '-', '*', '/', '^', '%']);
 
         const strArr = expression.split('');
-        const { speed } = this.props;
+        const { speed = 1 } = this.props;
         const delay = (time) => {
             return new Promise((resolve) => {
-                setTimeout(() => { resolve() }, time / speed);
+                setTimeout(() => { resolve() }, time);
             });
         };
         for (const char of strArr) {
+            await this.checkIsPlaying();
             if (/[A-Za-z0-9]/.test(char)) {
                 output.push(char);
                 this.setSteps({ scanSymbol: char, stack: [...stack], exp: output.join('') });
@@ -101,7 +165,7 @@ export class InfixToPostfix extends Component {
                 while (stack.length && stack[stack.length - 1] !== '(') {
                     output.push(stack.pop());
                     this.setSteps({ scanSymbol: char, stack: [...stack], exp: output.join('') });
-                    await delay(1000);
+                    await delay(1000 / speed)
                 }
                 stack.pop();
                 this.setSteps({ scanSymbol: char, stack: [...stack], exp: output.join('') });
@@ -110,20 +174,20 @@ export class InfixToPostfix extends Component {
                     this.updateInfo(`Pop ${stack[stack.length - 1]} from stack, append it in ${output.join('')}.`);
                     output.push(stack.pop());
                     this.setSteps({ scanSymbol: char, stack: [...stack], exp: output.join('') });
-                    await delay(1000);
+                    await delay(1000 / speed)
                 }
                 stack.push(char);
                 this.updateInfo(`Push ${char} in stack.`);
                 this.setSteps({ scanSymbol: char, stack: [...stack], exp: output.join('') });
             }
-            await delay(1000);
+            await delay(1000 / speed);
         }
 
         // Pop remaining operators in the stack
         while (stack.length) {
             output.push(stack.pop());
             this.setSteps({ scanSymbol: ' ', stack: [...stack], exp: output.join('') });
-            await delay(1000); // Add delay for each popping step
+            await delay(1000 / speed); // Add delay for each popping step
         }
 
         // Start the step-by-step visualization
@@ -206,19 +270,11 @@ export class InfixToPostfix extends Component {
                         </div>
                         <div className={css2["feature-container"]}>
                             <div className={css2["tab-container"]} onClick={this.handleTabClick}>
-                                <div className={`${css2['code-tab']} ${css2['tab']} ${css2[featureTab === 'Code' ? 'active' : '']}`}>
-                                    <button value={'Code'}>Code</button>
-                                </div>
                                 <div className={`${css['Expression-tab']} ${css2['tab']} ${css2[`${featureTab === 'Expression' ? 'active' : ''}`]}`}>
                                     <button value={'Expression'} >Expression</button>
                                 </div>
                             </div>
                             <div className={css2["selected-tab-content"]}>
-                                {featureTab === 'Code' &&
-                                    <div className={`${css2['code-Expression']} ${css2['active']}`}>
-                                        <code>BST code</code>
-                                    </div>
-                                }
                                 {featureTab === 'Expression' &&
                                     <div className={css["Expression"]}>
                                         <form onSubmit={this.startVisualization}>
@@ -249,13 +305,38 @@ export class InfixToPostfix extends Component {
                         <div className={css2["right-selected-tab-content"]}>
                             {
                                 activeTab === 'Code' &&
-                                <div className={`${css2['code-container']} ${css2['active']}`}>
-                                    <code>code</code>
+                                <div className={`${css['code-container']} ${css['active']}`}>
+                                        <ThemeContext.Consumer>
+                                            {({ theme = 'light' }) => (
+                                                <Editor
+                                                    className={css['editor']}  // Add this class
+                                                    language='javascript'
+                                                    onMount={this.handleEditorDidMount}
+                                                    value={codeToDisplay}
+                                                    options={{
+                                                        padding: {
+                                                            top: '10',
+                                                            left: '0'
+                                                        },
+                                                        minimap: { enabled: false }, // Example of other editor options
+                                                        scrollBeyondLastLine: false,
+                                                        lineNumbersMinChars: 2,
+                                                        fontSize: "16px",
+                                                        fontFamily: 'Fira Code, monospace',
+                                                        lineHeight: '19',
+                                                        codeLensFontSize: '5',
+                                                        theme: theme === 'Dark' ? 'vs-dark' : 'vs-light',
+                                                    }}
+                                                    width={'100%'}
+                                                    height={'80vh'}
+                                                />
+                                            )}
+                                        </ThemeContext.Consumer>
                                 </div>
                             }
                             {
                                 activeTab === 'Console' &&
-                                <div className={css2["console"]}> 
+                                <div className={css2["console"]}>
                                     <div ref={this.consoleRef} className={css2["step-line"]}>
                                         {/* Render all the console messages from the state */}
                                         {info.map((message, index) => (

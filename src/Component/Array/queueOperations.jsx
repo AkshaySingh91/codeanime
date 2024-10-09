@@ -1,256 +1,336 @@
-import React, { Component } from 'react';
-import css from './queueOperations.module.css'; // Import CSS for styling
-import css2 from '../visualizationPage/index/module.css'
+import React, { Component, useEffect, useState } from 'react';
+import css from './queueOperations.module.css'; // Styles specific to queue operations
+import css2 from '../visualizationPage/index.module.css'; // General styles
+import * as d3 from "d3"
+import { Editor } from '@monaco-editor/react'; // Monaco Editor for code display
+import { ThemeContext } from '../../Datastore/Context'; // Context for theme management
+const codeToDisplay = `let queue = [];\n\
+let front = -1;\n\
+let rear = -1;\n\
+const queueMaxSize = 9;\n\
+\n\
+function enqueueElement(value) {\n\
+    if (rear === queueMaxSize - 1) {\n\
+        alert('Queue is full');\n\
+    } else {\n\
+        if (front === -1) front = 0;\n\
+        queue[++rear] = value;\n\
+    }\n\
+}\n\
+\n\
+function dequeueElement() {\n\
+    if (front === -1) {\n\
+        alert('Queue Underflow');\n\
+    } else {\n\
+        queue[front] = undefined;\n\
+        if (front === rear) {\n\
+            front = rear = -1;\n\
+        } else {\n\
+            front++;\n\
+        }\n\
+    }\n\
+}`;
 
-class QueueOperations extends Component {
-    constructor(props) {
-        super(props);
-        this.canvasRef = React.createRef();
-        this.state = {
-            queue: [],
-            queueMaxSize: 7, // Maximum queue size for visualization
-            front: -1, // Front pointer
-            rear: -1, // Rear pointer
-            isCircular: false, // For circular queue
-            inputValue: '', // Holds user input value
-            activeTab: 'Code',
-        };
-        this.consoleRef = React.createRef();
-    }
+const QueueOperations = (props) => {
+    const [queue, setQueue] = useState([1, 2, 3])
+    const [queueMaxSize, setQueueMaxSize] = useState(9)
+    const [front, setFront] = useState(-1)
+    const [rear, setRear] = useState(-1)
+    const [inputValue, setInputvalue] = useState('')
+    const [activeTab, setActiveTab] = useState('Console')
+    const [featureTab, setFeatureTab] = useState('queueOperations')
+    const [isCircular, setIsCircular] = useState(false)
+    const [queueSize, setQueueSize] = useState(17)
+    const [info, setInfo] = useState('')
+    const consoleRef = React.createRef();
+    const svgRef = React.createRef();
 
-    componentDidMount() {
-        this.visualizeQueue();
-    }
 
-    componentDidUpdate() {
-        this.visualizeQueue();
-    }
-
-    visualizeQueue = () => {
-        const { queue, queueMaxSize, front, rear } = this.state;
-        const canvas = this.canvasRef.current;
-        const ctx = canvas.getContext('2d');
-        // Clear the canvas
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-        // Draw queue elements
-        for (let i = 0; i < queueMaxSize; i++) {
-            if (queue[i] !== undefined) {
-                this.drawElement(ctx, i, queue[i]);
-            } else {
-                this.drawElement(ctx, i, null);
-            }
+    const enqueueElement = (e) => {
+        const input = e.target.value || Math.floor(Math.random() * 100)
+        if (consoleRef.current) {
+            consoleRef.current.innerHTML = ''
         }
+        if (queue.length === queueSize) {
+            setInfo(`Queue is <b>Full</b>.`)
+            return;
+        }
+        setQueue([...queue, input]);
+        setInfo(`Enqueued <b>${input}</b> in queue`);
+    };
+    const dequeueElement = () => {
+        if (consoleRef.current) {
+            consoleRef.current.innerHTML = ''
+        }
+        if (queue.length <= 0) {
+            setInfo(`Queue is <b>Empty</b>`);
+            return;
+        }
+        
+        setInfo(`Dequeued <b>${queue[0]}</b> in queue`);
+        setQueue(queue.slice(1));
+    };
+    useEffect(() => {
+        if (consoleRef.current) {
+            const span = document.createElement('span');
+            span.innerHTML = info;
+            consoleRef.current.append(span);
+        }
+        console.log(info)
+    }, [info])
+    useEffect(() => {
+        const svg = d3.select(svgRef.current);
+        svg.selectAll('*').remove();
+        const height = 300;
+        const width = 400;
+        svg.attr('width', width).attr('height', height);
+        const margin = { top: 50, bottom: 50, left: 50, right: 50 };
 
-        // Draw front and rear pointers
-        if (front !== -1) {
-            this.drawPointer(ctx, front, 'f');
+        const elementWidth = 50, elementHeight = 70
+        const cylinder = svg.append('g')
+            .attr('transform', `translate(${margin.left}, ${margin.top})`);
+
+        const createCylinder = () => {
+            cylinder.append("ellipse")
+                .attr('cx', 0)
+                .attr("rx", 20)
+                .attr("ry", elementHeight / 2)
+                .attr('stroke', '#433878')
+                .attr('stroke-width', '2px')
+                .attr('fill', '#AFAFD3');
+            cylinder.append("ellipse")
+                .attr('cx', elementWidth * queueSize)  // Shift to the right
+                .attr("rx", 20)
+                .attr("ry", elementHeight / 2)
+                .attr('stroke', '#433878')
+                .attr('stroke-width', '2px')
+                .attr('fill', '#AFAFD3');
+            cylinder.append("line")
+                .attr("x1", 0)
+                .attr("y1", -elementHeight / 2)
+                .attr("x2", elementWidth * queueSize)
+                .attr("y2", -elementHeight / 2)
+                .attr('stroke', '#433878')
+                .attr('stroke-width', '2px');
+            cylinder.append("line")
+                .attr("x1", 0)
+                .attr("y1", elementHeight / 2)
+                .attr("x2", elementWidth * queueSize)
+                .attr("y2", elementHeight / 2)
+                .attr('stroke', '#433878')
+                .attr('stroke-width', '2px');
+            cylinder.append('rect')
+                .attr('x', 0)
+                .attr('y', -elementHeight / 2)
+                .attr('width', elementWidth * queueSize)
+                .attr('height', elementHeight)
+                .attr('fill', '#7E60BF')
+                .attr('opacity', 0.3)
+                .lower();
         }
-        if (rear !== -1) {
-            this.drawPointer(ctx, rear, 'r');
-        }
+        createCylinder();
+        const group = cylinder.selectAll('g')
+            .data(queue)
+            .enter()
+            .append('g')
+            .attr('transform', (d, i) => `translate(${i * elementWidth}, 0)`);  // Position each group based on index
+
+        // Append the front ellipse for each group (left side of the cylinder)
+        group.append("ellipse").transition().duration(200)
+            .attr('cx', 0)
+            .attr("rx", 20)
+            .attr("ry", elementHeight / 2)
+            .attr('stroke', '#433878')
+            .attr('stroke-width', '2px')
+            .attr('fill', '#AFAFD3');  // Light color for the base
+
+        // Append the rear ellipse for each group (right side of the cylinder)
+        group.append("ellipse").transition().duration(200)
+            .attr('cx', elementWidth)  // Shift to the right
+            .attr("rx", 20)
+            .attr("ry", elementHeight / 2)
+            .attr('stroke', '#433878')
+            .attr('stroke-width', '2px')
+            .attr('fill', '#AFAFD3');  // Light color for the base
+
+        // Draw the top line of the cylinder
+        group.append("line").transition().duration(200)
+            .attr("x1", 0)
+            .attr("y1", -elementHeight / 2)
+            .attr("x2", elementWidth)
+            .attr("y2", -elementHeight / 2)
+            .attr('stroke', '#433878')
+            .attr('stroke-width', '2px');
+
+        // Draw the bottom line of the cylinder
+        group.append("line").transition().duration(200)
+            .attr("x1", 0)
+            .attr("y1", elementHeight / 2)
+            .attr("x2", elementWidth)
+            .attr("y2", elementHeight / 2)
+            .attr('stroke', '#433878')
+            .attr('stroke-width', '2px');
+
+        // Draw the body of the cylinder (rectangle between the lines)
+        group.append('rect')
+            .attr('x', 0)
+            .attr('y', -elementHeight / 2)
+            .attr('width', elementWidth)
+            .attr('height', elementHeight)
+            .attr('fill', '#7E60BF')
+            .attr('opacity', 0.7)
+            .lower();
+        group.append("text")
+            .attr('x', elementWidth / 2 - 20)
+            .attr('y', 0)
+            .attr('dy', '0.35em')
+            .attr('text-anchor', 'middle')
+            .attr('fill', '#FFFFFF')  // White color for better contrast
+            .attr('font-size', '1.5rem')
+            .text((d) => d)
+
+        // Add the 'F' (Front) marker to the first element
+        group.filter((d, i) => i === 0)
+            .append("text")
+            .attr('x', -10)
+            .attr('y', 70)
+            .attr('dy', '0.35em')
+            .attr('fill', 'Red')
+            .attr('font-size', '2rem')
+            .text('F');
+
+        // Add the 'R' (Rear) marker to the last element
+        group.filter((d, i) => i === queue.length - 1)
+            .append("text")
+            .attr('x', elementWidth - 20)
+            .attr('y', 70)
+            .attr('dy', '0.35em')
+            .attr('fill', 'Red')
+            .attr('font-size', '2rem')
+            .text('R');
+    }, [queue])
+
+
+    const clearQueue = () => {
+        setQueue([]);
     };
 
-    drawElement = (ctx, index, value) => {
-        const elementWidth = 30;
-        const elementHeight = 20;
-        const startX = 10 + index * (elementWidth + 10);
-        const startY = 100;
-
-        ctx.fillStyle = value !== null ? '#3498db' : '#bdc3c7';
-        ctx.fillRect(startX, startY, elementWidth, elementHeight);
-
-        ctx.fillStyle = '#ffffff';
-        ctx.font = '20px Arial';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        if (value !== null) {
-            ctx.fillText(value, startX + elementWidth / 2, startY + elementHeight / 2);
+    const isEmpty = () => {
+        if (consoleRef.current) {
+            consoleRef.current.innerHTML = ''
         }
+        setInfo(`Queue is <b>${queue.length === 0 ? 'empty' : 'full'}</b>`);
     };
 
-    drawPointer = (ctx, index, label) => {
-        const elementWidth = 30;
-        const startX = 10 + index * (elementWidth + 10);
-        const startY = 130;
-
-        ctx.fillStyle = label === 'f' ? 'red' : 'green'; // 'f' for front, 'r' for rear
-        ctx.fillText(label, startX + elementWidth / 2, startY);
+    const convertToCircular = () => {
+        setIsCircular(true);
     };
 
-    enqueueElement = () => {
-        const { queue, queueMaxSize, front, rear, inputValue, isCircular } = this.state;
-        const newValue = inputValue || Math.floor(Math.random() * 100);
-        if (this.consoleRef.current) {
-            this.consoleRef.current.innerHTML = ''
-        }
-        if (isCircular) {
-            // Circular queue logic
-            if ((rear + 1) % queueMaxSize === front) {
-                this.updateInfo('Queue is full')
-            } else {
-                const newRear = (rear + 1) % queueMaxSize;
-                const newQueue = [...queue];
-                newQueue[newRear] = newValue;
-                this.setState({
-                    queue: newQueue,
-                    rear: newRear,
-                    front: front === -1 ? 0 : front,
-                });
-            }
-        } else {
-            // Linear queue logic
-            if (rear === queueMaxSize - 1) {
-                this.updateInfo('Queue is full');
-            } else {
-                const newRear = rear + 1;
-                const newQueue = [...queue];
-                newQueue[newRear] = newValue;
-                this.updateInfo(`${newValue} enqueued in queue`);
-                this.setState({
-                    queue: newQueue,
-                    rear: newRear,
-                    front: front === -1 ? 0 : front,
-                });
-            }
-        }
-        this.setState({ inputValue: '' });
+
+    const handleChange = (e) => {
+        setInputvalue(e.target.value);
     };
 
-    dequeueElement = () => {
-        const { queue, front, rear, isCircular, queueMaxSize } = this.state;
-        if (this.consoleRef.current) {
-            this.consoleRef.current.innerHTML = ''
-        }
-        if (front === -1) {
-            this.updateInfo('Queue Underflow')
-        } else {
-            const newQueue = [...queue];
-            this.updateInfo(`${newQueue[front]} dequeued from queue.`)
-            newQueue[front] = undefined;
-            if (isCircular) {
-                if (front === rear) {
-                    this.setState({ front: -1, rear: -1, queue: [] });
-                } else {
-                    this.setState({ front: (front + 1) % queueMaxSize, queue: newQueue });
-                }
-            } else {
-                if (front === rear) {
-                    this.setState({ front: -1, rear: -1, queue: [] });
-                } else {
-                    this.setState({ front: front + 1, queue: newQueue });
-                }
-            }
-        }
-    };
-
-    clearQueue = () => {
-        this.setState({ queue: [], front: -1, rear: -1 });
-    };
-
-    peekElement = () => {
-        if (this.consoleRef.current) {
-            this.consoleRef.current.innerHTML = ''
-        }
-        const { queue, front } = this.state;
-        if (front !== -1) {
-            this.updateInfo(`The front value is: ${queue[front]}`);
-        } else {
-            this.updateInfo(`Queue is empty`);
-        }
-    };
-
-    isEmpty = () => {
-        const { front } = this.state;
-        if (this.consoleRef.current) {
-            this.consoleRef.current.innerHTML = ''
-        }
-        this.updateInfo(`${front === -1 ? 'The queue is empty' : 'The queue is not empty'}`);
-    }
-    convertToCircular = () => {
-        this.setState({ isCircular: true });
-        if (this.consoleRef.current) {
-            this.consoleRef.current.innerHTML = ''
-        }
-        this.updateInfo(`Queue has been converted to Circular Queue`);
-    };
-
-    handleInputChange = (e) => {
-        this.setState({ inputValue: e.target.value });
-    };
-    updateInfo = (value) => {
-        this.setState({ info: value }, () => {
-            if (this.consoleRef.current) {
-                const span = document.createElement('span');
-                span.innerHTML = value;
-                this.consoleRef.current.append(span);
-            }
-        })
-    }
-    handleTabClick = (e) => {
+    const handleTabClick = (e) => {
         if (e.target.tagName === 'BUTTON') {
-            this.setState({ activeTab: e.target.value })
+            setFeatureTab(e.target.value);
+        }
+    };
+    const handleRightTabClick = (e) => {
+        if (e.target.tagName === 'BUTTON') {
+            setActiveTab(e.target.value)
         }
     }
-    render() {
-        const { inputValue, activeTab } = this.state;
-        return (
-            <>
-                <div className={"row"}>
-                    <div className={"mid-content"}>
-                        <div className={"visualization-container"}>
-                            <div className={`${"queueCanvasContainer"}`}>
-                                <canvas ref={this.canvasRef} />
-                            </div>
-                        </div>
-                        {/* step Display */}
-                        <div className={css2["text-container"]}>
-                            <div className={css2["console"]}>
-                                <span className={css2["header"]}>Console</span>
-                                <div ref={this.consoleRef} className={css2["step-line"]}>
-                                </div>
-                            </div>
+    return (
+        <>
+            <div className={css2["row"]}>
+                <div className={css2["mid-content"]}>
+                    <div className={css2["visualization-container"]}>
+                        <div className={css2["svg-area"]}>
+                            <svg ref={svgRef}></svg>
                         </div>
                     </div>
-                    <div className={css2["right-panel"]}>
-                        <div className={css2["tab-container"]} onClick={this.handleTabClick}>
-                            <div className={`${css2['code-tab']} ${css2['tab']} ${css2[activeTab === 'Code' ? 'active' : '']}`}>                                <button value={'Code'}>code</button>
-                            </div>
-                            <div className={`queueOperations-tab tab ${activeTab === 'queueOperations' ? 'active' : ''}`}>
-                                <button value={'queueOperations'} >queueOperations</button>
+                    <div className={css2["feature-container"]}>
+                        <div className={css2["tab-container"]} onClick={handleTabClick}>
+                            <div className={`${css['queueOperations-tab']} ${css2['tab']} ${css2[`${isCircular ? 'active' : ''}`]}`}>
+                                <button value={'queueOperations'}>Queue Operations</button>
                             </div>
                         </div>
                         <div className={css2["selected-tab-content"]}>
-                            {activeTab === 'Code' &&
-                                <div className="code-Expression active">
-                                    <code>BST code</code>
+                            <div className="queueOperations">
+                                <label htmlFor="value"><b>Enter any value:</b></label>
+                                <input
+                                    id="inputValue"
+                                    type="number"
+                                    placeholder="Enter value to enqueue"
+                                    value={inputValue}
+                                    onChange={handleChange}
+                                    onKeyDown={(e) => e.key === 'Enter' && enqueueElement()}
+                                />
+                                <div className={css['buttons']}>
+                                    <button onClick={enqueueElement}>Enqueue</button>
+                                    <button onClick={dequeueElement}>Dequeue</button>
+                                    <button onClick={isEmpty}>IsEmpty?</button>
+                                    <button onClick={clearQueue}>Clear Queue</button>
+                                    <button onClick={convertToCircular}>Convert to Circular</button>
                                 </div>
-                            }
-                            {activeTab === 'queueOperations' &&
-                                <div className={css["queue-container"]}>
-                                    <div className={css["queue-controls"]}>
-                                        <input
-                                            type="number"
-                                            placeholder="Enter value to enqueue"
-                                            value={inputValue}
-                                            onChange={this.handleInputChange}
-                                        />
-                                        <button onClick={this.enqueueElement}>Enqueue</button>
-                                        <button onClick={this.dequeueElement}>Dequeue</button>
-                                        <button onClick={this.peekElement}>Peek</button>
-                                        <button onClick={this.isEmpty}>Is Empty?</button>
-                                        <button onClick={this.clearQueue}>Clear Queue</button>
-                                        <button onClick={this.convertToCircular}>Convert to Circular</button>
-                                    </div>
-                                </div>
-                            }
+                            </div>
                         </div>
                     </div>
                 </div>
-            </>
-        );
-
-    }
+                <div className={css2["text-container"]}>
+                    <div className={css2[`${"right-tab-container"}`]} onClick={handleRightTabClick}>
+                        <div className={`${css2['Console-tab']} ${css2['tab']} ${css2[`${activeTab === 'Console' ? 'active' : ''}`]}`}>
+                            <button value={'Console'} >Console</button>
+                        </div>
+                        <div className={`${css2['Code-tab']} ${css2['tab']} ${css2[`${activeTab === 'Code' ? 'active' : ''}`]}`}>
+                            <button value={'Code'} >Code</button>
+                        </div>
+                    </div>
+                    <div className={css2["right-selected-tab-content"]}>
+                        {
+                            activeTab === 'Code' &&
+                            <div className={`${css['code-container']} ${css['active']}`}>
+                                <ThemeContext.Consumer>
+                                    {({ theme = 'light' }) => (
+                                        <Editor
+                                            className={css['editor']}  // Add  class
+                                            language='javascript'
+                                            value={codeToDisplay}
+                                            options={{
+                                                padding: {
+                                                    top: '10',
+                                                    left: '0',
+                                                    bottom: '10'
+                                                },
+                                                minimap: { enabled: false }, // Example of other editor options
+                                                scrollBeyondLastLine: false,
+                                                lineNumbersMinChars: 2,
+                                                fontSize: "16px",
+                                                fontFamily: 'Fira Code, monospace',
+                                                lineHeight: '19',
+                                                codeLensFontSize: '5',
+                                                theme: theme === 'Dark' ? 'vs-dark' : 'vs-light',
+                                            }}
+                                            width={'100%'}
+                                            height={'80vh'}
+                                        />
+                                    )}
+                                </ThemeContext.Consumer>
+                            </div>}
+                        {
+                            activeTab === 'Console' &&
+                            <div className={css2["console"]}>
+                                <span className={css2["header"]}></span>
+                                <div ref={consoleRef} className={css2["step-line"]}>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </>
+    );
 }
 
 export default QueueOperations;

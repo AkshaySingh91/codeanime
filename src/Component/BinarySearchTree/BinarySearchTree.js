@@ -1,20 +1,26 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react';
 import { BinaryTreeNode, drawBinaryTree, VisualizationType, setTheme } from 'binary-tree-visualizer';
-import { SearchInBST, DeleteNodeFromBST, InsertInBst, TraverseInBST, GenerateTrees } from './BasicOperationInBST';
-import css from '../visualizationPage/index.module.css'
+import { SearchInBST, DeleteNodeFromBST, InsertInBst, TraverseInBST, GenerateTrees, CreateBST } from './BasicOperationInBST';
+import css from '../visualizationPage/index.module.css';
+import { algorithmCodes } from './BasicOperationInBST';
+import Editor from '@monaco-editor/react';
+import { ThemeContext } from '../../Datastore/Context';
 
 const TreeContext = React.createContext(null)
 
+
 export class BinarySearchTree extends Component {
     constructor() {
+        console.log(BinarySearchTree.contextType)
         super()
         this.state = {
             nodes: [12, 23, 1, 23, 53, 68, 14, 10, 0, 13, 50],
             root: null,
             prevRoot: null,
             info: 'hello',
-            featureTab: 'Insert',
-            activeTab: 'Console',
+            featureTab: 'Create',
+            activeTab: 'Code',
+            codeToDisplay: algorithmCodes.find(code => code.name === 'Insert').pseudocode
         }
         this.canvasRef = React.createRef();
         this.consoleRef = React.createRef();
@@ -57,7 +63,7 @@ export class BinarySearchTree extends Component {
             fontSize: 13,
             textFont: "Arial",
             colorArray: [{ bgColor: 'white', borderColor: 'black' }],
-            strokeColor: 'white',
+            strokeColor: 'grey',
         })
     }
 
@@ -102,6 +108,14 @@ export class BinarySearchTree extends Component {
     }
     handleTabClick = (e) => {
         if (e.target.tagName === 'BUTTON') {
+            let code = algorithmCodes.find(code => code.name === e.target.value)
+            if (code) {
+                code = code.pseudocode;
+                console.log(code)
+            } else {
+                code = ''
+            }
+            this.setState({ codeToDisplay: code });
             this.setState({ featureTab: e.target.value })
         }
     }
@@ -110,10 +124,14 @@ export class BinarySearchTree extends Component {
             this.setState({ activeTab: e.target.value })
         }
     }
+    handleEditorDidMount = (editor, monaco) => {
+        console.log(editor)
+        editor.updateOptions({ readOnly: true })
+    }
     render() {
-        const { featureTab, activeTab } = this.state
+        const { featureTab, activeTab, codeToDisplay } = this.state
         const { speed, isPlaying } = this.props;
-        console.log(activeTab)
+
         return (<>
             <TreeContext.Provider value={{ info: this.state.info }}>
                 <div className={css[`${"row"}`]}>
@@ -127,6 +145,9 @@ export class BinarySearchTree extends Component {
                         <div className={css[`${"feature-container"}`]}>
                             <div className={css[`${"tab-container"}`]} onClick={this.handleTabClick}>
 
+                                <div className={`${css['Create-tab']} ${css['tab']} ${css[`${featureTab === 'Create' ? 'active' : ''}`]}`}>
+                                    <button value={'Create'} >Create</button>
+                                </div>
                                 <div className={`${css['Insert-tab']} ${css['tab']} ${css[`${featureTab === 'Insert' ? 'active' : ''}`]}`}>
                                     <button value={'Insert'} >Insert</button>
                                 </div>
@@ -144,6 +165,11 @@ export class BinarySearchTree extends Component {
                                 </div>
                             </div>
                             <div className={css[`${"selected-tab-content"}`]}>
+                                {featureTab === 'Create' &&
+                                    <div className={css[`${"insert"}`]}>
+                                        <CreateBST root={this.state.root} updateInfo={this.updateInfo} updateRoot={this.updateRoot} highlightNode={this.highlightNode} nodes={this.state.nodes} updateNodes={this.updateNodes} canvas={this.canvasRef} consoleRef={this.consoleRef} speed={speed} isPlaying={isPlaying} />
+                                    </div>
+                                }
                                 {featureTab === 'Insert' &&
                                     <div className={css[`${"insert"}`]}>
                                         <InsertInBst root={this.state.root} updateInfo={this.updateInfo} updateRoot={this.updateRoot} highlightNode={this.highlightNode} nodes={this.state.nodes} updateNodes={this.updateNodes} canvas={this.canvasRef} consoleRef={this.consoleRef} speed={speed} isPlaying={isPlaying} />
@@ -181,12 +207,36 @@ export class BinarySearchTree extends Component {
                                 <button value={'Code'} >Code</button>
                             </div>
                         </div>
-
                         <div className={css["right-selected-tab-content"]}>
                             {
                                 activeTab === 'Code' &&
                                 <div className={`${css['code-container']} ${css['active']}`}>
-                                    <code>BST code</code>
+                                    <ThemeContext.Consumer>
+                                        {({ theme = 'light' }) => (
+                                            <Editor
+                                                className={css['editor']}  // Add this class
+                                                language='javascript'
+                                                onMount={this.handleEditorDidMount}
+                                                value={codeToDisplay}
+                                                options={{
+                                                    padding: {
+                                                        top: '10',
+                                                        left: '0'
+                                                    },
+                                                    minimap: { enabled: false }, // Example of other editor options
+                                                    scrollBeyondLastLine: false,
+                                                    lineNumbersMinChars: 2,
+                                                    fontSize: "16px",
+                                                    fontFamily: 'Fira Code, monospace',
+                                                    lineHeight: '19',
+                                                    codeLensFontSize: '5',
+                                                    theme: theme === 'Dark' ? 'vs-dark' : 'vs-light',
+                                                }}
+                                                width={'100%'}
+                                                height={'80vh'}
+                                            />
+                                        )}
+                                    </ThemeContext.Consumer>
                                 </div>
                             }
                             {

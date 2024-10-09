@@ -2,6 +2,68 @@ import React, { Component } from 'react'
 import * as d3 from "d3"
 import css from './BinaryHeap.module.css'
 
+export const HeapCodes = [
+    {
+        name: 'Create',
+        pseudocode: `/*
+function createHeap():\n
+    Initialize an empty array heap[]\n
+    return heap\n
+        */`
+    },
+    {
+        name: 'Insert',
+        pseudocode: `/*function insert(heap, key):\n
+Append key to the end of the heap array\n
+currentIndex = heap.size - 1\n
+while currentIndex > 0:\n
+    parentIndex = (currentIndex - 1) // 2\n
+    if heap[currentIndex] >= heap[parentIndex]:\n
+        break\n
+    Swap heap[currentIndex] with heap[parentIndex]\n
+    currentIndex = parentIndex\n
+*/`
+    },
+    {
+        name: 'Heapsort',
+        pseudocode: `/*
+function heapSort(array):\n
+heap = createHeap()\n
+for each element in array:\n
+    insert(heap, element)\n
+sortedArray = []\n
+while heap is not empty:\n
+    minValue = extractMin(heap)\n
+    sortedArray.append(minValue)\n
+return sortedArray\n
+*/`
+    },
+    {
+        name: 'Delete',
+        pseudocode: `/*
+function deleteRandomNode(heap, index):\n
+    if heap is empty:\n
+        return null\n
+    lastIndex = heap.size - 1\n
+    Swap heap[index] with heap[lastIndex]\n
+    Remove last element (which is the original value at index)\n
+    heapify(heap, index)\n
+
+function heapify(heap, index):\n
+    leftChild = 2 * index + 1\n
+    rightChild = 2 * index + 2\n
+    smallest = index\n
+    if leftChild < heap.size and heap[leftChild] < heap[smallest]:\n
+        smallest = leftChild\n
+    if rightChild < heap.size and heap[rightChild] < heap[smallest]:\n
+        smallest = rightChild\n
+    if smallest != index:\n
+        Swap heap[index] with heap[smallest]\n
+        heapify(heap, smallest)\n
+*/`
+    }
+];
+
 function insertByLevelrorder(root, key, id) {
     if (!root) {
         return { name: key, children: [], id };
@@ -38,7 +100,6 @@ class CreateHeap extends Component {
             method: 'Botton-up Approch',
         }
     }
-
     render() {
         const { userInput } = this.state;
         const { CreateBottomUp, CreateTopDown, consoleRef } = this.props;
@@ -88,6 +149,17 @@ class Heapsort extends Component {
         this.state = {
             K: null,
         }
+        this.isPlayingRef = React.createRef();
+    }
+    checkIsPlaying = async () => {
+        while (this.isPlayingRef.current === 'pause') {
+            await new Promise(resolve => setTimeout(resolve, 100)); // Poll every 100ms
+        }
+    };
+    componentDidUpdate(prevProps) {
+        if (prevProps.isPlaying !== this.props.isPlaying) {
+            this.isPlayingRef.current = this.props.isPlaying;
+        }
     }
     HeapSort = async () => {
         let { root, updateInfo, treeType, mode, drawArray, drawTree, svgRef, CreateTopDown, consoleRef } = this.props
@@ -104,6 +176,7 @@ class Heapsort extends Component {
         const { K } = this.state;
         let i = 0
         while (i < K) {
+            await this.checkIsPlaying()
             updateInfo(`root store ${treeType} element`);
             nodes = root.descendants()
             const lastLeafNode = nodes[nodes.length - 1]
@@ -206,9 +279,11 @@ class InsertNode extends Component {
         this.state = {
             insertedNodeValue: null,
         }
+        this.isPlayingRef = React.createRef();
     }
     insertNodeInTree = async (value) => {
         const { root, updateFlattenTree, updateRoot, mode, swapNodeFromBottomUp, drawArray, consoleRef } = this.props
+
         if (consoleRef.current) {
             consoleRef.current.innerHTML = '';
         }
@@ -247,7 +322,7 @@ class InsertNode extends Component {
                 .append('path')
                 .attr('d', linkGenerator)
                 .attr('fill', 'none')
-                .attr('stroke', 'white')
+                .attr('stroke', 'grey')
                 .attr('stroke-width', (d) => {
                     if (d.target.data.id === id) {
                         return 0
@@ -270,7 +345,7 @@ class InsertNode extends Component {
                     if (d.data.id === id) return 0;
                     return 15;
                 })
-                .attr('stroke', 'white')
+                .attr('stroke', 'grey')
                 .attr('fill', (d) => {
                     if (d.parent && d.data.children.length === 0) {
                         if (d === d.parent.children[0]) {
@@ -360,7 +435,7 @@ class InsertNode extends Component {
             <div className={css["insertInHeap"]}>
                 <form className='my-3' onSubmit={(e) => {
                     e.preventDefault()
-                    if (!this.state.insertedNodeValue) {
+                    if (!Number.isInteger(this.state.insertedNodeValue)) {
                         alert('Enter valid value'); return;
                     }
                     this.insertNodeInTree(this.state.insertedNodeValue)
@@ -386,6 +461,7 @@ class UpdateNode extends Component {
             updateNodeIdx: null,
             updateNodeValue: null,
         }
+        this.isPlayingRef = React.createRef();
     }
 
     updateNodeFromTree = async (index, value) => {
@@ -466,6 +542,7 @@ class DeleteNode extends Component {
         this.state = {
             deleteNodeIdx: null,
         }
+        this.isPlayingRef = React.createRef();
     }
     deleteNodeFromTree = async (index) => {
         //find deleting node & last leaf node

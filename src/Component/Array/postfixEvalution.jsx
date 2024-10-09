@@ -1,6 +1,37 @@
 import React, { Component, createRef } from 'react';
 import css from './postfixEvaluation.module.css';
 import css2 from '../visualizationPage/index.module.css';
+import { Editor } from '@monaco-editor/react';
+import { ThemeContext } from '../../Datastore/Context';
+
+const codeToDisplay = `function evaluatePostfix(expression) {\n\
+let stack = [];\n\
+for (let i = 0; i < expression.length; i++) {\n\
+    const char = expression[i];\n\
+    if (!isNaN(char)) {\n\
+        stack.push(Number(char));\n\
+    } else {\n\
+        const b = stack.pop();\n\
+        const a = stack.pop();\n\
+        switch (char) {\n\
+            case '+':\n\
+                stack.push(a + b);\n\
+                break;\n\
+            case '-':\n\
+                stack.push(a - b);\n\
+                break;\n\
+            case '*':\n\
+                stack.push(a * b);\n\
+                break;\n\
+            case '/':\n\
+                stack.push(a / b);\n\
+                break;\n\
+        }\n\
+    }\n\
+}\n\
+return stack.pop();\n\
+}`;
+
 
 class PostfixEvaluation extends Component {
     constructor(props) {
@@ -9,22 +40,30 @@ class PostfixEvaluation extends Component {
             postfixExpression: '5 6 2 + * 12 4 / -', // default postfix expression
             currentStep: -1,
             stepsArray: [],
-            featureTab: 'Code',
+            featureTab: 'Expression',
             activeTab: 'Console',
         };
         this.symbolScannedRef = createRef();
         this.stackRef = createRef();
         this.resultRef = createRef();
         this.consoleRef = createRef();
+        this.isPlayingRef = createRef();
     }
-
-    componentDidUpdate() {
+    checkIsPlaying = async () => {
+        while (this.isPlayingRef.current === 'pause') {
+            await new Promise(resolve => setTimeout(resolve, 100)); // Poll every 100ms
+        }
+    };
+    componentDidUpdate(prevProps) {
         const { currentStep, stepsArray, isPaused, speed } = this.state;
         if (currentStep < stepsArray.length - 1 && !isPaused) {
             const timer = setTimeout(() => {
                 this.visualizeNextStep();
             }, speed);
             return () => clearTimeout(timer);
+        }
+        if (prevProps.isPlaying !== this.props.isPlaying) {
+            this.isPlayingRef.current = this.props.isPlaying;
         }
     }
 
@@ -78,10 +117,10 @@ class PostfixEvaluation extends Component {
         const stack = [];
         const tokens = expression.split(' ');
         const { speed } = this.props;
-        const delay = (time) => new Promise((resolve) => setTimeout(resolve, time / speed));
+        const delay = (time) => new Promise((resolve) => setTimeout(resolve, time));
         for (const token of tokens) {
+            await this.checkIsPlaying();
             if (!isNaN(token)) {
-                // Token is a number, push it to the stack
                 stack.push(parseInt(token));
                 this.setSteps({ scanSymbol: token, stack: [...stack] });
                 this.updateInfo(`Push <b>${token}</b> into stack.`);
@@ -103,7 +142,7 @@ class PostfixEvaluation extends Component {
                 stack.push(result);
                 this.setSteps({ scanSymbol: token, stack: [...stack], result });
             }
-            await delay(1000);
+            await delay(1000 / speed);
         }
 
         this.setState({ currentStep: 0 });
@@ -159,7 +198,9 @@ class PostfixEvaluation extends Component {
                                 </div>
                                 <div className={css['column']} id={`${css['result']}`}>
                                     <h2>Result</h2>
-                                    <div className={css['content']} ref={this.resultRef}></div>
+                                    <div className={css['content']} >
+                                        <span ref={this.resultRef}></span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -167,19 +208,11 @@ class PostfixEvaluation extends Component {
                     {/* step Display */}
                     <div className={css2["feature-container"]}>
                         <div className={css2["tab-container"]} onClick={this.handleTabClick}>
-                            <div className={`${css2['code-tab']} ${css2['tab']} ${css2[featureTab === 'Code' ? 'active' : '']}`}>
-                                <button value={'Code'}>code</button>
-                            </div>
                             <div className={`${css['Expression-tab']} ${css2['tab']} ${css2[`${featureTab === 'Expression' ? 'active' : ''}`]}`}>
                                 <button value={'Expression'} >Expression</button>
                             </div>
                         </div>
                         <div className={css2["selected-tab-content"]}>
-                            {featureTab === 'Code' &&
-                                <div className={`${css2['code-Expression']} ${css2['active']}`}>
-                                    <code>BST code</code>
-                                </div>
-                            }
                             {featureTab === 'Expression' &&
                                 <div className={css['Expression']}>
                                     <form onSubmit={this.startEvaluation}>
@@ -210,10 +243,35 @@ class PostfixEvaluation extends Component {
                     <div className={css2["right-selected-tab-content"]}>
                         {
                             activeTab === 'Code' &&
-                            <div className={`${css2['code-container']} ${css2['active']}`}>
-                                <code>code</code>
-                            </div>
-                        }
+                            <div className={`${css['code-container']} ${css['active']}`}>
+                                <ThemeContext.Consumer>
+                                    {({ theme = 'light' }) => (
+                                        <Editor
+                                            className={css['editor']}  // Add this class
+                                            language='javascript'
+                                            onMount={this.handleEditorDidMount}
+                                            value={codeToDisplay}
+                                            options={{
+                                                padding: {
+                                                    top: '10',
+                                                    left: '0',
+                                                    bottom: '10'
+                                                },
+                                                minimap: { enabled: false }, // Example of other editor options
+                                                scrollBeyondLastLine: false,
+                                                lineNumbersMinChars: 2,
+                                                fontSize: "16px",
+                                                fontFamily: 'Fira Code, monospace',
+                                                lineHeight: '19',
+                                                codeLensFontSize: '5',
+                                                theme: theme === 'Dark' ? 'vs-dark' : 'vs-light',
+                                            }}
+                                            width={'100%'}
+                                            height={'80vh'}
+                                        />
+                                    )}
+                                </ThemeContext.Consumer>
+                            </div>}
                         {
                             activeTab === 'Console' &&
                             <div className={css2["console"]}>

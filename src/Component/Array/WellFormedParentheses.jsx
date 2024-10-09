@@ -1,6 +1,25 @@
 import React, { Component, createRef } from 'react';
 import css from '../visualizationPage/index.module.css';
 import css2 from './WellFormedParentheses.module.css';
+import { Editor } from '@monaco-editor/react';
+import { ThemeContext } from '../../Datastore/Context';
+
+const codeToDisplay = `function isWellFormed(expression) {\n\
+    const stack = [];\n\
+    const matchingParentheses = {')': '(', '}': '{', ']': '['};\n\
+    for (let i = 0; i < expression.length; i++) {\n\
+        const char = expression[i];\n\
+        if (['(', '{', '['].includes(char)) {\n\
+            stack.push(char);\n\
+        } else if ([')', '}', ']'].includes(char)) {\n\
+            if (stack.isEmpty() || stack.pop() !== matchingParentheses[char]) {\n\
+                return false;\n\
+            }\n\
+        }\n\
+    }\n\
+    return stack.isEmpty();\n\
+}`;
+
 
 class WellFormedParentheses extends Component {
     constructor(props) {
@@ -9,7 +28,7 @@ class WellFormedParentheses extends Component {
             inputExpression: '({[()]})', // Default expression
             currentStep: -1,
             stepsArray: [],
-            featureTab: 'Code',
+            featureTab: 'Expression',
             activeTab: 'Console',
             isValid: null, // Will track if the expression is well-formed or not
             isPaused: false, // Used for controlling visualization
@@ -18,9 +37,19 @@ class WellFormedParentheses extends Component {
         this.symbolScannedRef = createRef();
         this.stackRef = createRef();
         this.consoleRef = createRef();
+        this.isPlayingRef = createRef();
     }
+    checkIsPlaying = async () => {
+        while (this.isPlayingRef.current === 'pause') {
+            await new Promise(resolve => setTimeout(resolve, 100)); // Poll every 100ms
+        }
+    };
 
     componentDidUpdate(prevProps, prevState) {
+        console.log(prevProps.isPlaying , this.props.isPlaying)
+        if (prevProps.isPlaying !== this.props.isPlaying) {
+            this.isPlayingRef.current = this.props.isPlaying;
+        }
         const { currentStep, stepsArray, isPaused, speed } = this.state;
         if (currentStep < stepsArray.length - 1 && !isPaused) {
             const timer = setTimeout(() => {
@@ -83,6 +112,7 @@ class WellFormedParentheses extends Component {
         const delay = (time) => new Promise((resolve) => setTimeout(resolve, time / speed));
 
         for (const char of expression) {
+            await this.checkIsPlaying();
             if (['(', '[', '{'].includes(char)) {
                 // If an opening bracket is found, push it to the stack
                 stack.push(char);
@@ -104,7 +134,7 @@ class WellFormedParentheses extends Component {
                 stack.pop(); // Pop the matching opening bracket
                 this.setSteps({ scanSymbol: char, stack: [...stack] });
             }
-            await delay(1000);
+            await delay(1000 / speed);
         }
 
         // If the stack is empty after processing all symbols, it's well-formed
@@ -187,9 +217,6 @@ class WellFormedParentheses extends Component {
                         {/* step Display */}
                         <div className={css['feature-container']}>
                             <div className={css['tab-container']} onClick={this.handleTabClick}>
-                                <div className={`${css['code-tab']} ${css['tab']} ${css[featureTab === 'Code' ? 'active' : '']}`}>
-                                    <button value={'Code'}>code</button>
-                                </div>
                                 <div
                                     className={`${css['Expression-tab']} ${css['tab']} ${css[`${featureTab === 'Expression' ? 'active' : ''}`]}`}
                                 >
@@ -197,11 +224,6 @@ class WellFormedParentheses extends Component {
                                 </div>
                             </div>
                             <div className={css['selected-tab-content']}>
-                                {featureTab === 'Code' && (
-                                    <div className={`${css['code-Expression']} ${css['active']}`}>
-                                        <code>BST code</code>
-                                    </div>
-                                )}
                                 {featureTab === 'Expression' && (
                                     <div className={css['Expression']}>
                                         <form onSubmit={this.startCheck}>
@@ -232,7 +254,32 @@ class WellFormedParentheses extends Component {
                         <div className={css['right-selected-tab-content']}>
                             {activeTab === 'Code' && (
                                 <div className={`${css['code-container']} ${css['active']}`}>
-                                    <code>code</code>
+                                    <ThemeContext.Consumer>
+                                        {({ theme = 'light' }) => (
+                                            <Editor
+                                                className={css['editor']}  // Add this class
+                                                language='javascript'
+                                                onMount={this.handleEditorDidMount}
+                                                value={codeToDisplay}
+                                                options={{
+                                                    padding: {
+                                                        top: '10',
+                                                        left: '0'
+                                                    },
+                                                    minimap: { enabled: false }, // Example of other editor options
+                                                    scrollBeyondLastLine: false,
+                                                    lineNumbersMinChars: 2,
+                                                    fontSize: "16px",
+                                                    fontFamily: 'Fira Code, monospace',
+                                                    lineHeight: '19',
+                                                    codeLensFontSize: '5',
+                                                    theme: theme === 'Dark' ? 'vs-dark' : 'vs-light',
+                                                }}
+                                                width={'100%'}
+                                                height={'80vh'}
+                                            />
+                                        )}
+                                    </ThemeContext.Consumer>
                                 </div>
                             )}
                             {activeTab === 'Console' && (

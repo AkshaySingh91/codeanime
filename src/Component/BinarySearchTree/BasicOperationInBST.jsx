@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import React, { Component } from 'react';
 import { BinaryTreeNode, drawBinaryTree, VisualizationType, setTheme } from 'binary-tree-visualizer';
 import css from './BinarySearchTree.module.css'
 // default {bgColor: 'white', borderColor: 'black'}
@@ -7,24 +7,41 @@ setTheme({
     fontSize: 13,
     textFont: "Arial",
     colorArray: [{ bgColor: 'white', borderColor: 'black' }],
-    strokeColor: 'white',
+    strokeColor: 'grey',
 
 })
 
-function removeDuplicate(arr) {
-    const result = [];
-    let idx = 0;
-    const tmp = {};
+export const algorithmCodes = [
+    {
+        name: 'Insert',
+        pseudocode: `function insert(root, key):\n    if root is NULL:\n        return createNode(key)\n    if key < root.key:\n        root.left = insert(root.left, key)\n    else if key > root.key:\n        root.right = insert(root.right, key)\n    // If key is equal to root.key, do not insert duplicates\n    return root`
+    },
+    {
+        name: 'Search',
+        pseudocode: `function search(root, key):\n    if root is NULL:\n        return NULL\n    if key < root.key:\n        return search(root.left, key)\n    else if key > root.key:\n        return search(root.right, key)\n    return root`
+    },
+    {
+        name: 'Delete',
+        pseudocode: `function deleteNode(root, key):\n    if root is NULL:\n        return root\n    if key < root.key:\n        root.left = deleteNode(root.left, key)\n    else if key > root.key:\n        root.right = deleteNode(root.right, key)\n    else:\n        // Node with only one child or no child\n        if root.left is NULL:\n            return root.right\n        else if root.right is NULL:\n            return root.left\n        // Node with two children: Get the inorder successor (smallest in the right subtree)\n        temp = minValueNode(root.right)\n        root.key = temp.key\n        root.right = deleteNode(root.right, temp.key)\n    return root`
+    },
+    {
+        name: 'Inorder Traversal',
+        pseudocode: `function inorderTraversal(root):\n    if root is NULL:\n        return\n    inorderTraversal(root.left)\n    visit(root)\n    inorderTraversal(root.right)`
+    },
+    {
+        name: 'Preorder Traversal',
+        pseudocode: `function preorderTraversal(root):\n    if root is NULL:\n        return\n    visit(root)\n    preorderTraversal(root.left)\n    preorderTraversal(root.right)`
+    },
+    {
+        name: 'Postorder Traversal',
+        pseudocode: `function postorderTraversal(root):\n    if root is NULL:\n        return\n    postorderTraversal(root.left)\n    postorderTraversal(root.right)\n    visit(root)`
+    },
+    {
+        name: 'Create',
+        pseudocode: `function insert(root, key):\n    if root is NULL:\n        return createNode(key)\n    if key < root.key:\n        root.left = insert(root.left, key)\n    else if key > root.key:\n        root.right = insert(root.right, key)\n    // If key is equal to root.key, do not insert duplicates\n    return root`
+    },
 
-    for (let i = 0; i < arr.length; i++) {
-        if (!tmp[arr[i]]) {
-            tmp[arr[i]] = 1;
-            result[idx] = arr[i];
-            idx++;
-        }
-    }
-    return result;
-}
+];
 
 
 class SearchInBST extends Component {
@@ -32,6 +49,17 @@ class SearchInBST extends Component {
         super()
         this.state = {
             searchValue: 1
+        }
+        this.isPlayingRef = React.createRef();
+    }
+    checkIsPlaying = async () => {
+        while (this.isPlayingRef.current === 'pause') {
+            await new Promise(resolve => setTimeout(resolve, 100)); // Poll every 100ms
+        }
+    };
+    componentDidUpdate(prevProps) {
+        if (prevProps.isPlaying !== this.props.isPlaying) {
+            this.isPlayingRef.current = this.props.isPlaying;
         }
     }
     searchingInBST = async (e) => {
@@ -43,14 +71,9 @@ class SearchInBST extends Component {
         }
         let delay = 1000 / (speed);
         updateInfo(`Root is ${root.value}`)
-        const togglePause = (isPlaying) => {
-            console.log(isPlaying)
-            return new Promise((resolve) => {
-                if (isPlaying === 'play') resolve();
-            })
-        }
         const startSearching = async (root, searchValue) => {
-            await togglePause(isPlaying);
+            await this.checkIsPlaying(isPlaying);
+
             if (!root) {
                 return;
             }
@@ -102,6 +125,17 @@ class DeleteNodeFromBST extends Component {
         this.state = {
             deleteValue: 1
         }
+        this.isPlayingRef = React.createRef();
+    }
+    checkIsPlaying = async () => {
+        while (this.isPlayingRef.current === 'pause') {
+            await new Promise(resolve => setTimeout(resolve, 100)); // Poll every 100ms
+        }
+    };
+    componentDidUpdate(prevProps) {
+        if (prevProps.isPlaying !== this.props.isPlaying) {
+            this.isPlayingRef.current = this.props.isPlaying;
+        }
     }
     DeleteNode = async (node) => {
         if (!node.right) {
@@ -134,6 +168,7 @@ class DeleteNodeFromBST extends Component {
         updateInfo(`Root is ${root.value}`)
         let delay = 1000 / (speed);
         const startDeleting = async (root, deleteValue) => {
+            await this.checkIsPlaying()
             if (!root) {
                 return;
             }
@@ -191,6 +226,7 @@ class InsertInBst extends Component {
         this.state = {
             userInput: '34, 23, 15, 1, 5, 20',
         }
+        this.isPlayingRef = React.createRef();
     }
 
     insertInBst = async (e) => {
@@ -200,12 +236,107 @@ class InsertInBst extends Component {
             consoleRef.current.innerHTML = '';
         }
         const { userInput } = this.state
-        let array = userInput.split(',').map((elem) => { return Number.parseInt(elem.trim()) })
+        let n = Number.parseInt(userInput)
+        let updatedNodes = [...nodes, !nodes.includes(n) ? n : []];
+        let r = await this.insertNodeInBst(root, n)
+        if (canvas.current) {
+            drawBinaryTree(r, canvas.current, {
+                type: VisualizationType.HIGHLIGHT
+            });
+        } else {
+            console.error("Canvas is not loaded")
+        }
+        updateRoot(r)
+        updateNodes(updatedNodes)
+    }
+    checkIsPlaying = async () => {
+        while (this.isPlayingRef.current === 'pause') {
+            await new Promise(resolve => setTimeout(resolve, 100)); // Poll every 100ms
+        }
+    };
+    componentDidUpdate(prevProps) {
+        if (prevProps.isPlaying !== this.props.isPlaying) {
+            this.isPlayingRef.current = this.props.isPlaying;
+        }
+    }
+    insertNodeInBst = async (root, key) => {
+        const { updateInfo, highlightNode, speed = 1000 } = this.props
+        let delay = 1000 / (speed);
+        await this.checkIsPlaying();
+        if (!root) {
+            return new BinaryTreeNode(key);
+        }
+        if (root && root.value === key) {
+            updateInfo(`${key} is already present.`)
+            return root;
+        }
+        if (root && key < root.value) {
+            if (root && !root.left) {
+                // default {bgColor: 'white', borderColor: 'black'}
+                await highlightNode(root, true, '#FABC3F', 'red', delay)
+                await highlightNode(root, true, 'white', 'black', delay)
+                updateInfo(`${key} will insert on left of ${root.value}.`)
+            } else {
+                await highlightNode(root, false, 'white', 'red', delay);
+                await highlightNode(root, true, 'white', 'black', delay);
+                updateInfo(`vertex ${root.value} is greater than ${key}, going on left side`)
+            }
+            const left = await this.insertNodeInBst(root.left, key)
+            root.setLeft(left);
+        }
+        else if (root && key > root.value) {
+            if (root && !root.right) {
+                await highlightNode(root, true, '#FABC3F', 'red', delay)
+                await highlightNode(root, true, 'white', 'black', delay)
+                updateInfo(`${key} will insert on right of ${root.value}.`)
+            } else {
+                await highlightNode(root, false, 'white', 'red', delay);
+                await highlightNode(root, true, 'white', 'black', delay);
+                updateInfo(`vertex ${root.value} is smaller than ${key}, going on right side`)
+            }
+            const right = await this.insertNodeInBst(root.right, key)
+            root.setRight(right);
+        }
+        return root;
+    }
 
-        array = array.filter((n) => { return !nodes.includes(n) })
-        array = removeDuplicate(array);
+    render() {
+        return (<>
+            <div className={css["insertInBST"]}>
+                <form onSubmit={this.insertInBst} action="">
+                    <label htmlFor="insertInBST">Insert In BSt</label>
+                    <div className="input-group mb-3 w-25">
+                        <input id='insertInBST' value={this.state.userInput} name='userInput' type="number" className={css["form-control"]} placeholder="Insert in BST"
+                            onChange={(e) => {
+                                this.setState({ userInput: e.target.value })
+                            }} />
+                        <button className="btn btn-outline-secondary" type="submit">Insert</button>
+                    </div>
+                </form>
+            </div>
+        </>)
+    }
+}
+class CreateBST extends Component {
+    constructor() {
+        super()
+        this.state = {
+            userInput: '34, 0, -2, 4, 234, 32',
+        }
+        this.isPlayingRef = React.createRef();
+    }
+
+    createBST = async (e) => {
+        e.preventDefault()
+        let { nodes, updateNodes, updateRoot, canvas, consoleRef } = this.props
+        if (consoleRef.current) {
+            consoleRef.current.innerHTML = '';
+        }
+        const { userInput } = this.state
+        let array = userInput.split(',').map((elem) => { return Number.parseInt(elem.trim()) })
+        array = array.filter((item, index) => array.indexOf(item) === index);
         let updatedNodes = [...nodes, ...array];
-        let r = root;
+        let r = null;
         for (const i of array) {
             r = await this.insertNodeInBst(r, i)
             if (canvas.current) {
@@ -219,10 +350,21 @@ class InsertInBst extends Component {
         }
         updateNodes(updatedNodes)
     }
-
+    checkIsPlaying = async () => {
+        while (this.isPlayingRef.current === 'pause') {
+            await new Promise(resolve => setTimeout(resolve, 100)); // Poll every 100ms
+        }
+    };
+    componentDidUpdate(prevProps) {
+        if (prevProps.isPlaying !== this.props.isPlaying) {
+            this.isPlayingRef.current = this.props.isPlaying;
+        }
+    }
     insertNodeInBst = async (root, key) => {
         const { updateInfo, highlightNode, speed = 1000 } = this.props
         let delay = 1000 / (speed);
+
+        await this.checkIsPlaying();
         if (!root) {
             return new BinaryTreeNode(key);
         }
@@ -262,8 +404,8 @@ class InsertInBst extends Component {
     render() {
         return (<>
             <div className={css["insertInBST"]}>
-                <form onSubmit={this.insertInBst} action="">
-                    <label htmlFor="insertInBST">Insert In BSt</label>
+                <form onSubmit={this.createBST} action="">
+                    <label htmlFor="insertInBST">Create Binary search tree</label>
                     <div className="input-group mb-3 w-25">
                         <input id='insertInBST' value={this.state.userInput} name='userInput' type="text" className={css["form-control"]} placeholder="Insert in BST"
                             onChange={(e) => {
@@ -277,7 +419,22 @@ class InsertInBst extends Component {
     }
 }
 
+
 class TraverseInBST extends Component {
+    constructor() {
+        super();
+        this.isPlayingRef = React.createRef();
+    }
+    checkIsPlaying = async () => {
+        while (this.isPlayingRef.current === 'pause') {
+            await new Promise(resolve => setTimeout(resolve, 100)); // Poll every 100ms
+        }
+    };
+    componentDidUpdate(prevProps) {
+        if (prevProps.isPlaying !== this.props.isPlaying) {
+            this.isPlayingRef.current = this.props.isPlaying;
+        }
+    }
     postorderTraversal = async (root) => {
         const { updateInfo, highlightNode, consoleRef, speed } = this.props
         if (consoleRef.current) {
@@ -288,6 +445,7 @@ class TraverseInBST extends Component {
         let sequence = 'Preorder Sequence:  ';
         let delay = 1000 / (speed);
         const startPostorderTraversal = async (node) => {
+            await this.checkIsPlaying();
             if (!node) {
                 return
             }
@@ -319,6 +477,7 @@ class TraverseInBST extends Component {
         let sequence = 'Preorder Sequence:';
         let delay = 1000 / (speed);
         const startPreorderTraversal = async (node) => {
+            await this.checkIsPlaying();
             if (!node) {
                 return
             }
@@ -349,6 +508,7 @@ class TraverseInBST extends Component {
         let sequence = 'Inorder Sequence:';
         let delay = 1000 / (speed);
         const startInorderTraversal = async (node) => {
+            await this.checkIsPlaying();
             if (!node) {
                 return
             }
@@ -458,4 +618,4 @@ class GenerateTrees extends Component {
     }
 }
 
-export { SearchInBST, DeleteNodeFromBST, InsertInBst, TraverseInBST, GenerateTrees }
+export { SearchInBST, DeleteNodeFromBST, InsertInBst, TraverseInBST, GenerateTrees, CreateBST }

@@ -2,6 +2,9 @@ import React, { Component } from 'react'
 import * as  d3 from "d3"
 import { Heapsort, insertByLevelrorder, InsertNode, DeleteNode, UpdateNode, ChangeMode, CreateHeap } from './BasicOperationInHeap'
 import css from '../visualizationPage/index.module.css'
+import { Editor } from '@monaco-editor/react'
+import { HeapCodes } from './BasicOperationInHeap'
+import { ThemeContext } from '../../Datastore/Context'
 
 export class HeapBinaryTree extends Component {
     constructor() {
@@ -16,9 +19,11 @@ export class HeapBinaryTree extends Component {
             height: 300,
             featureTab: 'Create',
             activeTab: 'Console',
+            codeToDisplay: HeapCodes.find(code => code.name === 'Create').pseudocode
         }
         this.svgRef = React.createRef();
         this.consoleRef = React.createRef();
+        this.isPlayingRef = React.createRef();
     }
     componentDidMount() {
         // Define the number of runs for the test data generated
@@ -49,6 +54,16 @@ export class HeapBinaryTree extends Component {
             this.drawTree(initialRoot, width, height)
         }
     }
+    checkIsPlaying = async () => {
+        while (this.isPlayingRef.current === 'pause') {
+            await new Promise(resolve => setTimeout(resolve, 100)); // Poll every 100ms
+        }
+    };
+    componentDidUpdate(prevProps) {
+        if (prevProps.isPlaying !== this.props.isPlaying) {
+            this.isPlayingRef.current = this.props.isPlaying;
+        }
+    }
     updateRoot = (value) => {
         this.setState({ root: value })
     }
@@ -72,9 +87,12 @@ export class HeapBinaryTree extends Component {
     }
     swapNodeFromBottomUp = async (root, arr, treeType) => {
         if (arr.length <= 1) return root;
+        const { speed = 1 } = this.props;
         let parentIdx = Math.floor((arr.length - 2) / 2), childIdx = arr.length - 1;
         //ye loop tab tak chalega jabtak root tak na swap kr le
+        const delay = async (time) => { return new Promise((resolve) => { setTimeout(() => { resolve() }, time); }) }
         while (parentIdx >= 0) {
+            await this.checkIsPlaying();
             let parent = arr[parentIdx];
             let child = arr[childIdx];
             if (treeType === 'min' && child.value < parent.value) {
@@ -106,21 +124,22 @@ export class HeapBinaryTree extends Component {
             } else {
                 this.drawArray(root)
             }
+            await delay(2000 / speed);
         }
 
         return root;
     };
     CreateBottomUp = async (array) => {
         const { treeType, mode } = this.state
+        const { speed = 1 } = this.props;
         let r = null, realRoot
         const arr = []
         let nodesCount = 1;
-
         const delay = async (time) => { return new Promise((resolve) => { setTimeout(() => { resolve() }, time); }) }
 
         for (const i of array) {
+            await this.checkIsPlaying();
             this.updateInfo(`${i} is inserted at back of array`)
-
             r = insertByLevelrorder(r, i, nodesCount)
             realRoot = d3.hierarchy(r)
             arr.push({ "value": i, "id": nodesCount })
@@ -159,12 +178,13 @@ export class HeapBinaryTree extends Component {
             r = temp;
             // will use it for speed component
             this.updateInfo(`${i} has inserted successfully.`)
-            await delay(500)
+            await delay(2000 / speed);
             nodesCount++
         }
     }
     swapNodeFromTopDown = async (root, id) => {
         const { treeType, mode } = this.state
+        const { speed = 1 } = this.props;
         const svgRef = this.svgRef;
         const node = this.findNode(root, id)
         let svg = d3.select(svgRef.current);
@@ -187,8 +207,8 @@ export class HeapBinaryTree extends Component {
         if (treeType === 'min') {
             const swapWithSmallerChild = async (node) => {
                 if (node.children === undefined) return
-                await delay(1000);
-                console.log('node =', node)
+                await delay(2000 / speed);
+                await this.checkIsPlaying();
                 let leftChild = node.children && node.children[0], rightChild = node.children && node.children[1]
 
                 if (leftChild && leftChild.data.name < node.data.name) {
@@ -278,7 +298,8 @@ export class HeapBinaryTree extends Component {
         else if (treeType === 'max') {
             const swapWithGreaterChild = async (node) => {
                 if (node.children === undefined) return
-                await delay(1000);
+                await delay(2000 / speed);
+                await this.checkIsPlaying()
 
                 let leftChild = node.children[0], rightChild = node.children[1]
 
@@ -286,7 +307,6 @@ export class HeapBinaryTree extends Component {
                     if (!rightChild || (leftChild && leftChild.data.name > rightChild.data.name)) {
                         this.updateInfo(`${node.data.name} < ${leftChild.data.name}, swap them.`)
                         // we will show swapping circle with red border
-                        // let leftIf = 
                         internalNodeId = leftChild.data.id;
                         let swappingCircle = svg.selectAll('circle').filter(d => d.data.id === leftChild.data.id);
                         await swappingCircle
@@ -374,6 +394,7 @@ export class HeapBinaryTree extends Component {
     }
     CreateTopDown = async (array) => {
         const { treeType, mode, } = this.state
+        const { speed = 1 } = this.props;
         let r = null, nodeCount = 1
         const arr = [];
         for (let i = 0; i < array.length; i++) {
@@ -406,12 +427,13 @@ export class HeapBinaryTree extends Component {
 
         const delay = async (time) => { return new Promise((resolve) => { setTimeout(() => { resolve() }, time); }) }
         for (const i of internalNode) {
+            await this.checkIsPlaying()
             this.updateInfo(`Swap ${treeType}(left, right) of sub-tree of value ${i.value}`);
             // delay(1000)
             r = await this.swapNodeFromTopDown(r, i.id)
             // we dont need to update internalNode bec we are passing next internal node & its id which is not changed above
             this.updateRoot(r)
-            delay(500)
+            delay(2000 / speed);
         }
         // our root state is updated but its array representation is not
         let idx = 0
@@ -447,7 +469,7 @@ export class HeapBinaryTree extends Component {
             .append('path')
             .attr('d', linkGenerator)
             .attr('fill', 'none')
-            .attr('stroke', 'white')
+            .attr('stroke', 'grey')
             .attr('stroke-width', 1);
 
         // Create groups for each node
@@ -463,7 +485,7 @@ export class HeapBinaryTree extends Component {
         // Add circles to each group
         nodeGroups.append('circle')
             .attr('r', 15)
-            .attr('stroke', 'white')
+            .attr('stroke', 'grey')
             .attr('fill', (d) => {
                 if (d.parent && d.data.children.length === 0) {
                     if (d === d.parent.children[0]) {
@@ -478,7 +500,7 @@ export class HeapBinaryTree extends Component {
 
         let g = d3.select("g.node");
         // getBBox gives height, weigth, x, y of selected element
-        let bbox = g.node().getBBox();
+        let bbox = g.node() && g.node().getBBox();
 
         // Add text to each group
         nodeGroups.append('text')
@@ -577,6 +599,14 @@ export class HeapBinaryTree extends Component {
     }
     handleTabClick = (e) => {
         if (e.target.tagName === 'BUTTON') {
+            let code = HeapCodes.find(code => code.name === e.target.value)
+            if (code) {
+                code = code.pseudocode;
+                console.log(code)
+            } else {
+                code = ''
+            }
+            this.setState({ codeToDisplay: code });
             this.setState({ featureTab: e.target.value })
         }
     }
@@ -587,7 +617,7 @@ export class HeapBinaryTree extends Component {
     }
     render() {
 
-        const { featureTab, activeTab, root, flattenTree, info, treeType, mode, width, height } = this.state
+        const { featureTab, activeTab, root, flattenTree, treeType, mode, width, height, codeToDisplay } = this.state
         return (<>
             <div className={css["row"]}>
                 <div className={css["mid-content"]}>
@@ -616,11 +646,6 @@ export class HeapBinaryTree extends Component {
                             </div>
                         </div>
                         <div className={css["selected-tab-content"]}>
-                            {featureTab === 'Code' &&
-                                <div className="code-container active">
-                                    <code>BST code</code>
-                                </div>
-                            }
                             {featureTab === 'Create' &&
                                 <div className={css["create"]}>
                                     <CreateHeap
@@ -644,6 +669,7 @@ export class HeapBinaryTree extends Component {
                                         width={width}
                                         height={height}
                                         consoleRef={this.consoleRef}
+                                        isPlaying={this.props.isPlaying}
                                     />
                                 </div>
                             }
@@ -668,6 +694,7 @@ export class HeapBinaryTree extends Component {
                                         updateMode={this.updateMode}
                                         width={width}
                                         height={height}
+                                        isPlaying={this.props.isPlaying}
                                         consoleRef={this.consoleRef} />
                                 </div>
                             }
@@ -692,6 +719,7 @@ export class HeapBinaryTree extends Component {
                                         updateMode={this.updateMode}
                                         width={width}
                                         height={height}
+                                        isPlaying={this.props.isPlaying}
                                         consoleRef={this.consoleRef} />
                                 </div>
                             }
@@ -716,6 +744,7 @@ export class HeapBinaryTree extends Component {
                                         updateMode={this.updateMode}
                                         width={width}
                                         height={height}
+                                        isPlaying={this.props.isPlaying}
                                         consoleRef={this.consoleRef} />
                                 </div>
                             }
@@ -740,6 +769,7 @@ export class HeapBinaryTree extends Component {
                                         updateMode={this.updateMode}
                                         width={width}
                                         height={height}
+                                        isPlaying={this.props.isPlaying}
                                         consoleRef={this.consoleRef} />
                                 </div>
                             }
@@ -764,6 +794,7 @@ export class HeapBinaryTree extends Component {
                                         updateMode={this.updateMode}
                                         width={width}
                                         height={height}
+                                        isPlaying={this.props.isPlaying}
                                         consoleRef={this.consoleRef} />
                                 </div>
                             }
@@ -784,7 +815,33 @@ export class HeapBinaryTree extends Component {
                         {
                             activeTab === 'Code' &&
                             <div className={`${css['code-container']} ${css['active']}`}>
-                                <code>BST code</code>
+                                <ThemeContext.Consumer>
+                                    {({ theme = 'light' }) => (
+                                        <Editor
+                                            className={css['editor']}  // Add this class
+                                            language='javascript'
+                                            onMount={this.handleEditorDidMount}
+                                            value={codeToDisplay}
+                                            options={{
+                                                padding: {
+                                                    top: '10',
+                                                    left: '0'
+                                                },
+                                                minimap: { enabled: false }, // Example of other editor options
+                                                scrollBeyondLastLine: false,
+                                                lineNumbersMinChars: 2,
+                                                fontSize: "16px",
+                                                fontFamily: 'Fira Code, monospace',
+                                                lineHeight: '19',
+                                                codeLensFontSize: '5',
+                                                theme: theme === 'Dark' ? 'vs-dark' : 'vs-light',
+                                                readOnly: true
+                                            }}
+                                            height={'80vh'}
+                                            width={'100%'}
+                                        />
+                                    )}
+                                </ThemeContext.Consumer>
                             </div>
                         }
                         {
@@ -801,7 +858,6 @@ export class HeapBinaryTree extends Component {
         </>)
     }
 }
-
 
 class Text extends Component {
     render() {

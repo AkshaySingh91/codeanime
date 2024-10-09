@@ -1,5 +1,32 @@
 import React, { Component } from 'react';
 import css from './stackOperations.module.css';
+import css2 from '../visualizationPage/index.module.css';
+import { Editor } from '@monaco-editor/react';
+import { ThemeContext } from '../../Datastore/Context';
+
+const codeToDisplay = `class Stack {\n\
+constructor() {\n\
+    this.items = [];\n\
+}\n\
+push(element) {\n\
+    this.items.push(element);\n\
+}\n\
+pop() {\n\
+    if (this.isEmpty()) {\n\
+        return null;\n\
+    }\n\
+    return this.items.pop();\n\
+}\n\
+peek() {\n\
+    if (this.isEmpty()) {\n\
+        return null;\n\
+    }\n\
+    return this.items[this.items.length - 1];\n\
+}\n\
+isEmpty() {\n\
+    return this.items.length === 0;\n\
+}\n\
+}`;
 
 export default class StackOperations extends Component {
     constructor(props) {
@@ -9,7 +36,8 @@ export default class StackOperations extends Component {
             stack: [],
             stackMaxSize: 11,
             inputValue: '',
-            activeTab: 'Code'
+            activeTab: 'Code',
+            featureTab: 'stackOperations',
         };
         this.consoleRef = React.createRef();
     }
@@ -135,7 +163,7 @@ export default class StackOperations extends Component {
         if (stack.length > 0) {
             this.updateInfo(`The topmost value is: ${stack[stack.length - 1]}.`);
         }
-        else{
+        else {
             this.updateInfo(`The stack is empty.`);
         }
     };
@@ -157,7 +185,7 @@ export default class StackOperations extends Component {
     };
     handleTabClick = (e) => {
         if (e.target.tagName === 'BUTTON') {
-            this.setState({ activeTab: e.target.value })
+            this.setState({ featureTab: e.target.value })
         }
     }
     updateInfo = (value) => {
@@ -169,60 +197,100 @@ export default class StackOperations extends Component {
             }
         })
     }
+    handleRightTabClick = (e) => {
+        if (e.target.tagName === 'BUTTON') {
+            this.setState({ activeTab: e.target.value })
+        }
+    }
     render() {
-        const { inputValue, activeTab } = this.state;
+        const { inputValue, activeTab, featureTab } = this.state;
 
         return (<>
-            <div className="row">
-                <div className="mid-content">
-                    <div className="visualization-container">
+            <div className={css2["row"]}>
+                <div className={css2["mid-content"]}>
+                    <div className={css2["visualization-container"]}>
                         <div id={css['mainContent']}>
-                            <canvas ref={this.canvasRef}></canvas>
+                            <canvas width={'100%'} height={'100%'} ref={this.canvasRef}></canvas>
                         </div>
                     </div>
-                    {/* step Display */}
-                    <div className="text-container">
-                        <div className="console">
-                            <span className='header'>Console</span>
-                            <div ref={this.consoleRef} className="step-line">
+                    <div className={css2["feature-container"]}>
+                        <div className={css2["tab-container"]} onClick={this.handleTabClick}>
+                            <div className={`${css['stackOperations-tab']} ${css2['tab']} ${css2[`${featureTab === 'Expression' ? 'active' : ''}`]}`}>
+                                <button value={'stackOperations'} >stackOperations</button>
                             </div>
+                        </div>
+                        <div className={css2["selected-tab-content"]}>
+                            {featureTab === 'stackOperations' &&
+                                <div className="stackOperations">
+                                    <label htmlFor="value">
+                                        <b>Enter any value:</b>
+                                    </label>
+                                    <input
+                                        id="inputValue"
+                                        type="number"
+                                        placeholder="Enter value to push"
+                                        value={inputValue}
+                                        onChange={this.handleChange}
+                                        onKeyDown={(e) => e.key === 'Enter' && this.pushElement()}
+                                    />
+                                    <div className={css['buttons']}>
+                                        <button onClick={this.pushElement}>Push</button>
+                                        <button onClick={this.popElement}>Pop</button>
+                                        <button onClick={this.peekElement}>Peek</button>
+                                        <button onClick={this.isEmpty}>IsEmpty?</button>
+                                        <button onClick={this.clearStack}>Clear Stack</button>
+                                    </div>
+                                </div>
+                            }
                         </div>
                     </div>
                 </div>
-                <div className="right-panel">
-                    <div className="tab-container" onClick={this.handleTabClick}>
-                        <div className={`code-tab  tab ${activeTab === 'Code' ? 'active' : ''}`}>
-                            <button value={'Code'}>code</button>
+                <div className={css2["text-container"]}>
+                    <div className={css2[`${"right-tab-container"}`]} onClick={this.handleRightTabClick}>
+                        <div className={`${css2['Console-tab']} ${css2['tab']} ${css2[`${activeTab === 'Console' ? 'active' : ''}`]}`}>
+                            <button value={'Console'} >Console</button>
                         </div>
-                        <div className={`stackOperations-tab tab ${activeTab === 'stackOperations' ? 'active' : ''}`}>
-                            <button value={'stackOperations'} >stackOperations</button>
+                        <div className={`${css2['Code-tab']} ${css2['tab']} ${css2[`${activeTab === 'Code' ? 'active' : ''}`]}`}>
+                            <button value={'Code'} >Code</button>
                         </div>
                     </div>
-                    <div className="selected-tab-content">
-                        {activeTab === 'Code' &&
-                            <div className="code-Expression active">
-                                <code>BST code</code>
-                            </div>
-                        }
-                        {activeTab === 'stackOperations' &&
-                            <div className="stackOperations">
-                                <label htmlFor="value">
-                                    <b>Enter any value:</b>
-                                </label>
-                                <input
-                                    id="inputValue"
-                                    type="number"
-                                    placeholder="Enter value to push"
-                                    value={inputValue}
-                                    onChange={this.handleChange}
-                                    onKeyDown={(e) => e.key === 'Enter' && this.pushElement()}
-                                />
-                                <div className={css['buttons']}>
-                                    <button onClick={this.pushElement}>Push</button>
-                                    <button onClick={this.popElement}>Pop</button>
-                                    <button onClick={this.peekElement}>Peek</button>
-                                    <button onClick={this.isEmpty}>IsEmpty?</button>
-                                    <button onClick={this.clearStack}>Clear Stack</button>
+                    <div className={css2["right-selected-tab-content"]}>
+                        {
+                            activeTab === 'Code' &&
+                            <div className={`${css['code-container']} ${css['active']}`}>
+                                <ThemeContext.Consumer>
+                                    {({ theme = 'light' }) => (
+                                        <Editor
+                                            className={css['editor']}  // Add this class
+                                            language='javascript'
+                                            onMount={this.handleEditorDidMount}
+                                            value={codeToDisplay}
+                                            options={{
+                                                padding: {
+                                                    top: '10',
+                                                    left: '0',
+                                                    bottom: '10'
+                                                },
+                                                minimap: { enabled: false }, // Example of other editor options
+                                                scrollBeyondLastLine: false,
+                                                lineNumbersMinChars: 2,
+                                                fontSize: "16px",
+                                                fontFamily: 'Fira Code, monospace',
+                                                lineHeight: '19',
+                                                codeLensFontSize: '5',
+                                                theme: theme === 'Dark' ? 'vs-dark' : 'vs-light',
+                                            }}
+                                            width={'100%'}
+                                            height={'80vh'}
+                                        />
+                                    )}
+                                </ThemeContext.Consumer>
+                            </div>}
+                        {
+                            activeTab === 'Console' &&
+                            <div className={css2["console"]}>
+                                <span className={css2["header"]}></span>
+                                <div ref={this.consoleRef} className={css2["step-line"]}>
                                 </div>
                             </div>
                         }
@@ -231,6 +299,4 @@ export default class StackOperations extends Component {
             </div >
         </>);
     }
-}
-
-;
+} 

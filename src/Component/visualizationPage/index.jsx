@@ -9,6 +9,8 @@ import InfixToPostfix from '../Array/infixToPostfix';
 import PostfixEvaluation from '../Array/postfixEvalution';
 import StackOperations from '../Array/stackOperations';
 import WellFormedParentheses from '../Array/WellFormedParentheses';
+import PrefixEvaluation from '../Array/prefixEvaluation';
+import QueueOperations from '../Array/queueOperations';
 
 const AlgorithmVisualization = (props) => {
     const { algoName } = useParams();
@@ -34,12 +36,8 @@ const AlgorithmVisualization = (props) => {
 
     // Use useEffect to handle the window.open call based on the selected algorithm
     useEffect(() => {
-        if (selectedAlgorithm === 'queue') {
-            window.open('http://127.0.0.1:5500/Web%20Development/codeanime/src/Component/Array/queue/index.html', '_blank');
-        } else if (selectedAlgorithm === 'sort') {
+        if (selectedAlgorithm === 'sort') {
             window.open('http://127.0.0.1:5500/Web%20Development/codeanime/src/Component/Array/sort/index.html', '_blank');
-        } else if (selectedAlgorithm === 'Prefix-evalution') {
-            window.open('http://127.0.0.1:5500/Web%20Development/codeanime/src/Component/Array/prefixEvaluation/index.html', '_blank');
         } else if (selectedAlgorithm === 'Operation-in-Linkedlist') {
             window.open('http://127.0.0.1:5500/Web%20Development/codeanime/src/Component/LinkedList/Linked-List-Visualization-master/index.html', '_blank');
         }
@@ -58,6 +56,10 @@ const AlgorithmVisualization = (props) => {
             return <StackOperations speed={speed} isPlaying={isPlaying} />;
         } else if (selectedAlgorithm === 'Well-formedness') {
             return <WellFormedParentheses speed={speed} isPlaying={isPlaying} />;
+        } else if (selectedAlgorithm === 'Prefix-evalution') {
+            return <PrefixEvaluation speed={speed} isPlaying={isPlaying} />;
+        } else if (selectedAlgorithm === 'queue') {
+            return <QueueOperations speed={speed} isPlaying={isPlaying} />;
         }
 
         return null;
