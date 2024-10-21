@@ -50,8 +50,8 @@
     font-size: 17px;
     position: relative;
     display: inline-block;
-    width: 3.5em;
-    height: 2em;
+    width: 4rem;
+    height: 2rem; 
 }
 
 /* Hide default HTML checkbox */
@@ -72,25 +72,28 @@
     background-color: var(--themeToggleBgcolor);
     box-shadow: var(--toogleBoxShadow);
     transition: .5s;
-    border-radius: 30px;
+    border-radius: 30px; 
+    height: 100%;
+    width: 100%; 
 }
 
 .slider:before {
     position: absolute;
     content: "";
-    height: 1.4em;
-    width: 1.4em;
+    height: 1.5rem;
+    width: 1.5rem;
     border-radius: 50%;
-    left: 10%;
-    bottom: 15%; 
+    left: 20%;
+    bottom: 10%; 
     transition: .5s;
     box-shadow: inset 15px -4px 0px 15px var(--themeToggleColor);
     transform: translateX(100%);
+    
 }
 
 
 input:checked+.slider:before {
-    transform: translateX(0%);
+    transform: translateX(-30%);
     box-shadow: inset 8px -4px 0px 0px var(--themeToggleColor);
 }
 

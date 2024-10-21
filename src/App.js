@@ -6,18 +6,6 @@ import { algorithmCard } from './Datastore/algoritmInfo';
 import AlgorithmVisualization from './Component/visualizationPage';
 import css from "./App.module.css"
 
-
-const resizeObserver = new ResizeObserver((entries) => {
-  try {
-    entries.forEach(entry => {
-      // handle resize
-    });
-  } catch (error) {
-    // Handle errors if needed
-    console.error('ResizeObserver error:', error);
-  }
-});
-
 const App = () => {
   return (
     <>
@@ -48,8 +36,7 @@ const App = () => {
     </>
   );
 };
-
-// resizeObserver.observe(App);
+ 
 
 const HomePage = ({ algorithmCard }) => {
   return (

@@ -201,6 +201,7 @@ export default class StackOperations extends Component {
         if (e.target.tagName === 'BUTTON') {
             this.setState({ activeTab: e.target.value })
         }
+
     }
     render() {
         const { inputValue, activeTab, featureTab } = this.state;
