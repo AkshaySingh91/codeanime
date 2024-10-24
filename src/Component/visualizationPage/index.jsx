@@ -11,6 +11,7 @@ import StackOperations from '../Array/stackOperations';
 import WellFormedParentheses from '../Array/WellFormedParentheses';
 import PrefixEvaluation from '../Array/prefixEvaluation';
 import QueueOperations from '../Array/queueOperations';
+import Dijkstra from '../Graph/Dijkstra';
 
 const AlgorithmVisualization = (props) => {
     const { algoName } = useParams();
@@ -60,6 +61,8 @@ const AlgorithmVisualization = (props) => {
             return <PrefixEvaluation speed={speed} isPlaying={isPlaying} />;
         } else if (selectedAlgorithm === 'queue') {
             return <QueueOperations speed={speed} isPlaying={isPlaying} />;
+        } else if (selectedAlgorithm === 'Dijkstra') {
+            return <Dijkstra speed={speed} isPlaying={isPlaying} />;
         }
 
         return null;

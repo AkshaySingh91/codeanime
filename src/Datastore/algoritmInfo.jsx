@@ -28,6 +28,15 @@ export const algorithmCard = [
         path: 'LinkedList',
         imagePath: '../Assets/images/arrayPreview.png'
     },
+    {
+        name: 'Graph',
+        description: `Graph Data Structure is a collection of nodes connected by edges. It's used to represent relationships between different entities. Graph algorithms are methods used to manipulate and analyze graphs, solving various problems like finding the shortest path or detecting cycles.`,
+        previewSvg: (classes) => {
+            return (<BinaryTreePreview classes={classes} />)
+        },
+        path: 'Graph',
+        imagePath: '../Assets/images/arrayPreview.png'
+    },
 ]
 
 export const algorithmName = [
@@ -45,5 +54,10 @@ export const algorithmName = [
         dataStructure: 'Linked list',
         algorithms: ['Operation-in-Linkedlist'],
         path: 'LinkedList'
+    },
+    {
+        dataStructure: 'Graph',
+        algorithms: ['Dijkstra'],
+        path: 'Graph'
     },
 ]

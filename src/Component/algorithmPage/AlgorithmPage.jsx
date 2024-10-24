@@ -11,11 +11,11 @@ class AlgorithmPage extends Component {
         super(props);
         this.backgroundSvg = React.createRef();
         this.algorithmCard = this.props.algorithmCard
-        this.firstAlgoPath = algorithmName.find((dataStructure) => dataStructure.path === this.props.dataStructureName).algorithms[0].replaceAll(' ', '-');
+        this.firstAlgoPath = algorithmName.find((dataStructure) => dataStructure.path === this.props.path).algorithms[0].replaceAll(' ', '-');
         this.description = this.name = null;
 
         this.algorithmCard.forEach(algoInfo => {
-            if (algoInfo.path === this.props.dataStructureName) {
+            if (algoInfo.path === this.props.path) {
                 this.description = algoInfo.description;
                 this.name = algoInfo.name;
             }
@@ -23,7 +23,8 @@ class AlgorithmPage extends Component {
     }
 
     render() {
-        const { dataStructureName } = this.props;
+        const { path } = this.props;
+        console.log(path, this.firstAlgoPath)
         return (
             <>
                 <section className={css[`${"hero-section"}`]}>
@@ -31,7 +32,7 @@ class AlgorithmPage extends Component {
                         <h1>{this.name}</h1>
                         <p>{this.description}</p>
                         <div className={css[`${"buttons"}`]}>
-                            <Link to={`/${dataStructureName}/${this.firstAlgoPath}/algorithm`} className={css[`${"play-btn"}`]}>
+                            <Link to={`/${path}/${this.firstAlgoPath}/algorithm`} className={css[`${"play-btn"}`]}>
                                 <button>GET STARTED</button>
                             </Link>
                         </div>

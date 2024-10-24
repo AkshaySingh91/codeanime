@@ -17,15 +17,19 @@ const App = () => {
           ></Route>
           <Route
             exact path='/BinaryTree'
-            element={<AlgorithmPage dataStructureName={'BinaryTree'} algorithmCard={algorithmCard} />}
+            element={<AlgorithmPage path={'BinaryTree'} algorithmCard={algorithmCard} />}
           ></Route>
           <Route
             exact path='/Array'
-            element={<AlgorithmPage dataStructureName={'Array'} algorithmCard={algorithmCard} />}
+            element={<AlgorithmPage path={'Array'} algorithmCard={algorithmCard} />}
           ></Route>
           <Route
             exact path='/LinkedList'
-            element={<AlgorithmPage dataStructureName={'LinkedList'} algorithmCard={algorithmCard} />}
+            element={<AlgorithmPage path={'LinkedList'} algorithmCard={algorithmCard} />}
+          ></Route>
+          <Route
+            exact path='/Graph'
+            element={<AlgorithmPage path={'Graph'} algorithmCard={algorithmCard} />}
           ></Route>
           <Route
             exact path='/:dataStructure/:algoName/algorithm'

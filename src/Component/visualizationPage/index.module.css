@@ -125,7 +125,8 @@
     max-height: 70%;
     min-height: 60vh;
     flex: 1;
-    margin-bottom: 1rem;
+    margin-bottom: 1rem; 
+    overflow: auto;
 }
 
 /* code  */
@@ -140,6 +141,7 @@
 }
 
 .text-container {
+    outline: 1px solid #505050;
     width: 30%;
     min-height: 100%;
     overflow: auto;
@@ -152,7 +154,6 @@
     display: flex;
     flex-flow: column;
     box-sizing: border-box;
-    border-left: 1px solid #555;
     min-width: 100%;
     min-height: 80vh;
 }
@@ -178,7 +179,7 @@
 
 .feature-container {
     overflow-y: auto;
-    border: 1px solid grey;
+    border-top: 1px solid #505050;
     color: var(--visulationText);
     text-align: justify;
     border-bottom: none;
@@ -231,9 +232,8 @@
 /* it will show which tab selected */
 .tab-container .active,
 .right-tab-container .active {
-    background-color: var(--activeTabBgcolor);
-    border-left: 1px solid #505050;
-    border-right: 1px solid #505050;
+    background-color: var(--activeTabBgcolor); 
+    outline: 1px solid;
     border-bottom: none;
     opacity: 1;
 }

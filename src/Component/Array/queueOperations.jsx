@@ -33,25 +33,24 @@ function dequeueElement() {\n\
 
 const QueueOperations = (props) => {
     const [queue, setQueue] = useState([1, 2, 3])
-    const [queueMaxSize, setQueueMaxSize] = useState(9)
+    const [queueMaxSize, setQueueMaxSize] = useState(12)
     const [front, setFront] = useState(-1)
     const [rear, setRear] = useState(-1)
     const [inputValue, setInputvalue] = useState('')
     const [activeTab, setActiveTab] = useState('Console')
     const [featureTab, setFeatureTab] = useState('queueOperations')
-    const [isCircular, setIsCircular] = useState(false)
-    const [queueSize, setQueueSize] = useState(17)
+    const [isCircular, setIsCircular] = useState(false) 
     const [info, setInfo] = useState('')
     const consoleRef = React.createRef();
     const svgRef = React.createRef();
 
 
-    const enqueueElement = (e) => {
-        const input = e.target.value || Math.floor(Math.random() * 100)
+    const enqueueElement = () => {
+        const input = inputValue || Math.floor(Math.random() * 100)
         if (consoleRef.current) {
             consoleRef.current.innerHTML = ''
         }
-        if (queue.length === queueSize) {
+        if (queue.length === queueMaxSize) {
             setInfo(`Queue is <b>Full</b>.`)
             return;
         }
@@ -66,7 +65,7 @@ const QueueOperations = (props) => {
             setInfo(`Queue is <b>Empty</b>`);
             return;
         }
-        
+
         setInfo(`Dequeued <b>${queue[0]}</b> in queue`);
         setQueue(queue.slice(1));
     };
@@ -99,7 +98,7 @@ const QueueOperations = (props) => {
                 .attr('stroke-width', '2px')
                 .attr('fill', '#AFAFD3');
             cylinder.append("ellipse")
-                .attr('cx', elementWidth * queueSize)  // Shift to the right
+                .attr('cx', elementWidth * queueMaxSize)  // Shift to the right
                 .attr("rx", 20)
                 .attr("ry", elementHeight / 2)
                 .attr('stroke', '#433878')
@@ -108,21 +107,21 @@ const QueueOperations = (props) => {
             cylinder.append("line")
                 .attr("x1", 0)
                 .attr("y1", -elementHeight / 2)
-                .attr("x2", elementWidth * queueSize)
+                .attr("x2", elementWidth * queueMaxSize)
                 .attr("y2", -elementHeight / 2)
                 .attr('stroke', '#433878')
                 .attr('stroke-width', '2px');
             cylinder.append("line")
                 .attr("x1", 0)
                 .attr("y1", elementHeight / 2)
-                .attr("x2", elementWidth * queueSize)
+                .attr("x2", elementWidth * queueMaxSize)
                 .attr("y2", elementHeight / 2)
                 .attr('stroke', '#433878')
                 .attr('stroke-width', '2px');
             cylinder.append('rect')
                 .attr('x', 0)
                 .attr('y', -elementHeight / 2)
-                .attr('width', elementWidth * queueSize)
+                .attr('width', elementWidth * queueMaxSize)
                 .attr('height', elementHeight)
                 .attr('fill', '#7E60BF')
                 .attr('opacity', 0.3)
@@ -208,7 +207,7 @@ const QueueOperations = (props) => {
             .attr('fill', 'Red')
             .attr('font-size', '2rem')
             .text('R');
-    }, [queue])
+    }, [queue, queueMaxSize])
 
 
     const clearQueue = () => {
@@ -226,10 +225,6 @@ const QueueOperations = (props) => {
         setIsCircular(true);
     };
 
-
-    const handleChange = (e) => {
-        setInputvalue(e.target.value);
-    };
 
     const handleTabClick = (e) => {
         if (e.target.tagName === 'BUTTON') {
@@ -252,29 +247,41 @@ const QueueOperations = (props) => {
                     </div>
                     <div className={css2["feature-container"]}>
                         <div className={css2["tab-container"]} onClick={handleTabClick}>
-                            <div className={`${css['queueOperations-tab']} ${css2['tab']} ${css2[`${isCircular ? 'active' : ''}`]}`}>
+                            <div className={`${css['queueOperations-tab']} ${css2['tab']} ${css2[`active`]}`}>
                                 <button value={'queueOperations'}>Queue Operations</button>
                             </div>
                         </div>
                         <div className={css2["selected-tab-content"]}>
-                            <div className="queueOperations">
-                                <label htmlFor="value"><b>Enter any value:</b></label>
-                                <input
-                                    id="inputValue"
-                                    type="number"
-                                    placeholder="Enter value to enqueue"
-                                    value={inputValue}
-                                    onChange={handleChange}
-                                    onKeyDown={(e) => e.key === 'Enter' && enqueueElement()}
-                                />
-                                <div className={css['buttons']}>
-                                    <button onClick={enqueueElement}>Enqueue</button>
-                                    <button onClick={dequeueElement}>Dequeue</button>
-                                    <button onClick={isEmpty}>IsEmpty?</button>
-                                    <button onClick={clearQueue}>Clear Queue</button>
-                                    <button onClick={convertToCircular}>Convert to Circular</button>
+                            {featureTab === 'queueOperations' &&
+                                <div className="queueOperations">
+                                    <label htmlFor="value"><b>Enter any value:</b></label>
+                                    <input
+                                        max={'100'}
+                                        id="inputValue"
+                                        type="number"
+                                        placeholder="Enter value to enqueue"
+                                        value={inputValue}
+                                        onChange={(e) => {
+                                            setInputvalue(Number.parseInt(e.target.value))
+                                        }}
+                                        onKeyDown={(e) => e.key === 'Enter' && enqueueElement()}
+                                    />
+                                    <div className={css['buttons']}>
+                                        <button onClick={enqueueElement}>Enqueue</button>
+                                        <button onClick={dequeueElement}>Dequeue</button>
+                                        <button onClick={isEmpty}>IsEmpty?</button>
+                                        <button onClick={clearQueue}>Clear Queue</button>
+                                        <button onClick={convertToCircular}>Convert to Circular</button>
+                                    </div>
+                                    <label htmlFor="maxSize">Enter queue max size</label>
+                                    <input type="number" name="maxSize" id="maxSize"
+                                        onChange={(e) => {
+                                            console.log(e.target.value )
+                                            setQueueMaxSize(Number.parseInt(e.target.value))
+                                        }}
+                                    />
                                 </div>
-                            </div>
+                            }
                         </div>
                     </div>
                 </div>
