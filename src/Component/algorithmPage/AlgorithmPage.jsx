@@ -9,6 +9,7 @@ import css from '../../App.module.css'
 class AlgorithmPage extends Component {
     constructor(props) {
         super(props);
+        console.log(props)
         this.backgroundSvg = React.createRef();
         this.algorithmCard = this.props.algorithmCard
         this.firstAlgoPath = algorithmName.find((dataStructure) => dataStructure.path === this.props.path).algorithms[0].replaceAll(' ', '-');
@@ -24,7 +25,7 @@ class AlgorithmPage extends Component {
 
     render() {
         const { path } = this.props;
-        console.log(path, this.firstAlgoPath)
+        console.log(this.props)
         return (
             <>
                 <section className={css[`${"hero-section"}`]}>
@@ -40,7 +41,18 @@ class AlgorithmPage extends Component {
 
                     <div className={css[`${"svgContainer"}`]}>
                         {/* it will change based on algorithm page */}
-                        <BinaryTreeAnimation backgroundSvgRef={this.backgroundSvg} />
+                        {
+                            this.props.path === 'Array' &&
+                            <ArrayAnimation />
+                        }
+                        {
+                            this.props.path === 'Graph' &&
+                            <GraphAnimation />
+                        }
+                        {
+                            this.props.path === 'LinkedList' || this.props.path === 'BinaryTree' &&
+                            <BinaryTreeAnimation />
+                        }
                     </div>
 
                     <div className={css[`${"hero-slider"}`]}>
@@ -52,6 +64,185 @@ class AlgorithmPage extends Component {
     }
 }
 
+class GraphAnimation extends Component {
+    constructor() {
+        super();
+        this.state = {
+            nodesDetails: [
+                { x: 242, y: 43, r: 20, n: 0 },
+                { x: 93, y: 155, r: 20, n: 1 },
+                { x: 156, y: 324, r: 20, n: 2 },
+                { x: 378, y: 150, r: 20, n: 3 },
+                { x: 319, y: 323, r: 20, n: 4 },
+            ],
+            links: [
+                {
+                    source: { x: 242, y: 43, r: 20, n: 0 },
+                    target: { x: 93, y: 155, r: 20, n: 1 }
+                }, {
+                    source: { x: 93, y: 155, r: 20, n: 1 },
+                    target: { x: 378, y: 150, r: 20, n: 3 }
+                }, {
+                    source: { x: 242, y: 43, r: 20, n: 0 },
+                    target: { x: 156, y: 324, r: 20, n: 2 }
+                }, {
+                    source: { x: 156, y: 324, r: 20, n: 2 },
+                    target: { x: 319, y: 323, r: 20, n: 4 }
+                }, {
+                    source: { x: 319, y: 323, r: 20, n: 4 },
+                    target: { x: 378, y: 150, r: 20, n: 3 }
+                }, {
+                    source: { x: 319, y: 323, r: 20, n: 4 },
+                    target: { x: 93, y: 155, r: 20, n: 1 }
+                }, {
+                    source: { x: 378, y: 150, r: 20, n: 3 },
+                    target: { x: 156, y: 324, r: 20, n: 2 }
+                },
+                {
+                    source: { x: 242, y: 43, r: 20, n: 0 },
+                    target: { x: 378, y: 150, r: 20, n: 3 }
+                },
+                {
+                    source: { x: 242, y: 43, r: 20, n: 0 },
+                    target: { x: 319, y: 323, r: 20, n: 4 }
+                },
+                {
+                    source: { x: 93, y: 155, r: 20, n: 1 },
+                    target: { x: 156, y: 324, r: 20, n: 2 }
+                }
+            ]
+        }
+    }
+    componentDidMount = () => {
+    }
+    adjustLineForNodeRadius = (x1, y1, x2, y2) => {
+        const dx = x2 - x1;
+        const dy = y2 - y1;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        const scale = (distance - 20) / distance; // Adjust by radius
+        return {
+            x: x1 + dx * scale,
+            y: y1 + dy * scale,
+        };
+    };
+    render() {
+        return (
+            < >
+                <div className={`${css["Edit-graph-container"]}`}>
+                    <div id={`${css["graph-container"]}`}>
+                        <svg style={{ width: '100%', height: "100%" }}>
+                            <defs>
+                                <marker
+                                    id='head'
+                                    orient="auto"
+                                    markerWidth='5'
+                                    markerHeight='5'
+                                    refX='2.5'
+                                    refY='2.5'
+                                >
+                                    <path d='M0,0 L5,2.5 L0,5 Z' fill="black" />
+                                </marker>
+                            </defs>
+                            {this.state.links.map((link, index) => {
+                                const adjustedTarget = this.adjustLineForNodeRadius(
+                                    link.source.x,
+                                    link.source.y,
+                                    link.target.x,
+                                    link.target.y
+                                );
+                                return (
+                                    <path
+                                        key={index}
+                                        d={`M ${link.source.x},${link.source.y} L ${adjustedTarget.x},${adjustedTarget.y}`}
+                                        fill="none"
+                                        stroke="black"
+                                        strokeWidth="2"
+                                        markerEnd='url(#head)'
+                                        markerMid="url(#head)"
+                                    />
+                                )
+                            })}
+                            {
+                                this.state.nodesDetails.map((node, idx) => {
+                                    return (
+                                        <g key={idx}>
+                                            <circle
+                                                cx={node.x}
+                                                cy={node.y}
+                                                r={20}
+                                                fill="orange"
+                                                stroke="black"
+                                                strokeWidth="2"
+
+                                            />
+                                            <text
+                                                x={node.x} y={node.y}
+                                                dominantBaseline={'middle'}
+                                                fontSize={20}
+                                                fontWeight={'bold'}>{idx}</text>
+                                        </g>
+                                    )
+                                })
+                            }
+
+                        </svg>
+                    </div>
+
+                </div>
+            </>
+        )
+    }
+}
+
+
+class ArrayAnimation extends Component {
+    constructor() {
+        super();
+        this.svgRef = React.createRef();
+    }
+    componentDidMount = () => {
+        console.log('mount')
+        const arr = [53, 23, 35, 54, 33, 99, 101, 244]
+        const width = 70, height = 50;
+        this.drawArray(arr, width, height);
+    }
+
+    drawArray = (array, width, height) => {
+        const svg = d3.select(this.svgRef.current);
+        svg.selectAll("*").remove(); // Clear any previous elements
+
+        const margin = { top: 150, left: 50, right: 50, bottom: 50 };
+
+        // Draw rectangles for array elements
+        svg.selectAll('rect')
+            .data(array)
+            .enter()
+            .append('rect')
+            .attr('x', (d, i) => margin.left + i * width)
+            .attr('y', margin.top)
+            .attr('width', width - 5)
+            .attr('height', height)
+            .attr('fill', 'lightblue')
+            .attr('stroke', 'black');
+
+        // Add text inside the rectangles for array values
+        svg.selectAll('text')
+            .data(array)
+            .enter()
+            .append('text')
+            .attr('x', (d, i) => margin.left + i * width + width / 2)
+            .attr('y', margin.top + height / 2 + 5)
+            .attr('text-anchor', 'middle')
+            .attr('font-size', '25px')
+            .text(d => d);
+    };
+
+    render() {
+        return (<>
+            <svg ref={this.svgRef}></svg>
+        </>)
+    }
+}
 
 class BinaryTreeAnimation extends Component {
     constructor() {

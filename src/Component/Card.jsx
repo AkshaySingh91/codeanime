@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import css from '../App.module.css'
+import arrayImage from './arrayImage.gif'
 
 export default class Card extends Component {
     constructor() {
@@ -70,8 +71,7 @@ export default class Card extends Component {
                 <div ref={this.cardRef} className={css[`${"algorithm-card"}`]}>
                     <Link to={path}>
                         {/* it will change depending on which algorithm card it is */}
-                        {previewSvg && previewSvg()}
-                        {/* {!previewSvg && <img src={}></img>} */}
+                        { previewSvg && previewSvg()}
                     </Link>
                     {/* <div ref={this.spotRef} className={css[`${"blur-spot"}`]}></div> */}
                     <div className={css[`${"algorithm-title"}`]}>
