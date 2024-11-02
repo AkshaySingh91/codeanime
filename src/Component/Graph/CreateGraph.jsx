@@ -8,7 +8,7 @@ function CreateGraph(props) {
     const [draggingNodePath, setDraggingNodePath] = useState(null); //to create path for visilation
     const [draggingNode, setDraggingNode] = useState(null); //to avoid self loop while creating path
     const svgRef = createRef();
-    const { nodesDetails, setNodesDetails, links, setLinks, setSvgContainer, adjustLineForNodeRadius } = props;
+    const { nodesDetails, setNodesDetails, links, setLinks, setSvgContainer, adjustLineForNodeRadius, setFlag } = props;
 
     const checkNodeOverlap = (relativeX, relativeY) => {
         for (let i = 0; i < nodesDetails.length; i++) {
@@ -35,13 +35,18 @@ function CreateGraph(props) {
 
         const details = { x: relativeX, y: relativeY, r: 20, n: nodesDetails.length };
         setNodesDetails([...nodesDetails, details])
+        console.log(nodesDetails)
     }
     const cancleToCreateGraph = () => {
-        setNodesDetails([]);
     }
     const clearGraph = () => {
         const svg = d3.select(svgRef.current)
         svg.selectAll("*").remove();
+        // setNodesDetails([])
+        // setLinks([])
+        setFlag(true);
+        setDraggingNode(null)
+        setDraggingNodePath(null)
     }
     const handleDragStart = (node) => {
         setDraggingNode(node);
@@ -79,6 +84,7 @@ function CreateGraph(props) {
             const { top, left } = svgRef.current.getBoundingClientRect();
             const relativeX = e.clientX - left;
             const relativeY = e.clientY - top;
+            console.log(draggingNodePath)
             setDraggingNodePath({
                 ...draggingNodePath,
                 x2: relativeX,
@@ -86,7 +92,7 @@ function CreateGraph(props) {
             });
         }
     }
-    
+
     useEffect(() => {
         console.log(links)
     }, [links])

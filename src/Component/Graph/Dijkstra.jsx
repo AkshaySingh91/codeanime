@@ -56,6 +56,8 @@ function Dijkstra() {
     ]); //it will show all relation
     const [inputVertex, setInputVertex] = useState(null)
     const [table, setTable] = useState([['<span>source</span>', '<span>destination</span>']]);
+    const [flag, setFlag] = useState(false);
+
 
     const handleTabClick = (e) => {
         if (e.target.tagName === 'BUTTON') {
@@ -85,7 +87,12 @@ function Dijkstra() {
         }
 
     }
-
+    useEffect(()=>{
+        if(flag == true){
+            setNodesDetails([])
+            setLinks([])
+        }
+    }, [flag])
     useEffect(() => {
         if (consoleRef.current) {
             const span = document.createElement('span');
@@ -168,6 +175,7 @@ function Dijkstra() {
                             setNodesDetails={setNodesDetails}
                             links={links}
                             setLinks={setLinks}
+                            setFlag={setFlag}
                             adjustLineForNodeRadius={adjustLineForNodeRadius}
                         />
                     }

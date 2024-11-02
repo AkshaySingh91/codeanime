@@ -56,7 +56,7 @@ async function swapBars(barsDivs, i, j) {
   barsDivs[i].classList.add('activate')
   barsDivs[j].style.left = `${5 + i * 30}px`
   barsDivs[j].classList.add('activate')
-  await sleep(300)
+  await sleep(1000)
   barsDivs[i].classList.remove('activate')
   barsDivs[j].classList.remove('activate')
   let temp = barsDivs[i]

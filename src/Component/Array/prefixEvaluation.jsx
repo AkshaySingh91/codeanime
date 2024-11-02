@@ -130,7 +130,7 @@ class PrefixEvaluation extends Component {
                     case '/': result = a / b; break;
                     default: throw new Error(`Unknown operator: ${token}`);
                 }
-                this.updateInfo(`Pop ${a} and ${b} from stack, push <b>${token} ${a} ${b} = ${result}</b> in stack.`);
+                this.updateInfo(`Pop ${a} and ${b} from stack, push <b>${a} ${token} ${b} = ${result}</b> in stack.`);
                 stack.push(result);
                 this.setSteps({ scanSymbol: token, stack: [...stack], result });
             }
